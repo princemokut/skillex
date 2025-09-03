@@ -1,0 +1,281 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - represents a user in the system
+model User {
+  id              String   @id @default(uuid())
+  handle          String   @unique
+  fullName        String
+  bio             String?
+  avatarUrl       String?
+  timezone        String
+  languages       String[]
+  locationCity    String?
+  locationCountry String?
+  createdAt       DateTime @default(now())
+
+  // Relations
+  skills            Skill[]
+  availability      Availability?
+  sentConnections   Connection[]    @relation("ConnectionRequester")
+  receivedConnections Connection[]  @relation("ConnectionAddressee")
+  ownedCohorts      Cohort[]        @relation("CohortOwner")
+  cohortMemberships CohortMember[]
+  messages          Message[]
+  sentFeedbacks     Feedback[]      @relation("FeedbackSender")
+  receivedFeedbacks Feedback[]      @relation("FeedbackReceiver")
+  givenEndorsements Endorsement[]   @relation("EndorsementGiver")
+  receivedEndorsements Endorsement[] @relation("EndorsementReceiver")
+  sentReferrals     Referral[]      @relation("ReferralSender")
+  receivedReferrals Referral[]      @relation("ReferralReceiver")
+  notifications     Notification[]
+  
+  @@map("users")
+}
+
+// Connection model - represents a connection between two users
+model Connection {
+  id           String          @id @default(uuid())
+  requester    User            @relation("ConnectionRequester", fields: [requesterId], references: [id])
+  requesterId  String
+  addressee    User            @relation("ConnectionAddressee", fields: [addresseeId], references: [id])
+  addresseeId  String
+  status       ConnectionStatus
+  createdAt    DateTime        @default(now())
+
+  @@unique([requesterId, addresseeId])
+  @@index([addresseeId, status])
+  @@map("connections")
+}
+
+enum ConnectionStatus {
+  pending
+  accepted
+  blocked
+}
+
+// Skill model - represents a skill that a user can teach or learn
+model Skill {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  kind      SkillKind
+  tags      String[]
+  level     SkillLevel?
+  notes     String?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, kind])
+  @@index([tags])
+  @@map("skills")
+}
+
+enum SkillKind {
+  teach
+  learn
+}
+
+enum SkillLevel {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+// Availability model - represents a user's weekly availability
+model Availability {
+  userId   String   @id
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekMask Boolean[] // 168 slots (24 hours * 7 days)
+
+  @@map("availabilities")
+}
+
+// Cohort model - represents a learning group
+model Cohort {
+  id          String           @id @default(uuid())
+  title       String
+  owner       User             @relation("CohortOwner", fields: [ownerId], references: [id])
+  ownerId     String
+  size        Int              @default(2)
+  startDate   DateTime
+  weeks       Int              @default(6)
+  visibility  CohortVisibility @default(private)
+  city        String?
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  members   CohortMember[]
+  sessions  Session[]
+  messages  Message[]
+  artifacts Artifact[]
+  feedbacks Feedback[]
+
+  @@index([ownerId])
+  @@index([visibility])
+  @@map("cohorts")
+}
+
+enum CohortVisibility {
+  private
+  public
+}
+
+// CohortMember model - represents a member of a cohort
+model CohortMember {
+  cohort    Cohort    @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  cohortId  String
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  role      MemberRole
+  joinedAt  DateTime  @default(now())
+
+  @@id([cohortId, userId])
+  @@map("cohort_members")
+}
+
+enum MemberRole {
+  teacher
+  learner
+  facilitator
+}
+
+// Session model - represents a meeting session for a cohort
+model Session {
+  id              String   @id @default(uuid())
+  cohort          Cohort   @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  cohortId        String
+  weekIndex       Int
+  startsAt        DateTime
+  durationMinutes Int      @default(60)
+  notesUrl        String?
+
+  @@index([cohortId, weekIndex])
+  @@map("sessions")
+}
+
+// Message model - represents a chat message in a cohort
+model Message {
+  id        String   @id @default(uuid())
+  cohort    Cohort   @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  cohortId  String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([cohortId, createdAt])
+  @@map("messages")
+}
+
+// Feedback model - represents feedback from one user to another
+model Feedback {
+  id        String   @id @default(uuid())
+  cohort    Cohort   @relation(fields: [cohortId], references: [id])
+  cohortId  String
+  fromUser  User     @relation("FeedbackSender", fields: [fromUserId], references: [id])
+  fromUserId String
+  toUser    User     @relation("FeedbackReceiver", fields: [toUserId], references: [id])
+  toUserId  String
+  rating    Int
+  text      String?
+  createdAt DateTime @default(now())
+
+  @@unique([cohortId, fromUserId, toUserId])
+  @@map("feedbacks")
+}
+
+// Endorsement model - represents a skill endorsement from one user to another
+model Endorsement {
+  id          String   @id @default(uuid())
+  endorser    User     @relation("EndorsementGiver", fields: [endorserId], references: [id])
+  endorserId  String
+  endorsee    User     @relation("EndorsementReceiver", fields: [endorseeId], references: [id])
+  endorseeId  String
+  tag         String
+  createdAt   DateTime @default(now())
+
+  @@unique([endorserId, endorseeId, tag])
+  @@index([endorseeId, tag])
+  @@map("endorsements")
+}
+
+// Referral model - represents a professional referral
+model Referral {
+  id        String         @id @default(uuid())
+  fromUser  User           @relation("ReferralSender", fields: [fromUserId], references: [id])
+  fromUserId String
+  toUser    User           @relation("ReferralReceiver", fields: [toUserId], references: [id])
+  toUserId  String
+  context   String
+  status    ReferralStatus @default(draft)
+  createdAt DateTime       @default(now())
+
+  @@index([toUserId, status])
+  @@map("referrals")
+}
+
+enum ReferralStatus {
+  draft
+  sent
+  accepted
+  declined
+}
+
+// Artifact model - represents a learning artifact
+model Artifact {
+  id        String       @id @default(uuid())
+  cohort    Cohort       @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  cohortId  String
+  url       String
+  kind      ArtifactKind
+  createdAt DateTime     @default(now())
+
+  @@index([cohortId, kind])
+  @@map("artifacts")
+}
+
+enum ArtifactKind {
+  repo
+  doc
+  video
+  image
+  other
+}
+
+// Notification model - represents a user notification
+model Notification {
+  id        String           @id @default(uuid())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  kind      NotificationKind
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, readAt])
+  @@index([userId, kind])
+  @@map("notifications")
+}
+
+enum NotificationKind {
+  connection_request
+  connection_accepted
+  cohort_invitation
+  session_reminder
+  new_message
+  feedback_received
+  endorsement_received
+  referral_received
+  referral_accepted
+  system
+}

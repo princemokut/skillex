@@ -1,0 +1,43 @@
+{
+  "name": "skillex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "skillex - A professional social network for structured skill exchange",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -C apps/api dev",
+    "dev:web": "pnpm -C apps/web dev",
+    "dev:all": "concurrently \"pnpm -C apps/api dev\" \"pnpm -C apps/web dev\"",
+    "test": "pnpm -r test",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "prisma db seed"
+  },
+  "keywords": [
+    "skill-exchange",
+    "social-network",
+    "cohort",
+    "learning",
+    "teaching"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=7.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^16.6.1",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
+    "@types/node": "^18.19.123",
+    "concurrently": "^9.2.1",
+    "prisma": "^5.22.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "display": "Default",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true
+  },
+  "exclude": ["node_modules"]
+}
