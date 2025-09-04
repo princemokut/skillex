@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
  */
 export function MatchSkeleton() {
   return (
-    <Card className="w-full">
+    <Card className="w-full h-full flex flex-col">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
@@ -27,7 +27,7 @@ export function MatchSkeleton() {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="flex-1 flex flex-col space-y-4">
         {/* Bio skeleton */}
         <div className="space-y-2">
           <Skeleton className="h-4 w-full" />
@@ -54,8 +54,11 @@ export function MatchSkeleton() {
           </div>
         </div>
 
-        {/* Action buttons skeleton */}
-        <div className="flex gap-2 pt-2">
+        {/* Spacer to push buttons to bottom */}
+        <div className="flex-1"></div>
+
+        {/* Action buttons skeleton - Fixed at bottom */}
+        <div className="flex gap-2 pt-4 border-t border-slate-100">
           <Skeleton className="h-8 flex-1" />
           <Skeleton className="h-8 w-20" />
           <Skeleton className="h-8 w-10" />
