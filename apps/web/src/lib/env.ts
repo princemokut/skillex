@@ -4,11 +4,6 @@
  */
 
 import { z } from 'zod';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-
-// Load environment variables from .env file in the root directory
-dotenv.config({ path: path.join(__dirname, '../../../../../.env') });
 
 /**
  * Environment variables schema
@@ -29,6 +24,9 @@ const envSchema = z.object({
 /**
  * Validated environment variables
  * Throws an error if required variables are missing
+ * 
+ * Note: Next.js automatically loads .env.local, .env.development, .env, etc.
+ * The dotenv.config() approach doesn't work in the browser.
  */
 export const env = envSchema.parse({
   NEXT_PUBLIC_API_BASE: process.env.NEXT_PUBLIC_API_BASE,
