@@ -234,3 +234,9 @@ export async function apiDelete<T = any>(
     method: 'DELETE',
   });
 }
+
+/**
+ * Generic fetcher function for backward compatibility
+ * @deprecated Use apiFetch, apiGet, apiPost, etc. instead
+ */
+export const fetcher = apiFetch;

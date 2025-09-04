@@ -99,3 +99,20 @@ export function generateAvatarSeed(name: string, email?: string): string {
   const baseSeed = email ? `${name}-${email}` : name;
   return baseSeed.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
+
+/**
+ * Generate a deterministic avatar URL with full name support
+ * @param options - Options for avatar generation
+ * @param options.full_name - The full name to generate the avatar from
+ * @param options.email - The email address (optional)
+ * @param options.service - The service to use (default: 'dicebear')
+ * @returns The avatar URL
+ */
+export function getDeterministicAvatarUrl(options: { 
+  full_name: string; 
+  email?: string; 
+  service?: 'dicebear' | 'ui-avatars' | 'picsum' 
+}): string {
+  const { full_name, email, service = 'dicebear' } = options;
+  return generateAvatarUrl(full_name, service);
+}

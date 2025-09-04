@@ -1,88 +1,138 @@
 /**
- * Match API client for the skillex application
- * Provides methods for user matching operations
+ * API client for match-related endpoints
+ * Handles match preview, filtering, and discovery functionality
  */
 
-import { apiPost } from './fetcher';
+import { fetcher } from './fetcher';
 import { apiConfig } from '../lib/env';
 
 /**
- * Match preview interface
+ * Interface for match preview request
  */
-export interface MatchPreview {
-  matches: MatchCandidate[];
-  message?: string;
+export interface MatchPreviewRequest {
+  filters?: {
+    skill_level?: string;
+    location?: string;
+    availability?: string;
+    skills?: string[];
+    search?: string;
+  };
+  limit?: number;
+  offset?: number;
+  sort_by?: 'match_score' | 'last_active' | 'name' | 'location';
 }
 
 /**
- * Match candidate interface
+ * Interface for match preview response
  */
-export interface MatchCandidate {
-  user: {
+export interface MatchPreviewResponse {
+  matches: Array<{
     id: string;
+    name: string;
     handle: string;
-    fullName: string;
     bio?: string;
-    avatarUrl?: string;
-    locationCity?: string;
-    locationCountry?: string;
-    timezone: string;
-  };
-  skills: {
-    teach: string[];
-    learn: string[];
-    overlap: string[];
-  };
-  availability: {
-    overlap: number;
-    percentage: number;
-  };
-  score: number;
-  reason: string;
+    location?: string;
+    avatar_url?: string;
+    skills_to_teach: Array<{
+      name: string;
+      level: "beginner" | "intermediate" | "advanced" | "expert";
+    }>;
+    skills_to_learn: Array<{
+      name: string;
+      level: "beginner" | "intermediate" | "advanced" | "expert";
+    }>;
+    common_skills: string[];
+    match_score: number;
+    last_active?: string;
+    availability_summary?: string;
+  }>;
+  total: number;
+  has_more: boolean;
+  available_skills: string[];
 }
 
 /**
- * Get matching preview with scored candidates
+ * Get match preview with filtering options
  * 
- * @returns Promise resolving to match preview data
+ * @param request - Match preview request parameters
+ * @returns Promise resolving to match preview response
  */
-export async function getMatchPreview(): Promise<MatchPreview> {
-  return apiPost<MatchPreview>(`${apiConfig.endpoints.matches}/preview`);
+export async function getMatchPreview(request: MatchPreviewRequest = {}): Promise<MatchPreviewResponse> {
+  const params = new URLSearchParams();
+  
+  if (request.filters) {
+    if (request.filters.skill_level) {
+      params.append('skill_level', request.filters.skill_level);
+    }
+    if (request.filters.location) {
+      params.append('location', request.filters.location);
+    }
+    if (request.filters.availability) {
+      params.append('availability', request.filters.availability);
+    }
+    if (request.filters.skills && request.filters.skills.length > 0) {
+      params.append('skills', request.filters.skills.join(','));
+    }
+    if (request.filters.search) {
+      params.append('search', request.filters.search);
+    }
+  }
+  
+  if (request.limit) {
+    params.append('limit', request.limit.toString());
+  }
+  if (request.offset) {
+    params.append('offset', request.offset.toString());
+  }
+  if (request.sort_by) {
+    params.append('sort_by', request.sort_by);
+  }
+
+  const queryString = params.toString();
+  const url = `${apiConfig.endpoints.matches}/preview${queryString ? `?${queryString}` : ''}`;
+  
+  return fetcher(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }
 
 /**
- * Get matches with filters
+ * Get available skills for filtering
  * 
- * @param filters - Optional filters for matching
- * @returns Promise resolving to filtered matches
+ * @returns Promise resolving to array of available skills
  */
-export async function getMatches(filters?: {
-  tags?: string[];
-  location?: string;
-  timezone?: string;
-  cohortSize?: number;
-}): Promise<MatchPreview> {
-  return apiPost<MatchPreview>(`${apiConfig.endpoints.matches}/preview`, filters);
+export async function getAvailableSkills(): Promise<string[]> {
+  const response = await getMatchPreview({ limit: 1 });
+  return response.available_skills || [];
 }
 
 /**
- * Get match explanation for a specific user
+ * Get match by ID
  * 
- * @param userId - User ID to get match explanation for
- * @returns Promise resolving to match explanation
+ * @param matchId - The match ID
+ * @returns Promise resolving to match data
  */
-export async function getMatchExplanation(userId: string): Promise<{
-  user: MatchCandidate['user'];
-  skills: MatchCandidate['skills'];
-  availability: MatchCandidate['availability'];
-  score: number;
-  reason: string;
-}> {
-  return apiPost<{
-    user: MatchCandidate['user'];
-    skills: MatchCandidate['skills'];
-    availability: MatchCandidate['availability'];
-    score: number;
-    reason: string;
-  }>(`${apiConfig.endpoints.matches}/explain`, { userId });
+export async function getMatchById(matchId: string) {
+  return fetcher(`${apiConfig.endpoints.matches}/${matchId}`);
+}
+
+/**
+ * Connect with a match
+ * 
+ * @param matchId - The match ID to connect with
+ * @returns Promise resolving to connection response
+ */
+export async function connectWithMatch(matchId: string) {
+  return fetcher(`${apiConfig.endpoints.connections}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      match_id: matchId,
+    }),
+  });
 }
