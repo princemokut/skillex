@@ -68,7 +68,7 @@ Based on my analysis of your codebase, here's a comprehensive milestone plan for
 
 ---
 
-### **M2: Onboarding Wizard (3 Steps)**
+### **M2: Onboarding Wizard (3 Steps)** ✅
 *Estimated: 4-5 hours*
 
 **Goals:**
@@ -77,19 +77,19 @@ Based on my analysis of your codebase, here's a comprehensive milestone plan for
 - Show initial matches after completion
 
 **Tasks:**
-1. **Step 1**: Basics form (name, handle, photo, location, bio)
-2. **Step 2**: Skills selection with teach/learn tags and levels
-3. **Step 3**: Availability HeatmapPicker (7×24 grid)
-4. Form validation with Zod schemas
-5. API integration for user creation
-6. Call `/v1/match/preview` on completion
-7. Redirect to matches page
+1. ✅ **Step 1**: Basics form (name, handle, photo, location, bio)
+2. ✅ **Step 2**: Skills selection with teach/learn tags and levels
+3. ✅ **Step 3**: Availability HeatmapPicker (7×24 grid)
+4. ✅ Form validation with Zod schemas
+5. ⏳ API integration for user creation (placeholder)
+6. ⏳ Call `/v1/match/preview` on completion (placeholder)
+7. ✅ Redirect to matches page
 
 **Deliverables:**
-- Complete onboarding flow
-- Working HeatmapPicker component
-- User profile creation via API
-- Initial match preview
+- ✅ Complete onboarding flow
+- ✅ Working HeatmapPicker component
+- ⏳ User profile creation via API (placeholder)
+- ✅ Initial match preview (mock data)
 
 ---
 

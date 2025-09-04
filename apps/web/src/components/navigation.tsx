@@ -60,6 +60,12 @@ export function Navigation() {
           {user && (
             <div className="hidden md:flex items-center space-x-8">
               <Link 
+                href="/onboarding" 
+                className="text-slate-700 hover:text-primary-600 transition-colors"
+              >
+                Setup
+              </Link>
+              <Link 
                 href="/matches" 
                 className="text-slate-700 hover:text-primary-600 transition-colors"
               >
