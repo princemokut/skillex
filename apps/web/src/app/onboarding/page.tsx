@@ -90,7 +90,9 @@ export default function OnboardingPage() {
 
   // Redirect if not authenticated
   if (!user) {
-    router.push("/auth/signin");
+    if (typeof window !== 'undefined') {
+      router.push("/auth/signin");
+    }
     return null;
   }
 

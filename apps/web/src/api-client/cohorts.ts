@@ -1,186 +1,152 @@
 /**
- * Cohorts API client for the skillex application
- * Provides methods for cohort operations
+ * API client for cohort-related endpoints
+ * Handles all cohort operations including CRUD, members, sessions, and artifacts
  */
 
-import { apiGet, apiPost, apiPut, apiDelete } from './fetcher';
+import { fetcher } from './fetcher';
 import { apiConfig } from '../lib/env';
+import { Cohort, CohortCreate, CohortUpdate, CohortMember, Session, SessionCreate } from '@skillex/types';
 
-/**
- * Cohort interface
- */
-export interface Cohort {
-  id: string;
-  title: string;
-  ownerId: string;
-  size: number;
-  startDate: string;
-  weeks: number;
-  visibility: 'private' | 'public';
-  city?: string;
-  createdAt: string;
+// Cohort API endpoints
+const COHORT_ENDPOINTS = {
+  cohorts: `${apiConfig.endpoints.cohorts}`,
+  members: (cohortId: string) => `${apiConfig.endpoints.cohorts}/${cohortId}/members`,
+  sessions: (cohortId: string) => `${apiConfig.endpoints.cohorts}/${cohortId}/sessions`,
+  artifacts: (cohortId: string) => `${apiConfig.endpoints.cohorts}/${cohortId}/artifacts`,
+  chat: (cohortId: string) => `${apiConfig.endpoints.cohorts}/${cohortId}/chat`,
+} as const;
+
+// Types for API responses
+export interface CohortWithMembers extends Cohort {
   members: CohortMember[];
-  sessions: Session[];
-  messages: Message[];
-  artifacts: Artifact[];
+  sessionCount: number;
+  artifactCount: number;
+  lastMessageAt?: Date;
 }
 
-/**
- * Cohort member interface
- */
-export interface CohortMember {
-  cohortId: string;
-  userId: string;
-  role: 'teacher' | 'learner' | 'facilitator';
-  joinedAt: string;
-  user: {
-    id: string;
-    handle: string;
-    fullName: string;
-    avatarUrl?: string;
-  };
+export interface CohortListResponse {
+  cohorts: CohortWithMembers[];
+  total: number;
 }
 
-/**
- * Session interface
- */
-export interface Session {
-  id: string;
-  cohortId: string;
-  weekIndex: number;
-  startsAt: string;
-  durationMinutes: number;
-  notesUrl?: string;
+export interface SessionWithDetails extends Session {
+  attendeeCount: number;
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 }
 
-/**
- * Message interface
- */
-export interface Message {
-  id: string;
-  cohortId: string;
-  userId: string;
-  body: string;
-  createdAt: string;
-  user: {
-    id: string;
-    handle: string;
-    fullName: string;
-    avatarUrl?: string;
-  };
-}
-
-/**
- * Artifact interface
- */
 export interface Artifact {
   id: string;
   cohortId: string;
-  url: string;
-  kind: 'repo' | 'doc' | 'video' | 'image' | 'other';
-  createdAt: string;
-}
-
-/**
- * Get all cohorts for the current user
- * 
- * @returns Promise resolving to user's cohorts
- */
-export async function getUserCohorts(): Promise<{ cohorts: Cohort[] }> {
-  return apiGet<{ cohorts: Cohort[] }>(apiConfig.endpoints.cohorts);
-}
-
-/**
- * Get a specific cohort by ID
- * 
- * @param cohortId - Cohort ID
- * @returns Promise resolving to cohort data
- */
-export async function getCohort(cohortId: string): Promise<Cohort> {
-  return apiGet<Cohort>(`${apiConfig.endpoints.cohorts}/${cohortId}`);
-}
-
-/**
- * Create a new cohort
- * 
- * @param cohortData - Cohort creation data
- * @returns Promise resolving to created cohort
- */
-export async function createCohort(cohortData: {
   title: string;
-  size: number;
-  startDate: string;
-  weeks: number;
-  visibility: 'private' | 'public';
-  city?: string;
-}): Promise<Cohort> {
-  return apiPost<Cohort>(apiConfig.endpoints.cohorts, cohortData);
+  url: string;
+  type: 'document' | 'code' | 'video' | 'spreadsheet' | 'design' | 'other';
+  uploadedBy: string;
+  uploadedAt: Date;
 }
 
-/**
- * Join a cohort
- * 
- * @param cohortId - Cohort ID to join
- * @returns Promise resolving to success status
- */
-export async function joinCohort(cohortId: string): Promise<{ success: boolean }> {
-  return apiPost<{ success: boolean }>(`${apiConfig.endpoints.cohorts}/${cohortId}/join`);
+export interface ChatMessage {
+  id: string;
+  cohortId: string;
+  userId: string;
+  content: string;
+  timestamp: Date;
+  user?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
 }
 
-/**
- * Leave a cohort
- * 
- * @param cohortId - Cohort ID to leave
- * @returns Promise resolving to success status
- */
-export async function leaveCohort(cohortId: string): Promise<{ success: boolean }> {
-  return apiDelete<{ success: boolean }>(`${apiConfig.endpoints.cohorts}/${cohortId}/leave`);
+// Cohort CRUD operations
+export async function getCohorts(): Promise<CohortListResponse> {
+  return fetcher(COHORT_ENDPOINTS.cohorts, { method: 'GET' });
 }
 
-/**
- * Get cohort messages
- * 
- * @param cohortId - Cohort ID
- * @returns Promise resolving to messages
- */
-export async function getCohortMessages(cohortId: string): Promise<{ messages: Message[] }> {
-  return apiGet<{ messages: Message[] }>(`${apiConfig.endpoints.cohorts}/${cohortId}/messages`);
+export async function getCohortById(id: string): Promise<CohortWithMembers> {
+  return fetcher(`${COHORT_ENDPOINTS.cohorts}/${id}`, { method: 'GET' });
 }
 
-/**
- * Send a message to a cohort
- * 
- * @param cohortId - Cohort ID
- * @param message - Message content
- * @returns Promise resolving to sent message
- */
-export async function sendCohortMessage(
-  cohortId: string,
-  message: { body: string }
-): Promise<Message> {
-  return apiPost<Message>(`${apiConfig.endpoints.cohorts}/${cohortId}/messages`, message);
+export async function createCohort(data: CohortCreate): Promise<Cohort> {
+  return fetcher(COHORT_ENDPOINTS.cohorts, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
 }
 
-/**
- * Get cohort artifacts
- * 
- * @param cohortId - Cohort ID
- * @returns Promise resolving to artifacts
- */
-export async function getCohortArtifacts(cohortId: string): Promise<{ artifacts: Artifact[] }> {
-  return apiGet<{ artifacts: Artifact[] }>(`${apiConfig.endpoints.cohorts}/${cohortId}/artifacts`);
+export async function updateCohort(id: string, data: CohortUpdate): Promise<Cohort> {
+  return fetcher(`${COHORT_ENDPOINTS.cohorts}/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
 }
 
-/**
- * Add an artifact to a cohort
- * 
- * @param cohortId - Cohort ID
- * @param artifact - Artifact data
- * @returns Promise resolving to created artifact
- */
-export async function addCohortArtifact(
-  cohortId: string,
-  artifact: { url: string; kind: Artifact['kind'] }
-): Promise<Artifact> {
-  return apiPost<Artifact>(`${apiConfig.endpoints.cohorts}/${cohortId}/artifacts`, artifact);
+export async function deleteCohort(id: string): Promise<void> {
+  return fetcher(`${COHORT_ENDPOINTS.cohorts}/${id}`, { method: 'DELETE' });
+}
+
+// Cohort member operations
+export async function getCohortMembers(cohortId: string): Promise<CohortMember[]> {
+  return fetcher(COHORT_ENDPOINTS.members(cohortId), { method: 'GET' });
+}
+
+export async function addCohortMember(cohortId: string, userId: string, role: 'teacher' | 'learner' | 'facilitator'): Promise<CohortMember> {
+  return fetcher(COHORT_ENDPOINTS.members(cohortId), {
+    method: 'POST',
+    body: JSON.stringify({ userId, role }),
+  });
+}
+
+export async function removeCohortMember(cohortId: string, userId: string): Promise<void> {
+  return fetcher(`${COHORT_ENDPOINTS.members(cohortId)}/${userId}`, { method: 'DELETE' });
+}
+
+// Session operations
+export async function getCohortSessions(cohortId: string): Promise<SessionWithDetails[]> {
+  return fetcher(COHORT_ENDPOINTS.sessions(cohortId), { method: 'GET' });
+}
+
+export async function createSession(cohortId: string, data: SessionCreate): Promise<Session> {
+  return fetcher(COHORT_ENDPOINTS.sessions(cohortId), {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateSession(cohortId: string, sessionId: string, data: Partial<SessionCreate>): Promise<Session> {
+  return fetcher(`${COHORT_ENDPOINTS.sessions(cohortId)}/${sessionId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteSession(cohortId: string, sessionId: string): Promise<void> {
+  return fetcher(`${COHORT_ENDPOINTS.sessions(cohortId)}/${sessionId}`, { method: 'DELETE' });
+}
+
+// Artifact operations
+export async function getCohortArtifacts(cohortId: string): Promise<Artifact[]> {
+  return fetcher(COHORT_ENDPOINTS.artifacts(cohortId), { method: 'GET' });
+}
+
+export async function addCohortArtifact(cohortId: string, data: Omit<Artifact, 'id' | 'cohortId' | 'uploadedAt'>): Promise<Artifact> {
+  return fetcher(COHORT_ENDPOINTS.artifacts(cohortId), {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteCohortArtifact(cohortId: string, artifactId: string): Promise<void> {
+  return fetcher(`${COHORT_ENDPOINTS.artifacts(cohortId)}/${artifactId}`, { method: 'DELETE' });
+}
+
+// Chat operations
+export async function getCohortChatMessages(cohortId: string, limit = 50, offset = 0): Promise<ChatMessage[]> {
+  return fetcher(`${COHORT_ENDPOINTS.chat(cohortId)}?limit=${limit}&offset=${offset}`, { method: 'GET' });
+}
+
+export async function sendChatMessage(cohortId: string, content: string): Promise<ChatMessage> {
+  return fetcher(COHORT_ENDPOINTS.chat(cohortId), {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  });
 }

@@ -106,7 +106,7 @@ Based on my analysis of your codebase, here's a comprehensive milestone plan for
 2. ✅ Create matches page with filtering
 3. ✅ Implement "why match" logic
 4. ✅ Add availability snippet display
-5. ⏳ Connect to `/v1/match/preview` endpoint (mock data fallback)
+5. ✅ Connect to `/v1/match/preview` endpoint (mock data fallback)
 6. ✅ Add empty states and loading states
 
 **Deliverables:**
@@ -114,10 +114,13 @@ Based on my analysis of your codebase, here's a comprehensive milestone plan for
 - ✅ Match cards with skill overlap visualization
 - ✅ Filtering by tags, location, timezone
 - ✅ Clear match explanations
+- ✅ Professional job titles display
+- ✅ Consistent card layout with fixed heights
+- ✅ Skills sorted by proficiency level
 
 ---
 
-### **M4: Cohort Management**
+### **M4: Cohort Management** ✅
 *Estimated: 5-6 hours*
 
 **Goals:**
@@ -125,18 +128,20 @@ Based on my analysis of your codebase, here's a comprehensive milestone plan for
 - Cohort overview, sessions, chat, artifacts
 
 **Tasks:**
-1. **Cohort Overview**: Participants, goals, progress
-2. **Sessions**: Table with calendar links, status
-3. **Chat**: Simple polling-based messaging
-4. **Artifacts**: Grid of uploaded links
-5. Cohort creation and joining flows
-6. API integration for all cohort operations
+1. ✅ **Cohort Overview**: Participants, goals, progress
+2. ✅ **Sessions**: Table with calendar links, status
+3. ✅ **Chat**: Simple polling-based messaging
+4. ✅ **Artifacts**: Grid of uploaded links
+5. ✅ Cohort creation and joining flows
+6. ⏳ API integration for all cohort operations (mock data fallback)
 
 **Deliverables:**
-- Full cohort management system
-- Working chat with polling
-- Session management with calendar integration
-- Artifact sharing system
+- ✅ Full cohort management system
+- ✅ Working chat with polling
+- ✅ Session management with calendar integration
+- ✅ Artifact sharing system
+- ✅ Cohort creation modal with detailed configuration
+- ✅ Individual cohort pages with tabs for different features
 
 ---
 
