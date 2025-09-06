@@ -75,11 +75,11 @@ export function MatchFilters({
     filters.selectedSkills.length > 0;
 
   return (
-    <Card className={className}>
-      <CardHeader className="pb-4">
+    <Card className={`w-full ${className}`}>
+      <CardHeader className="p-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold flex items-center">
-            <Filter className="h-5 w-5 mr-2" />
+          <CardTitle className="text-base font-semibold flex items-center">
+            <Filter className="h-4 w-4 mr-2" />
             Filters
           </CardTitle>
           <div className="flex gap-2">
@@ -88,9 +88,9 @@ export function MatchFilters({
                 variant="ghost" 
                 size="sm" 
                 onClick={clearFilters}
-                className="text-slate-500 hover:text-slate-700"
+                className="text-slate-500 hover:text-slate-700 h-7 px-2 text-xs"
               >
-                <X className="h-4 w-4 mr-1" />
+                <X className="h-3 w-3 mr-1" />
                 Clear
               </Button>
             )}
@@ -98,6 +98,7 @@ export function MatchFilters({
               variant="ghost" 
               size="sm" 
               onClick={() => setIsExpanded(!isExpanded)}
+              className="h-7 px-2 text-xs"
             >
               {isExpanded ? 'Less' : 'More'}
             </Button>
@@ -105,11 +106,11 @@ export function MatchFilters({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Skill Level Color Legend */}
+      <CardContent className="p-3 space-y-3">
+        {/* Skill Levels Legend */}
         <div>
           <div className="text-xs font-medium text-slate-700 mb-1">Skill Levels:</div>
-          <div className="flex flex-wrap gap-x-3 mb-3 text-xs">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
             <div className="flex items-center">
               <span className="h-2 w-2 rounded bg-green-100 border border-green-200 mr-1"></span>
               <span className="text-slate-500">Beginner</span>
@@ -128,29 +129,18 @@ export function MatchFilters({
             </div>
           </div>
         </div>
-        
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input
-            placeholder="Search by name, skills, or location..."
-            value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
-            className="pl-10"
-          />
-        </div>
 
         {/* Basic Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="skillLevel" className="text-sm font-medium">
+            <Label htmlFor="skillLevel" className="text-xs font-medium mb-1 block">
               Skill Level
             </Label>
             <Select 
               value={filters.skillLevel} 
               onValueChange={(value) => handleFilterChange('skillLevel', value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="h-9 text-sm">
                 <SelectValue placeholder="Any level" />
               </SelectTrigger>
               <SelectContent>
@@ -164,7 +154,7 @@ export function MatchFilters({
           </div>
 
           <div>
-            <Label htmlFor="location" className="text-sm font-medium">
+            <Label htmlFor="location" className="text-xs font-medium mb-1 block">
               Location
             </Label>
             <div className="relative">
@@ -174,7 +164,7 @@ export function MatchFilters({
                 placeholder="City, Country"
                 value={filters.location}
                 onChange={(e) => handleFilterChange('location', e.target.value)}
-                className="pl-10"
+                className="pl-10 h-9 text-sm"
               />
             </div>
           </div>
@@ -182,73 +172,75 @@ export function MatchFilters({
 
         {/* Expanded Filters */}
         {isExpanded && (
-          <div className="space-y-4 pt-4 border-t">
-            <div>
-              <Label htmlFor="availability" className="text-sm font-medium">
-                Availability
-              </Label>
-              <div className="relative">
-                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <div className="space-y-3 pt-3 border-t border-slate-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="availability" className="text-xs font-medium mb-1 block">
+                  Availability
+                </Label>
+                <div className="relative">
+                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Select 
+                    value={filters.availability} 
+                    onValueChange={(value) => handleFilterChange('availability', value)}
+                  >
+                    <SelectTrigger className="pl-10 h-9 text-sm">
+                      <SelectValue placeholder="Any time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any time</SelectItem>
+                      <SelectItem value="morning">Morning (6AM-12PM)</SelectItem>
+                      <SelectItem value="afternoon">Afternoon (12PM-6PM)</SelectItem>
+                      <SelectItem value="evening">Evening (6PM-12AM)</SelectItem>
+                      <SelectItem value="weekend">Weekends only</SelectItem>
+                      <SelectItem value="weekday">Weekdays only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="sortBy" className="text-xs font-medium mb-1 block">
+                  Sort by
+                </Label>
                 <Select 
-                  value={filters.availability} 
-                  onValueChange={(value) => handleFilterChange('availability', value)}
+                  value={filters.sortBy} 
+                  onValueChange={(value) => handleFilterChange('sortBy', value)}
                 >
-                  <SelectTrigger className="pl-10">
-                    <SelectValue placeholder="Any time" />
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="any">Any time</SelectItem>
-                    <SelectItem value="morning">Morning (6AM-12PM)</SelectItem>
-                    <SelectItem value="afternoon">Afternoon (12PM-6PM)</SelectItem>
-                    <SelectItem value="evening">Evening (6PM-12AM)</SelectItem>
-                    <SelectItem value="weekend">Weekends only</SelectItem>
-                    <SelectItem value="weekday">Weekdays only</SelectItem>
+                    <SelectItem value="match_score">Match Score</SelectItem>
+                    <SelectItem value="last_active">Last Active</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="location">Location</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="sortBy" className="text-sm font-medium">
-                Sort by
-              </Label>
-              <Select 
-                value={filters.sortBy} 
-                onValueChange={(value) => handleFilterChange('sortBy', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="match_score">Match Score</SelectItem>
-                  <SelectItem value="last_active">Last Active</SelectItem>
-                  <SelectItem value="name">Name</SelectItem>
-                  <SelectItem value="location">Location</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Skills Filter */}
             <div>
-              <Label className="text-sm font-medium">
+              <Label className="text-xs font-medium mb-1 block">
                 Skills
               </Label>
-              <div className="mt-2 max-h-32 overflow-y-auto">
+              <div className="max-h-24 overflow-y-auto">
                 <div className="flex flex-wrap gap-2">
-                  {availableSkills.slice(0, 20).map((skill) => (
+                  {availableSkills.slice(0, 12).map((skill) => (
                     <Badge
                       key={skill}
                       variant={filters.selectedSkills.includes(skill) ? "default" : "outline"}
-                      className="cursor-pointer hover:bg-primary-50"
+                      className="cursor-pointer hover:bg-primary-50 text-xs h-6"
                       onClick={() => handleSkillToggle(skill)}
                     >
                       {skill}
                     </Badge>
                   ))}
                 </div>
-                {availableSkills.length > 20 && (
-                  <p className="text-xs text-slate-500 mt-2">
-                    Showing first 20 skills. Use search to find specific skills.
+                {availableSkills.length > 12 && (
+                  <p className="text-xs text-slate-500 mt-1">
+                    Showing 12 skills. Use search for others.
                   </p>
                 )}
               </div>
@@ -258,11 +250,11 @@ export function MatchFilters({
 
         {/* Active Filters Display */}
         {hasActiveFilters && (
-          <div className="pt-4 border-t">
-            <div className="flex flex-wrap gap-2">
+          <div className="pt-3 border-t border-slate-100">
+            <div className="flex flex-wrap gap-1">
               {filters.search && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Search: {filters.search}
+                <Badge variant="secondary" className="flex items-center gap-1 text-xs h-6 px-2">
+                  Search: {filters.search.length > 10 ? filters.search.slice(0, 10) + '...' : filters.search}
                   <X 
                     className="h-3 w-3 cursor-pointer" 
                     onClick={() => handleFilterChange('search', '')}
@@ -270,7 +262,7 @@ export function MatchFilters({
                 </Badge>
               )}
               {filters.skillLevel && filters.skillLevel !== 'any' && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-1 text-xs h-6 px-2">
                   Level: {filters.skillLevel}
                   <X 
                     className="h-3 w-3 cursor-pointer" 
@@ -279,8 +271,8 @@ export function MatchFilters({
                 </Badge>
               )}
               {filters.location && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Location: {filters.location}
+                <Badge variant="secondary" className="flex items-center gap-1 text-xs h-6 px-2">
+                  Location: {filters.location.length > 10 ? filters.location.slice(0, 10) + '...' : filters.location}
                   <X 
                     className="h-3 w-3 cursor-pointer" 
                     onClick={() => handleFilterChange('location', '')}
@@ -288,7 +280,7 @@ export function MatchFilters({
                 </Badge>
               )}
               {filters.availability && filters.availability !== 'any' && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-1 text-xs h-6 px-2">
                   Time: {filters.availability}
                   <X 
                     className="h-3 w-3 cursor-pointer" 
@@ -297,8 +289,8 @@ export function MatchFilters({
                 </Badge>
               )}
               {filters.selectedSkills.map((skill) => (
-                <Badge key={skill} variant="secondary" className="flex items-center gap-1">
-                  {skill}
+                <Badge key={skill} variant="secondary" className="flex items-center gap-1 text-xs h-6 px-2">
+                  {skill.length > 12 ? skill.slice(0, 12) + '...' : skill}
                   <X 
                     className="h-3 w-3 cursor-pointer" 
                     onClick={() => handleSkillToggle(skill)}
