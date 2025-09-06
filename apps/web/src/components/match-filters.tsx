@@ -77,14 +77,14 @@ export function MatchFilters({
     <div className={`w-full bg-card border rounded-xl py-4 p-2 ${className}`}>
         {/* Top row with filters and buttons */}
         <div className="flex items-center h-8">
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2 pr-2">
-            {/* Skill Level */}
+          <div className="flex-1 grid grid-cols-1 xl:grid-cols-4 gap-2 pr-2">
+            {/* Skill Level - Always visible */}
             <div className="w-full">
               <Select 
                 value={filters.skillLevel} 
                 onValueChange={(value) => handleFilterChange('skillLevel', value)}
               >
-                <SelectTrigger className="h-8 w-full text-xs">
+                <SelectTrigger className="h-8 w-full text-xs min-w-[120px]">
                   <SelectValue placeholder="Skill Level" />
                 </SelectTrigger>
                 <SelectContent>
@@ -97,8 +97,8 @@ export function MatchFilters({
               </Select>
             </div>
 
-            {/* Location */}
-            <div className="relative w-full">
+            {/* Location - Hidden on small screens */}
+            <div className="relative w-full hidden xl:block">
               <MapPin className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
               <Input
                 id="location"
@@ -109,15 +109,15 @@ export function MatchFilters({
               />
             </div>
 
-            {/* Availability (always visible) */}
-            <div className="w-full">
+            {/* Availability - Hidden on small screens */}
+            <div className="w-full hidden xl:block">
               <div className="relative">
                 <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
                 <Select 
                   value={filters.availability} 
                   onValueChange={(value) => handleFilterChange('availability', value)}
                 >
-                  <SelectTrigger className="pl-7 pr-3 h-8 w-full text-xs">
+                  <SelectTrigger className="pl-7 pr-3 h-8 w-full text-xs min-w-[140px]">
                     <SelectValue placeholder="Availability" />
                   </SelectTrigger>
                   <SelectContent>
@@ -132,13 +132,13 @@ export function MatchFilters({
               </div>
             </div>
             
-            {/* Sort By (moved to top row) */}
-            <div className="w-full">
+            {/* Sort By - Hidden on small screens */}
+            <div className="w-full hidden xl:block">
               <Select 
                 value={filters.sortBy} 
                 onValueChange={(value) => handleFilterChange('sortBy', value)}
               >
-                <SelectTrigger className="h-8 w-full text-xs">
+                <SelectTrigger className="h-8 w-full text-xs min-w-[100px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -177,7 +177,66 @@ export function MatchFilters({
 
         {/* Expanded Filters */}
         {isExpanded && (
-          <div className="space-y-2 pt-3 mt-2 border-t border-slate-100">
+          <div className="space-y-4 pt-3 mt-2 border-t border-slate-100">
+            {/* Filter Fields for Mobile/Tablet - Only show hidden fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:hidden gap-3">
+              {/* Location */}
+              <div className="relative w-full">
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Location</label>
+                <MapPin className="absolute left-2 top-8 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
+                <Input
+                  id="location-mobile"
+                  placeholder="Location"
+                  value={filters.location}
+                  onChange={(e) => handleFilterChange('location', e.target.value)}
+                  className="pl-7 pr-3 h-9 w-full text-xs"
+                />
+              </div>
+
+              {/* Availability */}
+              <div className="w-full">
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Availability</label>
+                <div className="relative">
+                  <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
+                  <Select 
+                    value={filters.availability} 
+                    onValueChange={(value) => handleFilterChange('availability', value)}
+                  >
+                    <SelectTrigger className="pl-7 pr-3 h-8 w-full text-xs min-w-[140px]">
+                      <SelectValue placeholder="Availability" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any time</SelectItem>
+                      <SelectItem value="morning">Morning (6AM-12PM)</SelectItem>
+                      <SelectItem value="afternoon">Afternoon (12PM-6PM)</SelectItem>
+                      <SelectItem value="evening">Evening (6PM-12AM)</SelectItem>
+                      <SelectItem value="weekend">Weekends only</SelectItem>
+                      <SelectItem value="weekday">Weekdays only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* Sort By */}
+              <div className="w-full">
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Sort By</label>
+                <Select 
+                  value={filters.sortBy} 
+                  onValueChange={(value) => handleFilterChange('sortBy', value)}
+                >
+                  <SelectTrigger className="h-8 w-full text-xs min-w-[100px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="match_score">Match Score</SelectItem>
+                    <SelectItem value="last_active">Last Active</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="location">Location</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             {/* Skill Levels Legend */}
             <div>
               <div className="text-xs font-medium text-slate-700 mb-1">Skill Levels:</div>
