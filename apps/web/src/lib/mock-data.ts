@@ -150,7 +150,7 @@ export function generateMockMatches(count: number = 12): MatchData[] {
  */
 export function getMockMatchPreview(request?: any) {
   // Generate a larger pool of matches to filter from
-  const allMatches = generateMockMatches(30);
+  const allMatches = generateMockMatches(12);
   let filteredMatches = [...allMatches];
   
   // Apply filters if provided
