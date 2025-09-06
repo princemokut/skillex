@@ -83,9 +83,10 @@ export function MatchCard({
 
   return (
     <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden ${className}`}>
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center space-x-3 flex-1 min-w-0">
+      <CardHeader>
+        <div className="grid grid-cols-[1fr_60px] gap-2">
+          {/* First column: Avatar with name/title/location */}
+          <div className="flex items-center space-x-3 overflow-hidden">
             <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
               <AvatarImage 
                 src={match.avatar_url || getDeterministicAvatarUrl({ full_name: match.name })} 
@@ -95,7 +96,7 @@ export function MatchCard({
                 {match.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
+            <div className="overflow-hidden">
               <CardTitle className="text-base sm:text-lg font-semibold text-slate-900 truncate" title={match.name}>
                 {match.name}
               </CardTitle>
@@ -110,7 +111,9 @@ export function MatchCard({
               )}
             </div>
           </div>
-          <div className="text-right flex-shrink-0 min-w-0">
+          
+          {/* Second column: Match percentage */}
+          <div className="text-right">
             <div className={`text-lg sm:text-xl font-bold ${getMatchScoreColor(match.match_score)}`}>
               {match.match_score}%
             </div>
@@ -130,13 +133,13 @@ export function MatchCard({
         )}
 
         {/* Skills to Teach */}
-        <div className="h-16 sm:h-20 mb-6 sm:mb-10 flex flex-col">
-          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-2 flex items-center">
+        <div className="h-14 mb-3 flex flex-col">
+          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center">
             <Star className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-amber-500" />
             Can Teach
           </h4>
-          <div className="flex flex-wrap gap-1 items-start flex-1 overflow-hidden">
-            {sortSkillsByLevel(match.skills_to_teach).slice(0, 2).map((skill, index) => (
+          <div className="flex flex-wrap gap-1 items-start line-clamp-2 overflow-hidden">
+            {sortSkillsByLevel(match.skills_to_teach).slice(0, 3).map((skill, index) => (
               <Badge
                 key={`teach-${index}`}
                 variant="secondary"
@@ -146,26 +149,26 @@ export function MatchCard({
                 <span className="truncate">{skill.name}</span>
               </Badge>
             ))}
-            {match.skills_to_teach.length > 2 && (
+            {match.skills_to_teach.length > 3 && (
               <Badge 
                 variant="outline" 
                 className="text-xs h-5 sm:h-6 cursor-pointer hover:bg-slate-100 flex-shrink-0"
                 title={`View all ${match.skills_to_teach.length} skills`}
               >
-                +{match.skills_to_teach.length - 2}
+                +{match.skills_to_teach.length - 3}
               </Badge>
             )}
           </div>
         </div>
 
         {/* Skills to Learn */}
-        <div className="h-16 sm:h-20 mb-6 sm:mb-10 flex flex-col">
-          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-2 flex items-center">
+        <div className="h-14 mb-3 flex flex-col">
+          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center">
             <User className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-blue-500" />
             Wants to Learn
           </h4>
-          <div className="flex flex-wrap gap-1 items-start flex-1 overflow-hidden">
-            {sortSkillsByLevel(match.skills_to_learn).slice(0, 2).map((skill, index) => (
+          <div className="flex flex-wrap gap-1 items-start line-clamp-2 overflow-hidden">
+            {sortSkillsByLevel(match.skills_to_learn).slice(0, 3).map((skill, index) => (
               <Badge
                 key={`learn-${index}`}
                 variant="outline"
@@ -175,28 +178,28 @@ export function MatchCard({
                 <span className="truncate">{skill.name}</span>
               </Badge>
             ))}
-            {match.skills_to_learn.length > 2 && (
+            {match.skills_to_learn.length > 3 && (
               <Badge 
                 variant="outline" 
                 className="text-xs h-5 sm:h-6 cursor-pointer hover:bg-slate-100 flex-shrink-0"
                 title={`View all ${match.skills_to_learn.length} skills`}
               >
-                +{match.skills_to_learn.length - 2}
+                +{match.skills_to_learn.length - 3}
               </Badge>
             )}
           </div>
         </div>
 
         {/* Common Skills */}
-        <div className="h-16 sm:h-20 mb-6 sm:mb-10 flex flex-col">
-          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-2">
+        <div className="h-14 mb-3 flex flex-col">
+          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center">
             Common Skills
-            <span className="text-xs text-slate-500 ml-1 hidden sm:inline">(shared interests)</span>
+            <span className="text-xs text-slate-500 ml-1 hidden sm:inline">(shared)</span>
           </h4>
-          <div className="flex flex-wrap gap-1 items-start flex-1 overflow-hidden">
+          <div className="flex flex-wrap gap-1 items-start line-clamp-2 overflow-hidden">
             {match.common_skills.length > 0 ? (
               <>
-                {match.common_skills.slice(0, 2).map((skill, index) => (
+                {match.common_skills.slice(0, 3).map((skill, index) => (
                   <Badge
                     key={`common-${index}`}
                     variant="default"
@@ -206,13 +209,13 @@ export function MatchCard({
                     <span className="truncate">{skill}</span>
                   </Badge>
                 ))}
-                {match.common_skills.length > 2 && (
+                {match.common_skills.length > 3 && (
                   <Badge 
                     variant="outline" 
                     className="text-xs h-5 sm:h-6 cursor-pointer hover:bg-slate-100 flex-shrink-0"
                     title={`View all ${match.common_skills.length} common skills`}
                   >
-                    +{match.common_skills.length - 2}
+                    +{match.common_skills.length - 3}
                   </Badge>
                 )}
               </>
@@ -221,6 +224,7 @@ export function MatchCard({
             )}
           </div>
         </div>
+        
 
         {/* Spacer to push availability/status and buttons to bottom */}
         <div className="flex-1"></div>

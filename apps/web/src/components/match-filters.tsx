@@ -106,6 +106,29 @@ export function MatchFilters({
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Skill Level Color Legend */}
+        <div>
+          <div className="text-xs font-medium text-slate-700 mb-1">Skill Levels:</div>
+          <div className="flex flex-wrap gap-x-3 mb-3 text-xs">
+            <div className="flex items-center">
+              <span className="h-2 w-2 rounded bg-green-100 border border-green-200 mr-1"></span>
+              <span className="text-slate-500">Beginner</span>
+            </div>
+            <div className="flex items-center">
+              <span className="h-2 w-2 rounded bg-blue-100 border border-blue-200 mr-1"></span>
+              <span className="text-slate-500">Intermediate</span>
+            </div>
+            <div className="flex items-center">
+              <span className="h-2 w-2 rounded bg-orange-100 border border-orange-200 mr-1"></span>
+              <span className="text-slate-500">Advanced</span>
+            </div>
+            <div className="flex items-center">
+              <span className="h-2 w-2 rounded bg-red-100 border border-red-200 mr-1"></span>
+              <span className="text-slate-500">Expert</span>
+            </div>
+          </div>
+        </div>
+        
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
