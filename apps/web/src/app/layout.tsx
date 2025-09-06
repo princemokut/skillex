@@ -5,6 +5,7 @@ import { Navigation } from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
 import { QueryProvider } from "@/components/query-provider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 /**
  * Inter font configuration for the skillex application
@@ -72,17 +73,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen bg-white text-slate-900 antialiased">
-        <QueryProvider>
-          <AuthProvider>
-            <div className="min-h-screen flex flex-col">
-              <Navigation />
-              <main className="flex-1">
-                {children}
-              </main>
-            </div>
-            <Toaster />
-          </AuthProvider>
-        </QueryProvider>
+        <ErrorBoundary>
+          <QueryProvider>
+            <AuthProvider>
+              <div className="min-h-screen flex flex-col">
+                <Navigation />
+                <main className="flex-1">
+                  {children}
+                </main>
+              </div>
+              <Toaster />
+            </AuthProvider>
+          </QueryProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

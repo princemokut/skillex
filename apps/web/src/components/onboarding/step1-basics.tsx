@@ -175,7 +175,7 @@ export function OnboardingStep1({ data, onUpdate, onNext }: OnboardingStep1Props
           </p>
         )}
         <p id="handle-help" className="text-xs text-slate-500">
-          This will be your public profile URL: skillsin.dev/profile/{data.handle || "username"}
+          This will be your public profile URL: skillex.dev/profile/{data.handle || "username"}
         </p>
       </fieldset>
 

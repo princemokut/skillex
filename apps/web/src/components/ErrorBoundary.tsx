@@ -4,6 +4,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { trackError } from '@/lib/analytics';
 
 interface Props {
   children: ReactNode;
@@ -55,6 +56,9 @@ export class ErrorBoundary extends Component<Props, State> {
     if (process.env.NODE_ENV === 'development') {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
+
+    // Track error for monitoring and analytics
+    trackError(error, 'react_error_boundary');
 
     // Call custom error handler if provided
     this.props.onError?.(error, errorInfo);

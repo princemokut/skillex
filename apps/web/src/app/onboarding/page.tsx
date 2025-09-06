@@ -80,7 +80,7 @@ export default function OnboardingPage() {
       // This will be implemented when we integrate with the API
       console.log("Completing onboarding with data:", formData);
       
-      toast.success("Welcome to Skillsin! Your profile has been created.");
+      toast.success("Welcome to Skillex! Your profile has been created.");
       router.push("/matches");
     } catch (error) {
       console.error("Error completing onboarding:", error);
@@ -102,7 +102,7 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Welcome to Skillsin!
+            Welcome to Skillex!
           </h1>
           <p className="text-slate-600">
             Let's set up your profile to get started with skill exchanges
