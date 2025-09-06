@@ -216,17 +216,16 @@ export default function ConnectionsPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
-      <div className="max-w-7xl mx-auto">
+    // <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
+    //   <div className="max-w-7xl mx-auto">
+    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
-              Connections
-            </h1>
             <p className="text-sm sm:text-base text-slate-600">
               Manage your professional connections and network
             </p>

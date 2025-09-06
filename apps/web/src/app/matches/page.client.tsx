@@ -114,11 +114,10 @@ export default function MatchesPageClient() {
       {/* Custom Navigation with Filters */}
       <MatchesNavigation />
       
-      <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-20">
+      <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-20 pb-20 md:pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header - Left aligned */}
           <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Your Matches</h1>
             <p className="text-sm sm:text-base text-slate-600 mb-4">
               Discover professionals who match your skills and learning goals.
             </p>

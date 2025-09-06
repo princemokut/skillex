@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/components/auth-provider";
 import { toast } from "sonner";
-import { MobileNavigation, useMobileNavigation } from "@/components/ui/mobile-navigation";
+import { MobileUserMenu } from "@/components/ui/mobile-user-menu";
 import { Search } from "lucide-react";
 
 /**
@@ -37,7 +37,6 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const { isOpen, toggle, close } = useMobileNavigation();
   
   // Search handler
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,36 +94,56 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
             <div className="hidden md:flex items-center space-x-8">
               <Link 
                 href="/onboarding" 
-                className="text-slate-700 hover:text-primary-600 transition-colors"
+                className={`transition-colors ${
+                  pathname === "/onboarding" 
+                    ? "text-primary-600 font-medium" 
+                    : "text-slate-700 hover:text-primary-600"
+                }`}
               >
                 Setup
               </Link>
               <Link 
                 href="/matches" 
-                className="text-slate-700 hover:text-primary-600 transition-colors"
+                className={`transition-colors ${
+                  pathname === "/matches" 
+                    ? "text-primary-600 font-medium" 
+                    : "text-slate-700 hover:text-primary-600"
+                }`}
               >
                 Matches
               </Link>
               <Link 
                 href="/cohorts" 
-                className="text-slate-700 hover:text-primary-600 transition-colors"
+                className={`transition-colors ${
+                  pathname === "/cohorts" 
+                    ? "text-primary-600 font-medium" 
+                    : "text-slate-700 hover:text-primary-600"
+                }`}
               >
                 Cohorts
               </Link>
               <Link 
                 href="/connections" 
-                className="text-slate-700 hover:text-primary-600 transition-colors"
+                className={`transition-colors ${
+                  pathname === "/connections" 
+                    ? "text-primary-600 font-medium" 
+                    : "text-slate-700 hover:text-primary-600"
+                }`}
               >
                 Connections
               </Link>
               <Link 
                 href="/referrals" 
-                className="text-slate-700 hover:text-primary-600 transition-colors"
+                className={`transition-colors ${
+                  pathname === "/referrals" 
+                    ? "text-primary-600 font-medium" 
+                    : "text-slate-700 hover:text-primary-600"
+                }`}
               >
                 Referrals
               </Link>
             </div>
-          )}
+            )}
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
@@ -213,11 +232,11 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
               </div>
             )}
 
-            {/* Mobile Navigation */}
-            <MobileNavigation isOpen={isOpen} onToggle={toggle} onClose={close} />
+            {/* Mobile User Menu - Always render */}
+            <MobileUserMenu />
+          </div>
           </div>
         </div>
-      </div>
       </nav>
       
       {/* Filter bar that appears only on matches page */}
@@ -228,6 +247,7 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
           </div>
         </div>
       )}
+      
     </div>
   );
 }

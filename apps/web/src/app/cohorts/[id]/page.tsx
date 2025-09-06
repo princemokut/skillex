@@ -319,8 +319,10 @@ export default function CohortPage() {
   const filteredMembers = getFilteredMembers();
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto p-6">
+    // <div className="min-h-screen bg-slate-50">
+    //   <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1">
