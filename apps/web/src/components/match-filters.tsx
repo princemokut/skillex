@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Filter, X, MapPin, Clock } from "lucide-react";
 
 /**
@@ -75,20 +74,91 @@ export function MatchFilters({
     filters.selectedSkills.length > 0;
 
   return (
-    <Card className={`w-full ${className}`}>
-      <CardHeader className="p-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-semibold flex items-center">
-            <Filter className="h-4 w-4 mr-2" />
-            Filters
-          </CardTitle>
-          <div className="flex gap-2">
+    <div className={`w-full bg-card border rounded-xl py-4 p-2 ${className}`}>
+        {/* Top row with filters and buttons */}
+        <div className="flex items-center h-8">
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2 pr-2">
+            {/* Skill Level */}
+            <div className="w-full">
+              <Select 
+                value={filters.skillLevel} 
+                onValueChange={(value) => handleFilterChange('skillLevel', value)}
+              >
+                <SelectTrigger className="h-8 w-full text-xs">
+                  <SelectValue placeholder="Skill Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any level</SelectItem>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="expert">Expert</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Location */}
+            <div className="relative w-full">
+              <MapPin className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
+              <Input
+                id="location"
+                placeholder="Location"
+                value={filters.location}
+                onChange={(e) => handleFilterChange('location', e.target.value)}
+                className="pl-7 pr-3 h-9 w-full text-xs"
+              />
+            </div>
+
+            {/* Availability (always visible) */}
+            <div className="w-full">
+              <div className="relative">
+                <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
+                <Select 
+                  value={filters.availability} 
+                  onValueChange={(value) => handleFilterChange('availability', value)}
+                >
+                  <SelectTrigger className="pl-7 pr-3 h-8 w-full text-xs">
+                    <SelectValue placeholder="Availability" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any time</SelectItem>
+                    <SelectItem value="morning">Morning (6AM-12PM)</SelectItem>
+                    <SelectItem value="afternoon">Afternoon (12PM-6PM)</SelectItem>
+                    <SelectItem value="evening">Evening (6PM-12AM)</SelectItem>
+                    <SelectItem value="weekend">Weekends only</SelectItem>
+                    <SelectItem value="weekday">Weekdays only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            {/* Sort By (moved to top row) */}
+            <div className="w-full">
+              <Select 
+                value={filters.sortBy} 
+                onValueChange={(value) => handleFilterChange('sortBy', value)}
+              >
+                <SelectTrigger className="h-8 w-full text-xs">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="match_score">Match Score</SelectItem>
+                  <SelectItem value="last_active">Last Active</SelectItem>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="location">Location</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-1 ml-2 flex-shrink-0">
             {hasActiveFilters && (
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={clearFilters}
-                className="text-slate-500 hover:text-slate-700 h-7 px-2 text-xs"
+                className="text-slate-500 hover:text-slate-700 h-8 px-3 text-xs"
               >
                 <X className="h-3 w-3 mr-1" />
                 Clear
@@ -98,125 +168,36 @@ export function MatchFilters({
               variant="ghost" 
               size="sm" 
               onClick={() => setIsExpanded(!isExpanded)}
-              className="h-7 px-2 text-xs"
+              className="h-8 px-3 text-xs"
             >
               {isExpanded ? 'Less' : 'More'}
             </Button>
           </div>
         </div>
-      </CardHeader>
-
-      <CardContent className="p-3 space-y-3">
-        {/* Skill Levels Legend */}
-        <div>
-          <div className="text-xs font-medium text-slate-700 mb-1">Skill Levels:</div>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
-            <div className="flex items-center">
-              <span className="h-2 w-2 rounded bg-green-100 border border-green-200 mr-1"></span>
-              <span className="text-slate-500">Beginner</span>
-            </div>
-            <div className="flex items-center">
-              <span className="h-2 w-2 rounded bg-blue-100 border border-blue-200 mr-1"></span>
-              <span className="text-slate-500">Intermediate</span>
-            </div>
-            <div className="flex items-center">
-              <span className="h-2 w-2 rounded bg-orange-100 border border-orange-200 mr-1"></span>
-              <span className="text-slate-500">Advanced</span>
-            </div>
-            <div className="flex items-center">
-              <span className="h-2 w-2 rounded bg-red-100 border border-red-200 mr-1"></span>
-              <span className="text-slate-500">Expert</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Basic Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <Label htmlFor="skillLevel" className="text-xs font-medium mb-1 block">
-              Skill Level
-            </Label>
-            <Select 
-              value={filters.skillLevel} 
-              onValueChange={(value) => handleFilterChange('skillLevel', value)}
-            >
-              <SelectTrigger className="h-9 text-sm">
-                <SelectValue placeholder="Any level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any level</SelectItem>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-                <SelectItem value="expert">Expert</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="location" className="text-xs font-medium mb-1 block">
-              Location
-            </Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input
-                id="location"
-                placeholder="City, Country"
-                value={filters.location}
-                onChange={(e) => handleFilterChange('location', e.target.value)}
-                className="pl-10 h-9 text-sm"
-              />
-            </div>
-          </div>
-        </div>
 
         {/* Expanded Filters */}
         {isExpanded && (
-          <div className="space-y-3 pt-3 border-t border-slate-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="availability" className="text-xs font-medium mb-1 block">
-                  Availability
-                </Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Select 
-                    value={filters.availability} 
-                    onValueChange={(value) => handleFilterChange('availability', value)}
-                  >
-                    <SelectTrigger className="pl-10 h-9 text-sm">
-                      <SelectValue placeholder="Any time" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Any time</SelectItem>
-                      <SelectItem value="morning">Morning (6AM-12PM)</SelectItem>
-                      <SelectItem value="afternoon">Afternoon (12PM-6PM)</SelectItem>
-                      <SelectItem value="evening">Evening (6PM-12AM)</SelectItem>
-                      <SelectItem value="weekend">Weekends only</SelectItem>
-                      <SelectItem value="weekday">Weekdays only</SelectItem>
-                    </SelectContent>
-                  </Select>
+          <div className="space-y-2 pt-3 mt-2 border-t border-slate-100">
+            {/* Skill Levels Legend */}
+            <div>
+              <div className="text-xs font-medium text-slate-700 mb-1">Skill Levels:</div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                <div className="flex items-center">
+                  <span className="h-2 w-2 rounded bg-green-100 border border-green-200 mr-1"></span>
+                  <span className="text-slate-500">Beginner</span>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="sortBy" className="text-xs font-medium mb-1 block">
-                  Sort by
-                </Label>
-                <Select 
-                  value={filters.sortBy} 
-                  onValueChange={(value) => handleFilterChange('sortBy', value)}
-                >
-                  <SelectTrigger className="h-9 text-sm">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="match_score">Match Score</SelectItem>
-                    <SelectItem value="last_active">Last Active</SelectItem>
-                    <SelectItem value="name">Name</SelectItem>
-                    <SelectItem value="location">Location</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center">
+                  <span className="h-2 w-2 rounded bg-blue-100 border border-blue-200 mr-1"></span>
+                  <span className="text-slate-500">Intermediate</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="h-2 w-2 rounded bg-orange-100 border border-orange-200 mr-1"></span>
+                  <span className="text-slate-500">Advanced</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="h-2 w-2 rounded bg-red-100 border border-red-200 mr-1"></span>
+                  <span className="text-slate-500">Expert</span>
+                </div>
               </div>
             </div>
 
@@ -250,7 +231,7 @@ export function MatchFilters({
 
         {/* Active Filters Display */}
         {hasActiveFilters && (
-          <div className="pt-3 border-t border-slate-100">
+          <div className="pt-3 mt-2 border-t border-slate-100">
             <div className="flex flex-wrap gap-1">
               {filters.search && (
                 <Badge variant="secondary" className="flex items-center gap-1 text-xs h-6 px-2">
@@ -300,7 +281,6 @@ export function MatchFilters({
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+    </div>
   );
 }

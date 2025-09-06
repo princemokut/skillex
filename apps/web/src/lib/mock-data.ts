@@ -146,14 +146,90 @@ export function generateMockMatches(count: number = 12): MatchData[] {
 
 /**
  * Mock API response for match preview
+ * @param request - Optional request object with filters
  */
-export function getMockMatchPreview() {
-  const matches = generateMockMatches(12);
+export function getMockMatchPreview(request?: any) {
+  // Generate a larger pool of matches to filter from
+  const allMatches = generateMockMatches(30);
+  let filteredMatches = [...allMatches];
+  
+  // Apply filters if provided
+  if (request && request.filters) {
+    const { search, skill_level, location, skills } = request.filters;
+    
+    // Filter by search term
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filteredMatches = filteredMatches.filter(match => 
+        match.name.toLowerCase().includes(searchLower) || 
+        match.handle.toLowerCase().includes(searchLower) ||
+        match.bio?.toLowerCase().includes(searchLower) ||
+        match.title?.toLowerCase().includes(searchLower) ||
+        match.location?.toLowerCase().includes(searchLower) ||
+        match.skills_to_teach.some(s => s.name.toLowerCase().includes(searchLower)) ||
+        match.skills_to_learn.some(s => s.name.toLowerCase().includes(searchLower))
+      );
+    }
+    
+    // Filter by skill level
+    if (skill_level) {
+      filteredMatches = filteredMatches.filter(match => 
+        match.skills_to_teach.some(s => s.level === skill_level) || 
+        match.skills_to_learn.some(s => s.level === skill_level)
+      );
+    }
+    
+    // Filter by location
+    if (location) {
+      const locationLower = location.toLowerCase();
+      filteredMatches = filteredMatches.filter(match => 
+        match.location?.toLowerCase().includes(locationLower)
+      );
+    }
+    
+    // Filter by skills
+    if (skills && skills.length > 0) {
+      filteredMatches = filteredMatches.filter(match => 
+        skills.some((skill: string) => 
+          match.skills_to_teach.some(s => s.name.toLowerCase() === skill.toLowerCase()) ||
+          match.skills_to_learn.some(s => s.name.toLowerCase() === skill.toLowerCase())
+        )
+      );
+    }
+  }
+  
+  // Apply limit and offset
+  const limit = request?.limit || 12;
+  const offset = request?.offset || 0;
+  const paginatedMatches = filteredMatches.slice(offset, offset + limit);
+  
+  // Sort if requested
+  if (request?.sort_by) {
+    switch (request.sort_by) {
+      case 'match_score':
+        paginatedMatches.sort((a, b) => b.match_score - a.match_score);
+        break;
+      case 'last_active':
+        paginatedMatches.sort((a, b) => 
+          new Date(b.last_active || '').getTime() - 
+          new Date(a.last_active || '').getTime()
+        );
+        break;
+      case 'name':
+        paginatedMatches.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'location':
+        paginatedMatches.sort((a, b) => 
+          (a.location || '').localeCompare(b.location || '')
+        );
+        break;
+    }
+  }
   
   return {
-    matches,
-    total: matches.length,
-    has_more: false,
+    matches: paginatedMatches,
+    total: filteredMatches.length,
+    has_more: offset + limit < filteredMatches.length,
     available_skills: mockSkills
   };
 }

@@ -29,9 +29,11 @@ import { Search } from "lucide-react";
  */
 export interface NavigationProps {
   onSearch?: (query: string) => void;
+  filtersComponent?: React.ReactNode;
+  isMatchesPage?: boolean;
 }
 
-export function Navigation({ onSearch }: NavigationProps = {}) {
+export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }: NavigationProps = {}) {
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -62,30 +64,31 @@ export function Navigation({ onSearch }: NavigationProps = {}) {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo and Search */}
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
-              </div>
-              <span className="text-xl font-bold text-slate-900">skillex</span>
-            </Link>
-            
-            {/* Global Search Field */}
-            {user && pathname !== '/auth/signin' && pathname !== '/auth/signup' && (
-              <div className="hidden sm:block relative w-64">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input
-                  placeholder="Search name, skills and more"
-                  onChange={handleSearch}
-                  className="pl-10 h-9 bg-slate-50 border-slate-200"
-                />
-              </div>
-            )}
-          </div>
+    <div className="fixed top-0 left-0 right-0 z-50">
+      <nav className="border-b border-slate-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo and Search */}
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">S</span>
+                </div>
+                <span className="text-xl font-bold text-slate-900">skillex</span>
+              </Link>
+              
+              {/* Global Search Field */}
+              {user && pathname !== '/auth/signin' && pathname !== '/auth/signup' && (
+                <div className="hidden sm:block relative w-64">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search name, skills and more"
+                    onChange={handleSearch}
+                    className="pl-10 h-9 bg-slate-50 border-slate-200"
+                  />
+                </div>
+              )}
+            </div>
 
           {/* Main Navigation */}
           {user && (
@@ -215,7 +218,17 @@ export function Navigation({ onSearch }: NavigationProps = {}) {
           </div>
         </div>
       </div>
-    </nav>
+      </nav>
+      
+      {/* Filter bar that appears only on matches page */}
+      {isMatchesPage && filtersComponent && (
+        <div className="bg-white shadow-md border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {filtersComponent}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
