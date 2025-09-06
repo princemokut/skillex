@@ -182,7 +182,7 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
             aria-controls="teach-panel"
             aria-label={`Skills I Can Teach - ${getSkillsByType("teach").length} skills added`}
           >
-            Skills I Can Teach ({getSkillsByType("teach").length})
+            I Can Teach ({getSkillsByType("teach").length})
           </TabsTrigger>
           <TabsTrigger 
             value="learn"
@@ -191,7 +191,7 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
             aria-controls="learn-panel"
             aria-label={`Skills I Want to Learn - ${getSkillsByType("learn").length} skills added`}
           >
-            Skills I Want to Learn ({getSkillsByType("learn").length})
+            I Want to Learn ({getSkillsByType("learn").length})
           </TabsTrigger>
         </TabsList>
 
