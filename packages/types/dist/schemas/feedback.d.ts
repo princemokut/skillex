@@ -12,21 +12,21 @@ export declare const feedbackSchema: z.ZodObject<{
     text: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    createdAt?: Date;
-    cohortId?: string;
-    fromUserId?: string;
-    toUserId?: string;
-    rating?: number;
-    text?: string;
+    id: string;
+    createdAt: Date;
+    cohortId: string;
+    fromUserId: string;
+    toUserId: string;
+    rating: number;
+    text?: string | undefined;
 }, {
-    id?: string;
-    createdAt?: Date;
-    cohortId?: string;
-    fromUserId?: string;
-    toUserId?: string;
-    rating?: number;
-    text?: string;
+    id: string;
+    createdAt: Date;
+    cohortId: string;
+    fromUserId: string;
+    toUserId: string;
+    rating: number;
+    text?: string | undefined;
 }>;
 export declare const feedbackCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -37,17 +37,17 @@ export declare const feedbackCreateSchema: z.ZodObject<Omit<{
     text: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "id" | "createdAt">, "strip", z.ZodTypeAny, {
-    cohortId?: string;
-    fromUserId?: string;
-    toUserId?: string;
-    rating?: number;
-    text?: string;
+    cohortId: string;
+    fromUserId: string;
+    toUserId: string;
+    rating: number;
+    text?: string | undefined;
 }, {
-    cohortId?: string;
-    fromUserId?: string;
-    toUserId?: string;
-    rating?: number;
-    text?: string;
+    cohortId: string;
+    fromUserId: string;
+    toUserId: string;
+    rating: number;
+    text?: string | undefined;
 }>;
 export declare const feedbackResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -58,21 +58,21 @@ export declare const feedbackResponseSchema: z.ZodObject<{
     text: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    createdAt?: Date;
-    cohortId?: string;
-    fromUserId?: string;
-    toUserId?: string;
-    rating?: number;
-    text?: string;
+    id: string;
+    createdAt: Date;
+    cohortId: string;
+    fromUserId: string;
+    toUserId: string;
+    rating: number;
+    text?: string | undefined;
 }, {
-    id?: string;
-    createdAt?: Date;
-    cohortId?: string;
-    fromUserId?: string;
-    toUserId?: string;
-    rating?: number;
-    text?: string;
+    id: string;
+    createdAt: Date;
+    cohortId: string;
+    fromUserId: string;
+    toUserId: string;
+    rating: number;
+    text?: string | undefined;
 }>;
 export type Feedback = z.infer<typeof feedbackSchema>;
 export type FeedbackCreate = z.infer<typeof feedbackCreateSchema>;

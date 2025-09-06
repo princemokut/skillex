@@ -16,25 +16,25 @@ export declare const cohortSchema: z.ZodObject<{
     city: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    size?: number;
-    id?: string;
-    createdAt?: Date;
-    title?: string;
-    ownerId?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    id: string;
+    createdAt: Date;
+    title: string;
+    ownerId: string;
+    size: number;
+    startDate: Date;
+    weeks: number;
+    visibility: "private" | "public";
+    city?: string | undefined;
 }, {
-    size?: number;
-    id?: string;
-    createdAt?: Date;
-    title?: string;
-    ownerId?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    id: string;
+    createdAt: Date;
+    title: string;
+    ownerId: string;
+    startDate: Date;
+    size?: number | undefined;
+    weeks?: number | undefined;
+    visibility?: "private" | "public" | undefined;
+    city?: string | undefined;
 }>;
 export declare const cohortCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -47,43 +47,43 @@ export declare const cohortCreateSchema: z.ZodObject<Omit<{
     city: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "id" | "createdAt">, "strip", z.ZodTypeAny, {
-    size?: number;
-    title?: string;
-    ownerId?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    title: string;
+    ownerId: string;
+    size: number;
+    startDate: Date;
+    weeks: number;
+    visibility: "private" | "public";
+    city?: string | undefined;
 }, {
-    size?: number;
-    title?: string;
-    ownerId?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    title: string;
+    ownerId: string;
+    startDate: Date;
+    size?: number | undefined;
+    weeks?: number | undefined;
+    visibility?: "private" | "public" | undefined;
+    city?: string | undefined;
 }>;
 export declare const cohortUpdateSchema: z.ZodObject<{
-    size: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
     title: z.ZodOptional<z.ZodString>;
+    size: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
     startDate: z.ZodOptional<z.ZodDate>;
     weeks: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
     visibility: z.ZodOptional<z.ZodDefault<z.ZodEnum<["private", "public"]>>>;
     city: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    size?: number;
-    title?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    title?: string | undefined;
+    size?: number | undefined;
+    startDate?: Date | undefined;
+    weeks?: number | undefined;
+    visibility?: "private" | "public" | undefined;
+    city?: string | undefined;
 }, {
-    size?: number;
-    title?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    title?: string | undefined;
+    size?: number | undefined;
+    startDate?: Date | undefined;
+    weeks?: number | undefined;
+    visibility?: "private" | "public" | undefined;
+    city?: string | undefined;
 }>;
 export declare const cohortResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -96,25 +96,25 @@ export declare const cohortResponseSchema: z.ZodObject<{
     city: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    size?: number;
-    id?: string;
-    createdAt?: Date;
-    title?: string;
-    ownerId?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    id: string;
+    createdAt: Date;
+    title: string;
+    ownerId: string;
+    size: number;
+    startDate: Date;
+    weeks: number;
+    visibility: "private" | "public";
+    city?: string | undefined;
 }, {
-    size?: number;
-    id?: string;
-    createdAt?: Date;
-    title?: string;
-    ownerId?: string;
-    startDate?: Date;
-    weeks?: number;
-    visibility?: "private" | "public";
-    city?: string;
+    id: string;
+    createdAt: Date;
+    title: string;
+    ownerId: string;
+    startDate: Date;
+    size?: number | undefined;
+    weeks?: number | undefined;
+    visibility?: "private" | "public" | undefined;
+    city?: string | undefined;
 }>;
 export declare const MemberRole: z.ZodEnum<["teacher", "learner", "facilitator"]>;
 export type MemberRole = z.infer<typeof MemberRole>;
@@ -124,15 +124,15 @@ export declare const cohortMemberSchema: z.ZodObject<{
     role: z.ZodEnum<["teacher", "learner", "facilitator"]>;
     joinedAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    userId?: string;
-    cohortId?: string;
-    role?: "teacher" | "learner" | "facilitator";
-    joinedAt?: Date;
+    userId: string;
+    cohortId: string;
+    role: "teacher" | "learner" | "facilitator";
+    joinedAt: Date;
 }, {
-    userId?: string;
-    cohortId?: string;
-    role?: "teacher" | "learner" | "facilitator";
-    joinedAt?: Date;
+    userId: string;
+    cohortId: string;
+    role: "teacher" | "learner" | "facilitator";
+    joinedAt: Date;
 }>;
 export declare const cohortMemberCreateSchema: z.ZodObject<Omit<{
     cohortId: z.ZodString;
@@ -140,13 +140,13 @@ export declare const cohortMemberCreateSchema: z.ZodObject<Omit<{
     role: z.ZodEnum<["teacher", "learner", "facilitator"]>;
     joinedAt: z.ZodDate;
 }, "joinedAt">, "strip", z.ZodTypeAny, {
-    userId?: string;
-    cohortId?: string;
-    role?: "teacher" | "learner" | "facilitator";
+    userId: string;
+    cohortId: string;
+    role: "teacher" | "learner" | "facilitator";
 }, {
-    userId?: string;
-    cohortId?: string;
-    role?: "teacher" | "learner" | "facilitator";
+    userId: string;
+    cohortId: string;
+    role: "teacher" | "learner" | "facilitator";
 }>;
 export type Cohort = z.infer<typeof cohortSchema>;
 export type CohortCreate = z.infer<typeof cohortCreateSchema>;

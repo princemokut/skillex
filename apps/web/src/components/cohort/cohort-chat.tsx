@@ -93,17 +93,21 @@ export function CohortChat({ cohortId, messages, isMember }: CohortChatProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900">Chat</h2>
-          <p className="text-slate-600">Connect with your cohort members</p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-slate-600">
-          <Users className="h-4 w-4" />
-          <span>{messages.length} messages</span>
-        </div>
-      </div>
+      {/* Header Card */}
+      <Card>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Chat</h2>
+              <p className="text-slate-600">Connect with your cohort members</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <Users className="h-4 w-4" />
+              <span>{messages.length} messages</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Chat Messages */}
       <Card className="h-96">

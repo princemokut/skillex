@@ -272,6 +272,16 @@ Required variables:
 - JWT automatically injected via API client
 - Zod validation for all API responses
 
+**Design System Guidelines:**
+- **Consistent Card Padding**: All cards use `CardContent` with `space-y-4` for content spacing
+- **Uniform Layout**: Cards maintain consistent structure with header, content, and footer sections
+- **Responsive Design**: Cards adapt to different screen sizes with proper grid layouts
+- **Visual Hierarchy**: Clear separation between different content sections within cards
+- **Header Card Consistency**: All tab headers (Resources, Sessions, Chat) are wrapped in cards for visual consistency
+- **Consistent Card Content Padding**: All card content uses the same padding pattern with `CardContent` and internal `space-y-4` divs
+- **Uniform Card Heights**: Session cards maintain consistent height (h-48) with flex layout and always show notes section
+- **Complete Mock Data**: All session mock data includes attendeeCount field for realistic display
+
 ## Questions for You
 
 1. **Priority**: Should we start with M0 (scaffolding) or do you want to see a specific milestone first?

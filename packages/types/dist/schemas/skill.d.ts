@@ -16,21 +16,21 @@ export declare const skillSchema: z.ZodObject<{
     notes: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "teach" | "learn";
+    tags: string[];
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "teach" | "learn";
+    tags: string[];
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }>;
 export declare const skillCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -41,17 +41,17 @@ export declare const skillCreateSchema: z.ZodObject<Omit<{
     notes: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "id" | "createdAt">, "strip", z.ZodTypeAny, {
-    userId?: string;
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    userId: string;
+    kind: "teach" | "learn";
+    tags: string[];
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }, {
-    userId?: string;
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    userId: string;
+    kind: "teach" | "learn";
+    tags: string[];
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }>;
 export declare const skillUpdateSchema: z.ZodObject<{
     kind: z.ZodOptional<z.ZodEnum<["teach", "learn"]>>;
@@ -59,15 +59,15 @@ export declare const skillUpdateSchema: z.ZodObject<{
     level: z.ZodOptional<z.ZodOptional<z.ZodEnum<["beginner", "intermediate", "advanced", "expert"]>>>;
     notes: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    kind?: "teach" | "learn" | undefined;
+    tags?: string[] | undefined;
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }, {
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    kind?: "teach" | "learn" | undefined;
+    tags?: string[] | undefined;
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }>;
 export declare const skillResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -78,21 +78,21 @@ export declare const skillResponseSchema: z.ZodObject<{
     notes: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "teach" | "learn";
+    tags: string[];
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "teach" | "learn";
-    tags?: string[];
-    level?: "beginner" | "intermediate" | "advanced" | "expert";
-    notes?: string;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "teach" | "learn";
+    tags: string[];
+    level?: "beginner" | "intermediate" | "advanced" | "expert" | undefined;
+    notes?: string | undefined;
 }>;
 export type Skill = z.infer<typeof skillSchema>;
 export type SkillCreate = z.infer<typeof skillCreateSchema>;

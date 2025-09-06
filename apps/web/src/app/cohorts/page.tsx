@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
+import { generateAvatarUrl, getUserInitials } from "@/lib/avatars";
 
 /**
  * Cohorts page showing user's cohorts and available cohorts to join
@@ -90,69 +91,71 @@ export default function CohortsPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-primary-100 rounded-lg">
-                  <Users className="h-6 w-6 text-primary-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">{cohorts.length}</p>
-                  <p className="text-sm text-slate-600">Active Cohorts</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Calendar className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {cohorts.reduce((sum, cohort) => sum + cohort.sessionCount, 0)}
+        <Card className="mb-8">
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {/* Cohorts */}
+              <div className="flex items-start space-x-4">
+                <Users className="h-6 w-6 text-primary-600 mt-1" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-lg font-bold text-slate-900">
+                      {cohorts.length === 1 ? '1 cohort' : `${cohorts.length} cohorts`}
+                    </p>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    All cohorts you've joined or created
                   </p>
-                  <p className="text-sm text-slate-600">Total Sessions</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <MessageSquare className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {cohorts.filter(c => c.lastMessageAt).length}
+              {/* Sessions */}
+              <div className="flex items-start space-x-4">
+                <Calendar className="h-6 w-6 text-green-600 mt-1" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-lg font-bold text-slate-900">
+                      {cohorts.reduce((sum, cohort) => sum + cohort.sessionCount, 0)} sessions
+                    </p>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    Learning sessions across all cohorts
                   </p>
-                  <p className="text-sm text-slate-600">Active Chats</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <FileText className="h-6 w-6 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {cohorts.reduce((sum, cohort) => sum + cohort.artifactCount, 0)}
+              {/* Chats */}
+              <div className="flex items-start space-x-4">
+                <MessageSquare className="h-6 w-6 text-blue-600 mt-1" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-lg font-bold text-slate-900">
+                      {cohorts.filter(c => c.lastMessageAt).length} chats
+                    </p>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    Active conversations with recent messages
                   </p>
-                  <p className="text-sm text-slate-600">Shared Resources</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+
+              {/* Resources */}
+              <div className="flex items-start space-x-4">
+                <FileText className="h-6 w-6 text-purple-600 mt-1" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-lg font-bold text-slate-900">
+                      {cohorts.reduce((sum, cohort) => sum + cohort.artifactCount, 0)} resources
+                    </p>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    Documents, files, and shared materials
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Cohorts Grid */}
         {isLoading ? (
@@ -176,35 +179,32 @@ export default function CohortsPage() {
         ) : cohorts.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {cohorts.map((cohort) => (
-              <Card key={cohort.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card key={cohort.id} className="hover:shadow-lg transition-shadow cursor-pointer flex flex-col h-full">
                 <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-xl font-bold text-slate-900 mb-2">
-                        {cohort.title}
-                      </CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <MapPin className="h-4 w-4" />
-                        {cohort.city || 'Remote'}
-                        <span>•</span>
-                        <Clock className="h-4 w-4" />
-                        {cohort.weeks} weeks
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
+                  <div className="space-y-2">
+                    <CardTitle className="text-xl font-bold text-slate-900">
+                      {cohort.title}
+                    </CardTitle>
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <MapPin className="h-4 w-4" />
+                      {cohort.city || 'Remote'}
+                      <span>•</span>
+                      <Clock className="h-4 w-4" />
+                      {cohort.weeks} weeks
+                      <span>•</span>
                       {cohort.visibility === 'public' ? (
                         <Eye className="h-4 w-4 text-green-600" />
                       ) : (
                         <EyeOff className="h-4 w-4 text-slate-400" />
                       )}
-                      <Badge variant={cohort.visibility === 'public' ? 'default' : 'secondary'}>
+                      <Badge variant={cohort.visibility === 'public' ? 'default' : 'secondary'} className="text-xs">
                         {cohort.visibility}
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
+                <CardContent className="flex-1 flex flex-col space-y-4">
                   {/* Members */}
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-slate-500" />
@@ -215,14 +215,17 @@ export default function CohortsPage() {
 
                   {/* Member Avatars */}
                   <div className="flex -space-x-2">
-                    {cohort.members.slice(0, 4).map((member, index) => (
-                      <Avatar key={member.userId || index} className="h-8 w-8 border-2 border-white">
-                        <AvatarImage src={`/api/avatar/${member.userId || 'default'}`} />
-                        <AvatarFallback className="text-xs">
-                          {(member.userId || 'U').slice(-2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
+                    {cohort.members.slice(0, 4).map((member, index) => {
+                      const memberName = `User ${member.userId?.slice(-4) || 'Default'}`;
+                      return (
+                        <Avatar key={member.userId || index} className="h-8 w-8 border-2 border-white">
+                          <AvatarImage src={generateAvatarUrl(memberName, 'dicebear')} />
+                          <AvatarFallback className="text-xs">
+                            {getUserInitials(memberName)}
+                          </AvatarFallback>
+                        </Avatar>
+                      );
+                    })}
                     {cohort.members.length > 4 && (
                       <div className="h-8 w-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center">
                         <span className="text-xs text-slate-600">+{cohort.members.length - 4}</span>
@@ -249,25 +252,19 @@ export default function CohortsPage() {
                     </div>
                   )}
 
-                  {/* Actions */}
+                  {/* Spacer to push buttons to bottom */}
+                  <div className="flex-1"></div>
+
+                  {/* Actions - Sticky at bottom */}
                   <div className="flex gap-2 pt-4 border-t border-slate-100">
                     <Button 
-                      variant="default" 
+                      variant="outline" 
                       size="sm" 
-                      className="flex-1"
+                      className="flex-1 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                       onClick={() => handleViewCohort(cohort.id!)}
                     >
                       View Cohort
                     </Button>
-                    {cohort.ownerId !== user.id && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleJoinCohort(cohort.id!)}
-                      >
-                        Join
-                      </Button>
-                    )}
                   </div>
                 </CardContent>
               </Card>

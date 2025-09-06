@@ -14,6 +14,7 @@ exports.sessionSchema = zod_1.z.object({
     startsAt: zod_1.z.date(),
     durationMinutes: zod_1.z.number().int().min(15).max(240).default(60),
     notesUrl: zod_1.z.string().url().optional(),
+    attendeeCount: zod_1.z.number().int().min(0).default(0),
 });
 // Schema for creating a session
 exports.sessionCreateSchema = exports.sessionSchema.omit({

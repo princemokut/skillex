@@ -74,6 +74,7 @@ export const mockSessions: Session[] = [
     startsAt: new Date('2024-01-15T18:00:00Z'),
     durationMinutes: 90,
     notesUrl: 'https://docs.google.com/document/d/react-ts-week1',
+    attendeeCount: 12,
   },
   {
     id: 'session-2',
@@ -82,6 +83,7 @@ export const mockSessions: Session[] = [
     startsAt: new Date('2024-01-22T18:00:00Z'),
     durationMinutes: 90,
     notesUrl: 'https://docs.google.com/document/d/react-ts-week2',
+    attendeeCount: 15,
   },
   {
     id: 'session-3',
@@ -89,6 +91,8 @@ export const mockSessions: Session[] = [
     weekIndex: 2,
     startsAt: new Date('2024-01-29T18:00:00Z'),
     durationMinutes: 90,
+    notesUrl: undefined,
+    attendeeCount: 18,
   },
   {
     id: 'session-4',
@@ -97,6 +101,7 @@ export const mockSessions: Session[] = [
     startsAt: new Date('2024-02-05T18:00:00Z'),
     durationMinutes: 90,
     notesUrl: 'https://docs.google.com/document/d/react-ts-week4',
+    attendeeCount: 14,
   },
   
   // Data Science Fundamentals sessions
@@ -107,6 +112,7 @@ export const mockSessions: Session[] = [
     startsAt: new Date('2024-02-01T19:00:00Z'),
     durationMinutes: 120,
     notesUrl: 'https://docs.google.com/document/d/ds-fundamentals-week1',
+    attendeeCount: 8,
   },
   {
     id: 'session-6',
@@ -115,6 +121,7 @@ export const mockSessions: Session[] = [
     startsAt: new Date('2024-02-08T19:00:00Z'),
     durationMinutes: 120,
     notesUrl: 'https://docs.google.com/document/d/ds-fundamentals-week2',
+    attendeeCount: 10,
   },
   
   // UI/UX Design Principles sessions
@@ -125,6 +132,7 @@ export const mockSessions: Session[] = [
     startsAt: new Date('2024-01-20T17:00:00Z'),
     durationMinutes: 60,
     notesUrl: 'https://docs.google.com/document/d/ux-design-week1',
+    attendeeCount: 6,
   },
   {
     id: 'session-8',
@@ -132,6 +140,8 @@ export const mockSessions: Session[] = [
     weekIndex: 1,
     startsAt: new Date('2024-01-27T17:00:00Z'),
     durationMinutes: 60,
+    notesUrl: undefined,
+    attendeeCount: 7,
   },
 ];
 
@@ -144,7 +154,7 @@ export const mockArtifacts = [
     url: 'https://docs.google.com/document/d/react-best-practices',
     type: 'document' as const,
     uploadedBy: 'user-1',
-    uploadedAt: new Date('2024-01-16'),
+    uploadedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
   },
   {
     id: 'artifact-2',
@@ -153,7 +163,7 @@ export const mockArtifacts = [
     url: 'https://github.com/example/typescript-config',
     type: 'code' as const,
     uploadedBy: 'user-4',
-    uploadedAt: new Date('2024-01-18'),
+    uploadedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
   },
   {
     id: 'artifact-3',
@@ -162,7 +172,7 @@ export const mockArtifacts = [
     url: 'https://youtube.com/watch?v=react-setup',
     type: 'video' as const,
     uploadedBy: 'user-1',
-    uploadedAt: new Date('2024-01-20'),
+    uploadedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
   },
   {
     id: 'artifact-4',
@@ -171,7 +181,7 @@ export const mockArtifacts = [
     url: 'https://docs.google.com/spreadsheets/d/data-template',
     type: 'spreadsheet' as const,
     uploadedBy: 'user-2',
-    uploadedAt: new Date('2024-02-02'),
+    uploadedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
   },
   {
     id: 'artifact-5',
@@ -180,7 +190,7 @@ export const mockArtifacts = [
     url: 'https://github.com/example/python-ds-libs',
     type: 'code' as const,
     uploadedBy: 'user-7',
-    uploadedAt: new Date('2024-02-05'),
+    uploadedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
   },
   {
     id: 'artifact-6',
@@ -189,7 +199,7 @@ export const mockArtifacts = [
     url: 'https://figma.com/file/design-system',
     type: 'design' as const,
     uploadedBy: 'user-3',
-    uploadedAt: new Date('2024-01-21'),
+    uploadedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
   },
 ];
 

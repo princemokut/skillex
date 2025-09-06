@@ -89,19 +89,23 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900">Sessions</h2>
-          <p className="text-slate-600">Manage your cohort's learning sessions</p>
-        </div>
-        {isOwner && (
-          <Button onClick={handleCreateSession} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Add Session
-          </Button>
-        )}
-      </div>
+      {/* Header Card */}
+      <Card>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Sessions</h2>
+              <p className="text-slate-600">Manage your cohort's learning sessions</p>
+            </div>
+            {isOwner && (
+              <Button onClick={handleCreateSession} className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Session
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Sessions List */}
       {sessions.length > 0 ? (
@@ -115,8 +119,9 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
 
               return (
                 <Card key={session.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           {getStatusIcon(status)}
@@ -143,8 +148,8 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
                           </div>
                         </div>
 
-                        {session.notesUrl && (
-                          <div className="mt-3">
+                        <div className="mt-3">
+                          {session.notesUrl ? (
                             <a
                               href={session.notesUrl}
                               target="_blank"
@@ -154,8 +159,12 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
                               <ExternalLink className="h-4 w-4" />
                               View Session Notes
                             </a>
-                          </div>
-                        )}
+                          ) : (
+                            <span className="text-sm text-slate-400">
+                              No session notes
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex flex-col gap-2 ml-4">
@@ -185,6 +194,7 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
                           </Button>
                         )}
                       </div>
+                    </div>
                     </div>
                   </CardContent>
                 </Card>

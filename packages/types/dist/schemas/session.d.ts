@@ -10,20 +10,23 @@ export declare const sessionSchema: z.ZodObject<{
     startsAt: z.ZodDate;
     durationMinutes: z.ZodDefault<z.ZodNumber>;
     notesUrl: z.ZodOptional<z.ZodString>;
+    attendeeCount: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    cohortId?: string;
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    id: string;
+    cohortId: string;
+    weekIndex: number;
+    startsAt: Date;
+    durationMinutes: number;
+    attendeeCount: number;
+    notesUrl?: string | undefined;
 }, {
-    id?: string;
-    cohortId?: string;
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    id: string;
+    cohortId: string;
+    weekIndex: number;
+    startsAt: Date;
+    durationMinutes?: number | undefined;
+    notesUrl?: string | undefined;
+    attendeeCount?: number | undefined;
 }>;
 export declare const sessionCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -32,34 +35,40 @@ export declare const sessionCreateSchema: z.ZodObject<Omit<{
     startsAt: z.ZodDate;
     durationMinutes: z.ZodDefault<z.ZodNumber>;
     notesUrl: z.ZodOptional<z.ZodString>;
+    attendeeCount: z.ZodDefault<z.ZodNumber>;
 }, "id">, "strip", z.ZodTypeAny, {
-    cohortId?: string;
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    cohortId: string;
+    weekIndex: number;
+    startsAt: Date;
+    durationMinutes: number;
+    attendeeCount: number;
+    notesUrl?: string | undefined;
 }, {
-    cohortId?: string;
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    cohortId: string;
+    weekIndex: number;
+    startsAt: Date;
+    durationMinutes?: number | undefined;
+    notesUrl?: string | undefined;
+    attendeeCount?: number | undefined;
 }>;
 export declare const sessionUpdateSchema: z.ZodObject<{
     weekIndex: z.ZodOptional<z.ZodNumber>;
     startsAt: z.ZodOptional<z.ZodDate>;
     durationMinutes: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
     notesUrl: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    attendeeCount: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    weekIndex?: number | undefined;
+    startsAt?: Date | undefined;
+    durationMinutes?: number | undefined;
+    notesUrl?: string | undefined;
+    attendeeCount?: number | undefined;
 }, {
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    weekIndex?: number | undefined;
+    startsAt?: Date | undefined;
+    durationMinutes?: number | undefined;
+    notesUrl?: string | undefined;
+    attendeeCount?: number | undefined;
 }>;
 export declare const sessionResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -68,20 +77,23 @@ export declare const sessionResponseSchema: z.ZodObject<{
     startsAt: z.ZodDate;
     durationMinutes: z.ZodDefault<z.ZodNumber>;
     notesUrl: z.ZodOptional<z.ZodString>;
+    attendeeCount: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    cohortId?: string;
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    id: string;
+    cohortId: string;
+    weekIndex: number;
+    startsAt: Date;
+    durationMinutes: number;
+    attendeeCount: number;
+    notesUrl?: string | undefined;
 }, {
-    id?: string;
-    cohortId?: string;
-    weekIndex?: number;
-    startsAt?: Date;
-    durationMinutes?: number;
-    notesUrl?: string;
+    id: string;
+    cohortId: string;
+    weekIndex: number;
+    startsAt: Date;
+    durationMinutes?: number | undefined;
+    notesUrl?: string | undefined;
+    attendeeCount?: number | undefined;
 }>;
 export type Session = z.infer<typeof sessionSchema>;
 export type SessionCreate = z.infer<typeof sessionCreateSchema>;
