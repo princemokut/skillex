@@ -1,0 +1,565 @@
+/**
+ * Referrals Page
+ * Main page for managing user referrals with cohort filtering
+ */
+
+'use client';
+
+import { useState, useMemo } from 'react';
+import { useReferrals } from '@/hooks/use-referrals';
+import { ReferralTabs } from '@/components/referral-tabs';
+import { ReferralCard } from '@/components/referral-card';
+import { ReferralRequestModal } from '@/components/referral-request-modal';
+import { RequestReferralModal } from '@/components/request-referral-modal';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Search, 
+  Filter, 
+  RefreshCw, 
+  Users, 
+  Plus, 
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  TrendingUp,
+  Building2,
+  Briefcase,
+  Handshake,
+  GraduationCap,
+  Zap,
+  MessageCircle
+} from 'lucide-react';
+import { ReferralWithType, ReferralContextType, ReferralRequestType } from '@/lib/referral-mock-data';
+import { ReferralStatus } from '@skillex/types';
+
+/**
+ * Search and filter state interface
+ */
+interface SearchFilters {
+  query: string;
+  showFilters: boolean;
+  contextTypeFilter: ReferralContextType[];
+  urgencyFilter: string[];
+}
+
+/**
+ * Mock current user ID for development
+ * In production, this would come from authentication context
+ */
+const MOCK_CURRENT_USER_ID = 'user-1';
+
+export default function ReferralsPage() {
+  const {
+    referrals,
+    allReferrals,
+    sentReferrals,
+    receivedReferrals,
+    stats,
+    availableCohorts,
+    isLoading,
+    error,
+    activeTab,
+    statusFilter,
+    cohortFilter,
+    handleTabChange,
+    handleStatusFilterChange,
+    handleCohortFilterChange,
+    handleCreateReferral,
+    handleUpdateReferralStatus,
+    handleDeleteReferral,
+    refetch
+  } = useReferrals(MOCK_CURRENT_USER_ID);
+
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    query: '',
+    showFilters: false,
+    contextTypeFilter: [],
+    urgencyFilter: []
+  });
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [selectedCohortId, setSelectedCohortId] = useState<string>('');
+
+  /**
+   * Get filtered referrals based on search and filters
+   * Returns referrals filtered by search query and context type
+   */
+  const getFilteredReferrals = (): ReferralWithType[] => {
+    let filtered = referrals;
+
+    // Filter by search query
+    if (searchFilters.query) {
+      const query = searchFilters.query.toLowerCase();
+      filtered = filtered.filter(referral => 
+        referral.context.toLowerCase().includes(query) ||
+        referral.fromUser.name.toLowerCase().includes(query) ||
+        referral.toUser.name.toLowerCase().includes(query) ||
+        (referral.companyName && referral.companyName.toLowerCase().includes(query)) ||
+        (referral.projectTitle && referral.projectTitle.toLowerCase().includes(query))
+      );
+    }
+
+    // Filter by context type
+    if (searchFilters.contextTypeFilter.length > 0) {
+      filtered = filtered.filter(referral => 
+        searchFilters.contextTypeFilter.includes(referral.contextType)
+      );
+    }
+
+    // Filter by urgency
+    if (searchFilters.urgencyFilter.length > 0) {
+      filtered = filtered.filter(referral => 
+        searchFilters.urgencyFilter.includes(referral.urgency)
+      );
+    }
+
+    return filtered;
+  };
+
+  /**
+   * Get context type icon
+   * Returns appropriate icon component for context type
+   * 
+   * @param contextType - Context type to get icon for
+   * @returns Icon component
+   */
+  const getContextTypeIcon = (contextType: ReferralContextType) => {
+    switch (contextType) {
+      case 'job':
+        return Building2;
+      case 'project':
+        return Briefcase;
+      case 'collaboration':
+        return Handshake;
+      case 'mentorship':
+        return GraduationCap;
+      case 'freelance':
+        return Zap;
+      default:
+        return Briefcase;
+    }
+  };
+
+  /**
+   * Get context type display name
+   * Returns human-readable name for context type
+   * 
+   * @param contextType - Context type to get display name for
+   * @returns Display name
+   */
+  const getContextTypeDisplayName = (contextType: ReferralContextType): string => {
+    switch (contextType) {
+      case 'job':
+        return 'Job Opportunity';
+      case 'project':
+        return 'Project';
+      case 'collaboration':
+        return 'Collaboration';
+      case 'mentorship':
+        return 'Mentorship';
+      case 'freelance':
+        return 'Freelance';
+      default:
+        return 'Opportunity';
+    }
+  };
+
+  /**
+   * Handle create referral
+   * Opens create modal with selected cohort
+   * 
+   * @param cohortId - Cohort ID to create referral for
+   */
+  const handleCreateReferralClick = (cohortId: string) => {
+    setSelectedCohortId(cohortId);
+    setShowCreateModal(true);
+  };
+
+  /**
+   * Handle request referral
+   * Opens request modal with selected cohort
+   * 
+   * @param cohortId - Cohort ID to request referral for
+   */
+  const handleRequestReferralClick = (cohortId: string) => {
+    setSelectedCohortId(cohortId);
+    setShowRequestModal(true);
+  };
+
+  /**
+   * Handle referral creation
+   * Creates referral and closes modal
+   * 
+   * @param referralData - Referral data to create
+   */
+  const handleReferralCreation = async (referralData: {
+    toUserId: string;
+    context: string;
+    contextType: ReferralContextType;
+    companyName?: string;
+    projectTitle?: string;
+    urgency: 'low' | 'medium' | 'high';
+  }) => {
+    try {
+      await handleCreateReferral({
+        ...referralData,
+        cohortId: selectedCohortId
+      });
+      setShowCreateModal(false);
+      setSelectedCohortId('');
+    } catch (error) {
+      console.error('Error creating referral:', error);
+    }
+  };
+
+  /**
+   * Handle referral request creation
+   * Creates referral request and closes modal
+   * 
+   * @param requestData - Request data to create
+   */
+  const handleReferralRequestCreation = async (requestData: {
+    toUserId: string;
+    context: string;
+    contextType: ReferralContextType;
+    requestType: ReferralRequestType;
+    companyName?: string;
+    projectTitle?: string;
+    urgency: 'low' | 'medium' | 'high';
+  }) => {
+    try {
+      // Mock creation - in production, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setShowRequestModal(false);
+      setSelectedCohortId('');
+    } catch (error) {
+      console.error('Error creating referral request:', error);
+    }
+  };
+
+  const filteredReferrals = getFilteredReferrals();
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">Referrals</h1>
+              <p className="text-slate-600 mt-2">
+                Manage your professional referrals and recommendations
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => refetch()}
+                disabled={isLoading}
+                className="flex items-center space-x-2"
+              >
+                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span>Refresh</span>
+              </Button>
+              {availableCohorts.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={() => handleCreateReferralClick(availableCohorts[0].id)}
+                    className="flex items-center space-x-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Send Referral</span>
+                  </Button>
+                  <Button
+                    onClick={() => handleRequestReferralClick(availableCohorts[0].id)}
+                    variant="outline"
+                    className="flex items-center space-x-2"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    <span>Request Referral</span>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">Total Referrals</p>
+                  <p className="text-2xl font-bold text-slate-900">
+                    {stats.sent.total + stats.received.total}
+                  </p>
+                </div>
+                <Users className="h-8 w-8 text-blue-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">Sent</p>
+                  <p className="text-2xl font-bold text-slate-900">{stats.sent.total}</p>
+                </div>
+                <TrendingUp className="h-8 w-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">Accepted</p>
+                  <p className="text-2xl font-bold text-slate-900">
+                    {stats.sent.accepted + stats.received.accepted}
+                  </p>
+                </div>
+                <CheckCircle className="h-8 w-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">Pending</p>
+                  <p className="text-2xl font-bold text-slate-900">
+                    {stats.sent.sent + stats.received.pending}
+                  </p>
+                </div>
+                <Clock className="h-8 w-8 text-yellow-600" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Search and Filters */}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search referrals..."
+                    value={searchFilters.query}
+                    onChange={(e) => setSearchFilters(prev => ({ ...prev, query: e.target.value }))}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setSearchFilters(prev => ({ ...prev, showFilters: !prev.showFilters }))}
+                  className="flex items-center space-x-2"
+                >
+                  <Filter className="h-4 w-4" />
+                  <span>Filters</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Advanced Filters */}
+            {searchFilters.showFilters && (
+              <div className="mt-4 pt-4 border-t border-slate-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Context Type Filter */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-700 mb-2 block">
+                      Referral Type
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {(['job', 'project', 'collaboration', 'mentorship', 'freelance'] as ReferralContextType[]).map((type) => {
+                        const Icon = getContextTypeIcon(type);
+                        return (
+                          <Button
+                            key={type}
+                            variant={searchFilters.contextTypeFilter.includes(type) ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => {
+                              setSearchFilters(prev => ({
+                                ...prev,
+                                contextTypeFilter: prev.contextTypeFilter.includes(type)
+                                  ? prev.contextTypeFilter.filter(t => t !== type)
+                                  : [...prev.contextTypeFilter, type]
+                              }));
+                            }}
+                            className="flex items-center space-x-1"
+                          >
+                            <Icon className="h-3 w-3" />
+                            <span>{getContextTypeDisplayName(type)}</span>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Urgency Filter */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-700 mb-2 block">
+                      Priority Level
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {(['low', 'medium', 'high'] as const).map((urgency) => (
+                        <Button
+                          key={urgency}
+                          variant={searchFilters.urgencyFilter.includes(urgency) ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            setSearchFilters(prev => ({
+                              ...prev,
+                              urgencyFilter: prev.urgencyFilter.includes(urgency)
+                                ? prev.urgencyFilter.filter(u => u !== urgency)
+                                : [...prev.urgencyFilter, urgency]
+                            }));
+                          }}
+                        >
+                          {urgency.charAt(0).toUpperCase() + urgency.slice(1)}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Referral Tabs */}
+        <ReferralTabs
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          statusFilter={statusFilter}
+          onStatusFilterChange={handleStatusFilterChange}
+          cohortFilter={cohortFilter}
+          onCohortFilterChange={handleCohortFilterChange}
+          cohorts={availableCohorts}
+          stats={stats}
+          showCohortFilter={true}
+        />
+
+        {/* Referrals List */}
+        <div className="mt-6">
+          {isLoading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-3">
+                      <div className="h-12 w-12 bg-slate-200 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-slate-200 rounded w-3/4" />
+                        <div className="h-3 bg-slate-200 rounded w-1/2" />
+                        <div className="h-3 bg-slate-200 rounded w-full" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : error ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  Error Loading Referrals
+                </h3>
+                <p className="text-slate-600 mb-4">
+                  {error.message || 'Something went wrong while loading referrals.'}
+                </p>
+                <Button onClick={() => refetch()}>
+                  Try Again
+                </Button>
+              </CardContent>
+            </Card>
+          ) : filteredReferrals.length === 0 ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <Users className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  No Referrals Found
+                </h3>
+                <p className="text-slate-600 mb-4">
+                  {searchFilters.query || searchFilters.contextTypeFilter.length > 0 || searchFilters.urgencyFilter.length > 0
+                    ? 'No referrals match your current filters.'
+                    : activeTab === 'sent'
+                    ? 'You haven\'t sent any referrals yet.'
+                    : 'You haven\'t received any referrals yet.'
+                  }
+                </p>
+                {availableCohorts.length > 0 && (
+                  <div className="flex items-center space-x-3">
+                    <Button onClick={() => handleCreateReferralClick(availableCohorts[0].id)}>
+                      Send Your First Referral
+                    </Button>
+                    <Button 
+                      onClick={() => handleRequestReferralClick(availableCohorts[0].id)}
+                      variant="outline"
+                    >
+                      Request Your First Referral
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {filteredReferrals.map((referral) => (
+                <ReferralCard
+                  key={referral.id}
+                  referral={referral}
+                  isCurrentUser={activeTab === 'sent'}
+                  onStatusChange={handleUpdateReferralStatus}
+                  onDelete={handleDeleteReferral}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Create Referral Modal */}
+        {showCreateModal && selectedCohortId && (
+          <ReferralRequestModal
+            isOpen={showCreateModal}
+            onClose={() => {
+              setShowCreateModal(false);
+              setSelectedCohortId('');
+            }}
+            onCreateReferral={handleReferralCreation}
+            cohortId={selectedCohortId}
+            currentUserId={MOCK_CURRENT_USER_ID}
+          />
+        )}
+
+        {/* Request Referral Modal */}
+        {showRequestModal && selectedCohortId && (
+          <RequestReferralModal
+            isOpen={showRequestModal}
+            onClose={() => {
+              setShowRequestModal(false);
+              setSelectedCohortId('');
+            }}
+            onCreateRequest={handleReferralRequestCreation}
+            cohortId={selectedCohortId}
+            currentUserId={MOCK_CURRENT_USER_ID}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
