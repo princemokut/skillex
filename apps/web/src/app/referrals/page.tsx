@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useReferrals } from '@/hooks/use-referrals';
 import { ReferralTabs } from '@/components/referral-tabs';
 import { ReferralCard } from '@/components/referral-card';
@@ -34,6 +34,9 @@ import {
 } from 'lucide-react';
 import { ReferralWithType, ReferralContextType, ReferralRequestType } from '@/lib/referral-mock-data';
 import { ReferralStatus } from '@skillex/types';
+import { AdSlot, AdSlotContainer } from '@/components/AdSlot';
+import { getAdTargeting } from '@/lib/ad-context';
+import { trackPageView, trackAdInteraction } from '@/lib/analytics';
 
 /**
  * Search and filter state interface
@@ -244,9 +247,22 @@ export default function ReferralsPage() {
 
   const filteredReferrals = getFilteredReferrals();
 
+  // Track page view and analytics
+  useEffect(() => {
+    trackPageView('referrals', {
+      total_referrals: stats.sent.total + stats.received.total,
+      sent_referrals: stats.sent.total,
+      received_referrals: stats.received.total,
+      active_tab: activeTab
+    });
+  }, [stats, activeTab]);
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-3">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -518,18 +534,86 @@ export default function ReferralsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {filteredReferrals.map((referral) => (
-                <ReferralCard
-                  key={referral.id}
-                  referral={referral}
-                  isCurrentUser={activeTab === 'sent'}
-                  onStatusChange={handleUpdateReferralStatus}
-                  onDelete={handleDeleteReferral}
-                />
-              ))}
+            <div className="space-y-6">
+              {/* In-content Ad after first 2 referrals */}
+              {filteredReferrals.length > 2 && (
+                <div className="flex justify-center">
+                  <AdSlot
+                    slotId="referrals-in-content-1"
+                    size="in-content"
+                    context="referrals"
+                    targeting={getAdTargeting({
+                      skills: ['React', 'TypeScript', 'JavaScript'],
+                      location: 'San Francisco',
+                      timezone: 'America/Los_Angeles',
+                      cohortTopics: ['React & TypeScript Mastery'],
+                      referralActivity: 'active',
+                      connectionActivity: 'moderate',
+                      adCategories: ['jobs', 'services'],
+                      adFrequency: 'medium',
+                      adInteractions: []
+                    }, 'referrals')}
+                    onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('referrals-in-content-1', action)}
+                  />
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {filteredReferrals.map((referral) => (
+                  <ReferralCard
+                    key={referral.id}
+                    referral={referral}
+                    isCurrentUser={activeTab === 'sent'}
+                    onStatusChange={handleUpdateReferralStatus}
+                    onDelete={handleDeleteReferral}
+                  />
+                ))}
+              </div>
             </div>
           )}
+        </div>
+          </div>
+          
+          {/* Right Sidebar with Ads */}
+          <div className="lg:col-span-1">
+            <AdSlotContainer>
+              <AdSlot
+                slotId="referrals-sidebar-1"
+                size="sidebar"
+                context="referrals"
+                targeting={getAdTargeting({
+                  skills: ['React', 'TypeScript', 'JavaScript'],
+                  location: 'San Francisco',
+                  timezone: 'America/Los_Angeles',
+                  cohortTopics: ['React & TypeScript Mastery'],
+                  referralActivity: 'active',
+                  connectionActivity: 'moderate',
+                  adCategories: ['jobs', 'services'],
+                  adFrequency: 'medium',
+                  adInteractions: []
+                }, 'referrals')}
+                onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('referrals-sidebar-1', action)}
+              />
+              
+              <AdSlot
+                slotId="referrals-sidebar-2"
+                size="sidebar"
+                context="referrals"
+                targeting={getAdTargeting({
+                  skills: ['React', 'TypeScript', 'JavaScript'],
+                  location: 'San Francisco',
+                  timezone: 'America/Los_Angeles',
+                  cohortTopics: ['React & TypeScript Mastery'],
+                  referralActivity: 'active',
+                  connectionActivity: 'moderate',
+                  adCategories: ['jobs', 'services'],
+                  adFrequency: 'medium',
+                  adInteractions: []
+                }, 'referrals')}
+                onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('referrals-sidebar-2', action)}
+              />
+            </AdSlotContainer>
+          </div>
         </div>
 
         {/* Create Referral Modal */}

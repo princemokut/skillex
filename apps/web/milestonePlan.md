@@ -420,6 +420,17 @@ The profile and connections system is now fully functional and ready for users. 
 - **Professional Workflow**: Meaningful referrals based on actual working relationships
 - **Comprehensive Documentation**: Every function documented with JSDoc comments
 
+**🚀 M6 Extras & Enhancements:**
+- **Hybrid Referral System**: Implemented both "Send Referral" and "Request Referral" functionality
+- **Referral Types**: Added general, company-specific, and project-specific referral types
+- **Main Page Integration**: Added referral buttons to main `/referrals` page
+- **Cohort Tab Integration**: Moved full referrals functionality into main cohort page as dedicated tab
+- **Decimal Display Fix**: Fixed long decimal numbers in progress bars and stats to show whole numbers
+- **Demo Data**: Added sample referrals for cohort-1 with 80% completion to demonstrate full functionality
+- **Enhanced UI**: Improved referral cards with direction indicators and request type badges
+- **Smart Eligibility**: Visual indicators for referral eligibility based on session completion
+- **Comprehensive Mock Data**: Realistic referral scenarios with both send and request examples
+
 ---
 
 ### **M7: Polish & Testing**
@@ -446,24 +457,151 @@ The profile and connections system is now fully functional and ready for users. 
 
 ---
 
-### **M8: Ads & Analytics (Optional)**
-*Estimated: 2-3 hours*
+### **M8: Ads & Analytics Integration**
+*Estimated: 3-4 hours*
 
 **Goals:**
-- Contextual ad placement
-- Basic analytics setup
+- Implement contextual ad placement system
+- Set up comprehensive analytics tracking
+- Create user ad preferences and controls
+- Ensure non-intrusive, professional ad experience
 
 **Tasks:**
-1. AdSlot component with clear labeling
-2. Contextual ad placement (skill tags, location)
-3. Frequency capping
-4. Analytics integration (Plausible/PostHog)
-5. Ad preferences in settings
+
+**Phase 1: Ad System Foundation** (90 mins)
+1. **AdSlot Component** (`/src/components/AdSlot.tsx`)
+   - Responsive ad container with clear labeling
+   - Loading states and error fallbacks
+   - Ad blocker detection and graceful degradation
+   - Multiple ad sizes (banner, sidebar, in-content)
+   - Context-aware ad targeting
+
+2. **Ad Placement Strategy**
+   - **Right Rail**: Sidebar ads on main pages (matches, connections, referrals)
+   - **In-Content**: Between match cards, connection cards, referral cards
+   - **Header/Footer**: Top banner and bottom banner placements
+   - **Cohort Pages**: Contextual ads based on cohort topics and skills
+   - **Profile Pages**: Skill and location-based targeted ads
+
+3. **Ad Context System** (`/src/lib/ad-context.ts`)
+   - User skill tags for targeting
+   - Location-based ad targeting
+   - Cohort topic targeting
+   - Referral context targeting
+   - Frequency capping logic
+
+**Phase 2: Analytics Integration** (90 mins)
+1. **Analytics Setup** (`/src/lib/analytics.ts`)
+   - Plausible Analytics integration (privacy-focused)
+   - Event tracking for key user actions
+   - Page view tracking with context
+   - Custom event definitions
+   - User journey tracking
+
+2. **Key Events to Track**
+   - **Onboarding**: Step completion, time spent, drop-off points
+   - **Matches**: View, connect, message actions
+   - **Connections**: Send, accept, decline, remove actions
+   - **Cohorts**: Join, leave, session attendance
+   - **Referrals**: Send, request, accept, decline actions
+   - **Profile**: Edit, view, share actions
+   - **Search**: Query terms, filters used, results clicked
+
+3. **Analytics Dashboard Integration**
+   - Real-time user activity tracking
+   - Conversion funnel analysis
+   - Feature usage statistics
+   - User engagement metrics
+   - A/B testing framework setup
+
+**Phase 3: Ad Preferences & Controls** (60 mins)
+1. **Ad Preferences Page** (`/src/app/profile/settings/ads/page.tsx`)
+   - Ad frequency controls (low, medium, high)
+   - Interest categories selection
+   - Location-based ad preferences
+   - Skill-based ad targeting controls
+   - Ad blocker detection and guidance
+
+2. **Ad Settings Integration**
+   - Add ads tab to profile settings
+   - Privacy controls for ad targeting
+   - Opt-out mechanisms
+   - Ad personalization toggles
+   - Clear data usage explanations
+
+**Phase 4: Contextual Ad Targeting** (60 mins)
+1. **Skill-Based Targeting**
+   - Match user skills to relevant job ads
+   - Technology stack targeting
+   - Learning resource ads based on skills
+   - Course and certification ads
+
+2. **Location-Based Targeting**
+   - Local job opportunities
+   - Regional events and meetups
+   - Location-specific services
+   - Time zone-aware ad scheduling
+
+3. **Cohort-Based Targeting**
+   - Course and training ads related to cohort topics
+   - Job opportunities in cohort-relevant fields
+   - Professional development resources
+   - Networking event advertisements
+
+4. **Referral Context Targeting**
+   - Job posting ads when viewing referrals
+   - Professional development resources
+   - Career advancement opportunities
+   - Industry-specific services
+
+**Phase 5: Ad Performance & Optimization** (30 mins)
+1. **Ad Performance Tracking**
+   - Click-through rates by placement
+   - Conversion tracking
+   - User engagement metrics
+   - Ad relevance scoring
+
+2. **A/B Testing Framework**
+   - Ad placement testing
+   - Ad format testing
+   - Targeting strategy testing
+   - Frequency optimization
+
+**🎨 Design System Compliance:**
+- **Non-Intrusive Design**: Ads blend naturally with content
+- **Clear Labeling**: All ads clearly marked as advertisements
+- **Consistent Styling**: Ads match overall design system
+- **Responsive Layout**: Ads adapt to different screen sizes
+- **Accessibility**: Proper ARIA labels and keyboard navigation
+
+**📊 Analytics Implementation:**
+- **Privacy-First**: Plausible Analytics (GDPR compliant)
+- **Event Tracking**: Comprehensive user action tracking
+- **Custom Metrics**: Business-specific KPIs
+- **Real-Time Dashboard**: Live user activity monitoring
+- **Conversion Funnels**: Track user journey through key flows
+
+**🎯 Ad Targeting Strategy:**
+- **Skill-Based**: Target ads based on user's teach/learn skills
+- **Location-Based**: Show relevant local opportunities
+- **Cohort-Based**: Target ads related to cohort topics
+- **Behavioral**: Target based on user actions and preferences
+- **Contextual**: Show relevant ads based on current page content
+
+**🔧 Technical Implementation:**
+- **Ad Blocking Detection**: Graceful fallback when ads blocked
+- **Lazy Loading**: Ads load asynchronously to improve performance
+- **Frequency Capping**: Prevent ad fatigue with smart frequency limits
+- **A/B Testing**: Built-in testing framework for ad optimization
+- **Performance Monitoring**: Track ad impact on page load times
 
 **Deliverables:**
-- Non-intrusive ad system
-- Basic analytics tracking
-- User ad preferences
+- ✅ Professional ad system with contextual targeting
+- ✅ Comprehensive analytics tracking and dashboard
+- ✅ User ad preferences and privacy controls
+- ✅ Non-intrusive ad placement strategy
+- ✅ Performance optimization and A/B testing framework
+- ✅ GDPR-compliant analytics implementation
 
 ---
 

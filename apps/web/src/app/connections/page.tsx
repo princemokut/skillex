@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useConnections } from '@/hooks/use-connections';
 import { ConnectionTabs } from '@/components/connection-tabs';
 import { ConnectionCard } from '@/components/connection-card';
@@ -24,6 +24,9 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Connection } from '@/lib/connection-mock-data';
+import { AdSlot, AdSlotContainer } from '@/components/AdSlot';
+import { getAdTargeting } from '@/lib/ad-context';
+import { trackPageView, trackAdInteraction } from '@/lib/analytics';
 
 /**
  * Search and filter state interface
@@ -144,6 +147,16 @@ export default function ConnectionsPage() {
   
   const stats = getConnectionStats();
   
+  // Track page view and analytics
+  useEffect(() => {
+    trackPageView('connections', {
+      total_connections: stats.total,
+      pending_connections: stats.pending,
+      accepted_connections: stats.accepted,
+      active_tab: activeTab
+    });
+  }, [stats, activeTab]);
+  
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -188,7 +201,10 @@ export default function ConnectionsPage() {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-3">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -327,6 +343,49 @@ export default function ConnectionsPage() {
               </CardContent>
             </Card>
           )}
+        </div>
+          </div>
+          
+          {/* Right Sidebar with Ads */}
+          <div className="lg:col-span-1">
+            <AdSlotContainer>
+              <AdSlot
+                slotId="connections-sidebar-1"
+                size="sidebar"
+                context="connections"
+                targeting={getAdTargeting({
+                  skills: [],
+                  location: '',
+                  timezone: '',
+                  cohortTopics: [],
+                  referralActivity: 'low',
+                  connectionActivity: 'active',
+                  adCategories: ['services', 'events'],
+                  adFrequency: 'medium',
+                  adInteractions: []
+                }, 'connections')}
+                onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('connections-sidebar-1', action)}
+              />
+              
+              <AdSlot
+                slotId="connections-sidebar-2"
+                size="sidebar"
+                context="connections"
+                targeting={getAdTargeting({
+                  skills: [],
+                  location: '',
+                  timezone: '',
+                  cohortTopics: [],
+                  referralActivity: 'low',
+                  connectionActivity: 'active',
+                  adCategories: ['services', 'events'],
+                  adFrequency: 'medium',
+                  adInteractions: []
+                }, 'connections')}
+                onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('connections-sidebar-2', action)}
+              />
+            </AdSlotContainer>
+          </div>
         </div>
       </div>
     </div>

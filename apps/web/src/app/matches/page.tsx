@@ -10,6 +10,9 @@ import { useMatches } from "@/hooks/use-matches";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RefreshCw, Users, Filter } from "lucide-react";
+import { AdSlot, AdSlotContainer } from "@/components/AdSlot";
+import { getAdTargeting } from "@/lib/ad-context";
+import { trackPageView, trackAdInteraction } from "@/lib/analytics";
 
 /**
  * Matches page component
@@ -41,6 +44,17 @@ export default function MatchesPage() {
       router.push("/auth/signin");
     }
   }, [user, loading, router]);
+
+  // Track page view and analytics
+  useEffect(() => {
+    if (user) {
+      trackPageView('matches', {
+        user_id: user.id,
+        total_matches: totalMatches,
+        has_filters: Object.keys(filters).length > 0
+      });
+    }
+  }, [user, totalMatches, filters]);
 
   if (loading || !user) {
     return (
@@ -98,6 +112,27 @@ export default function MatchesPage() {
               onFiltersChange={handleFiltersChange}
               availableSkills={availableSkills}
             />
+            
+            {/* Sidebar Ad */}
+            <div className="mt-6">
+              <AdSlot
+                slotId="matches-sidebar"
+                size="sidebar"
+                context="matches"
+                targeting={getAdTargeting({
+                  skills: ['React', 'TypeScript', 'JavaScript'],
+                  location: 'San Francisco',
+                  timezone: 'America/Los_Angeles',
+                  cohortTopics: ['React & TypeScript Mastery'],
+                  referralActivity: 'low',
+                  connectionActivity: 'moderate',
+                  adCategories: ['jobs', 'learning'],
+                  adFrequency: 'medium',
+                  adInteractions: []
+                }, 'matches')}
+                onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('matches-sidebar', action)}
+              />
+            </div>
           </div>
 
           {/* Matches Content */}
