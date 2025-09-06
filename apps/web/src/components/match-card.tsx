@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDeterministicAvatarUrl } from "@/lib/avatars";
 import { formatRelativeTime } from "@/lib/utils";
-import { MapPin, MessageCircle, Star, User, Clock } from "lucide-react";
+import { MapPin, Star, User, Clock } from "lucide-react";
 
 /**
  * Interface for match data structure
@@ -37,7 +37,6 @@ interface MatchCardProps {
   match: MatchData;
   onConnect?: (matchId: string) => void;
   onViewProfile?: (matchId: string) => void;
-  onMessage?: (matchId: string) => void;
   className?: string;
 }
 
@@ -49,7 +48,6 @@ export function MatchCard({
   match, 
   onConnect, 
   onViewProfile, 
-  onMessage,
   className 
 }: MatchCardProps) {
   const getSkillLevelColor = (level: string) => {
@@ -264,13 +262,6 @@ export function MatchCard({
             onClick={() => onViewProfile?.(match.id)}
           >
             Profile
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onMessage?.(match.id)}
-          >
-            <MessageCircle className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

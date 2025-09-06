@@ -27,6 +27,11 @@ import { Connection } from '@/lib/connection-mock-data';
 import { AdSlot, AdSlotContainer } from '@/components/AdSlot';
 import { getAdTargeting } from '@/lib/ad-context';
 import { trackPageView, trackAdInteraction } from '@/lib/analytics';
+import { NoConnectionsEmptyState } from '@/components/ui/empty-state';
+import { ConnectionCardSkeleton } from '@/components/ui/skeleton';
+import { AnimationWrapper, StaggerWrapper } from '@/components/ui/animations';
+import { ResponsiveCard } from '@/components/ui/responsive-card';
+import { useIsMobile, useIsTablet } from '@/lib/responsive';
 
 /**
  * Search and filter state interface
@@ -51,6 +56,9 @@ export default function ConnectionsPage() {
     handleRemove,
     refetch
   } = useConnections();
+  
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
   
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     query: '',
@@ -161,15 +169,17 @@ export default function ConnectionsPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="animate-pulse">
-            <div className="h-8 bg-slate-200 rounded w-1/3 mb-6"></div>
-            <div className="h-12 bg-slate-200 rounded mb-6"></div>
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-32 bg-slate-200 rounded"></div>
-              ))}
+          <AnimationWrapper animation="fadeIn">
+            <div className="space-y-6">
+              <div className="h-8 bg-slate-200 rounded w-1/3 animate-pulse"></div>
+              <div className="h-12 bg-slate-200 rounded animate-pulse"></div>
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <ConnectionCardSkeleton key={i} />
+                ))}
+              </div>
             </div>
-          </div>
+          </AnimationWrapper>
         </div>
       </div>
     );
@@ -179,50 +189,56 @@ export default function ConnectionsPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <Card className="border-red-200 bg-red-50">
-            <CardContent className="p-6 text-center">
-              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-red-900 mb-2">
-                Error Loading Connections
-              </h3>
-              <p className="text-red-700 mb-4">
-                We couldn't load your connections. Please try again.
-              </p>
-              <Button onClick={() => refetch()} variant="outline" className="border-red-300 text-red-700">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Try Again
-              </Button>
-            </CardContent>
-          </Card>
+          <AnimationWrapper animation="fadeIn">
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="p-6 text-center">
+                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-red-900 mb-2">
+                  Error Loading Connections
+                </h3>
+                <p className="text-red-700 mb-4">
+                  We couldn't load your connections. Please try again.
+                </p>
+                <Button 
+                  onClick={() => refetch()} 
+                  variant="outline" 
+                  className="border-red-300 text-red-700 hover:scale-105 transition-transform duration-200"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Try Again
+                </Button>
+              </CardContent>
+            </Card>
+          </AnimationWrapper>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
               Connections
             </h1>
-            <p className="text-slate-600">
+            <p className="text-sm sm:text-base text-slate-600">
               Manage your professional connections and network
             </p>
           </div>
-          <Button onClick={() => refetch()} variant="outline" size="sm">
+          <Button onClick={() => refetch()} variant="outline" size="sm" className="w-full sm:w-auto">
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
         </div>
         
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 sm:mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
@@ -310,38 +326,31 @@ export default function ConnectionsPage() {
         {/* Connections List */}
         <div className="space-y-4">
           {filteredConnections.length > 0 ? (
-            filteredConnections.map((connection) => (
-              <ConnectionCard
-                key={connection.id}
-                connection={connection}
-                isCurrentUser={activeTab === 'sent'}
-                onStatusChange={handleStatusChange}
-                onRemove={handleRemove}
-              />
-            ))
+            <StaggerWrapper staggerDelay={100}>
+              {filteredConnections.map((connection) => (
+                <AnimationWrapper
+                  key={connection.id}
+                  hover="hoverScale"
+                  transition="standard"
+                >
+                  <ConnectionCard
+                    connection={connection}
+                    isCurrentUser={activeTab === 'sent'}
+                    onStatusChange={handleStatusChange}
+                    onRemove={handleRemove}
+                  />
+                </AnimationWrapper>
+              ))}
+            </StaggerWrapper>
           ) : (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <div className="text-slate-400 mb-4">
-                  <Users className="mx-auto h-12 w-12" />
-                </div>
-                <h3 className="text-lg font-medium text-slate-900 mb-2">
-                  No connections found
-                </h3>
-                <p className="text-slate-500 mb-4">
-                  {searchFilters.query || searchFilters.skillFilter.length > 0 || searchFilters.locationFilter
-                    ? 'Try adjusting your search or filters.'
-                    : 'Start building your professional network by connecting with others.'
-                  }
-                </p>
-                {!searchFilters.query && !searchFilters.skillFilter.length && !searchFilters.locationFilter && (
-                  <Button>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Find People to Connect With
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+            <AnimationWrapper animation="fadeIn">
+              <NoConnectionsEmptyState
+                onSendRequest={() => {
+                  // TODO: Implement send connection request
+                  console.log('Send connection request');
+                }}
+              />
+            </AnimationWrapper>
           )}
         </div>
           </div>

@@ -13,6 +13,11 @@ import { RefreshCw, Users, Filter } from "lucide-react";
 import { AdSlot, AdSlotContainer } from "@/components/AdSlot";
 import { getAdTargeting } from "@/lib/ad-context";
 import { trackPageView, trackAdInteraction } from "@/lib/analytics";
+import { NoMatchesEmptyState } from "@/components/ui/empty-state";
+import { MatchCardSkeleton } from "@/components/ui/skeleton";
+import { AnimationWrapper, StaggerWrapper } from "@/components/ui/animations";
+import { ResponsiveGrid, ResponsiveCard } from "@/components/ui/responsive-card";
+import { useIsMobile, useIsTablet } from "@/lib/responsive";
 
 /**
  * Matches page component
@@ -22,6 +27,8 @@ import { trackPageView, trackAdInteraction } from "@/lib/analytics";
 export default function MatchesPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
   const {
     matches,
     availableSkills,
@@ -59,10 +66,10 @@ export default function MatchesPage() {
   if (loading || !user) {
     return (
       <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
-        <div className="text-center">
+        <AnimationWrapper animation="fadeIn" className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-slate-500">Loading matches...</p>
-        </div>
+        </AnimationWrapper>
       </div>
     );
   }
@@ -72,21 +79,17 @@ export default function MatchesPage() {
     console.log('View profile for match:', matchId);
   };
 
-  const handleMessage = (matchId: string) => {
-    // TODO: Navigate to messaging
-    console.log('Message match:', matchId);
-  };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-64px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Your Matches</h1>
-          <p className="text-slate-600 mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Your Matches</h1>
+          <p className="text-sm sm:text-base text-slate-600 mb-4">
             Discover professionals who match your skills and learning goals.
           </p>
-          <div className="flex items-center justify-center gap-4 text-sm text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm text-slate-500">
             <div className="flex items-center gap-1">
               <Users className="h-4 w-4" />
               {totalMatches} matches found
@@ -104,9 +107,9 @@ export default function MatchesPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 order-1 lg:order-1">
             <MatchFilters
               filters={filters}
               onFiltersChange={handleFiltersChange}
@@ -114,7 +117,7 @@ export default function MatchesPage() {
             />
             
             {/* Sidebar Ad */}
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6">
               <AdSlot
                 slotId="matches-sidebar"
                 size="sidebar"
@@ -136,7 +139,7 @@ export default function MatchesPage() {
           </div>
 
           {/* Matches Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 order-2 lg:order-2">
             {/* Error State */}
             {error && (
               <Alert className="mb-6">
@@ -148,53 +151,50 @@ export default function MatchesPage() {
 
             {/* Loading State */}
             {isLoading && matches.length === 0 ? (
-              <MatchGridSkeleton count={6} />
+              <AnimationWrapper animation="fadeIn">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <MatchCardSkeleton key={i} />
+                  ))}
+                </div>
+              </AnimationWrapper>
             ) : (
               <>
                 {/* Matches Grid */}
                 {matches.length > 0 ? (
-                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 auto-rows-fr">
-                    {matches.map((match: MatchData) => (
-                      <MatchCard
-                        key={match.id}
-                        match={match}
-                        onConnect={handleConnect}
-                        onViewProfile={handleViewProfile}
-                        onMessage={handleMessage}
-                      />
-                    ))}
-                  </div>
+                  <StaggerWrapper staggerDelay={100}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                      {matches.map((match: MatchData) => (
+                        <AnimationWrapper
+                          key={match.id}
+                          hover="hoverScale"
+                          transition="standard"
+                        >
+                          <MatchCard
+                            match={match}
+                            onConnect={handleConnect}
+                            onViewProfile={handleViewProfile}
+                          />
+                        </AnimationWrapper>
+                      ))}
+                    </div>
+                  </StaggerWrapper>
                 ) : (
                   /* Empty State */
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Filter className="h-8 w-8 text-slate-400" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                      No matches found
-                    </h3>
-                    <p className="text-slate-500 mb-4 max-w-md mx-auto">
-                      Try adjusting your filters or complete your profile to get better matches.
-                    </p>
-                    <div className="flex gap-2 justify-center">
-                      <Button variant="outline" onClick={clearFilters}>
-                        Clear Filters
-                      </Button>
-                      <Button onClick={() => router.push('/onboarding')}>
-                        Complete Profile
-                      </Button>
-                    </div>
-                  </div>
+                  <NoMatchesEmptyState
+                    onClearFilters={clearFilters}
+                    onCompleteProfile={() => router.push('/onboarding')}
+                  />
                 )}
 
                 {/* Load More Button */}
                 {hasMore && matches.length > 0 && (
-                  <div className="text-center mt-8">
+                  <AnimationWrapper animation="fadeInUp" className="text-center mt-6 sm:mt-8">
                     <Button
                       onClick={loadMore}
                       disabled={isLoading}
                       variant="outline"
-                      className="min-w-32"
+                      className="min-w-32 hover:scale-105 transition-transform duration-200"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export default function MatchesPage() {
                         'Load More'
                       )}
                     </Button>
-                  </div>
+                  </AnimationWrapper>
                 )}
               </>
             )}

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/components/auth-provider";
 import { toast } from "sonner";
+import { MobileNavigation, useMobileNavigation } from "@/components/ui/mobile-navigation";
 
 /**
  * Navigation component with top-level menu items
@@ -27,6 +28,7 @@ import { toast } from "sonner";
 export function Navigation() {
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
+  const { isOpen, toggle, close } = useMobileNavigation();
 
   /**
    * Handle sign out
@@ -96,67 +98,80 @@ export function Navigation() {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                {/* Notifications (placeholder) */}
-                <Button variant="ghost" size="sm" className="relative">
-                  <span className="sr-only">Notifications</span>
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-5 5v-5zM4.5 19.5L9 15H4.5v4.5z"
-                    />
-                  </svg>
-                </Button>
-
-                {/* User Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
-                        <AvatarFallback>
-                          {user.email?.charAt(0).toUpperCase() || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <div className="flex items-center justify-start gap-2 p-2">
-                      <div className="flex flex-col space-y-1 leading-none">
-                        <p className="font-medium">
-                          {user.user_metadata?.full_name || 'User'}
-                        </p>
-                        <p className="w-[200px] truncate text-sm text-slate-600">
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile/settings">Profile Settings</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile/johndoe">View Profile</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      className="text-red-600"
-                      onClick={handleSignOut}
-                      disabled={loading}
+                {/* Desktop User Menu */}
+                <div className="hidden md:flex items-center space-x-4">
+                  {/* Notifications (placeholder) */}
+                  <Button variant="ghost" size="sm" className="relative">
+                    <span className="sr-only">Notifications</span>
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
-                      Sign out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 17h5l-5 5v-5zM4.5 19.5L9 15H4.5v4.5z"
+                      />
+                    </svg>
+                  </Button>
+
+                  {/* User Menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
+                          <AvatarFallback>
+                            {user.email?.charAt(0).toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end" forceMount>
+                      <div className="flex items-center justify-start gap-2 p-2">
+                        <div className="flex flex-col space-y-1 leading-none">
+                          <p className="font-medium">
+                            {user.user_metadata?.full_name || 'User'}
+                          </p>
+                          <p className="w-[200px] truncate text-sm text-slate-600">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/profile/settings">Profile Settings</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/profile/johndoe">View Profile</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        className="text-red-600"
+                        onClick={handleSignOut}
+                        disabled={loading}
+                      >
+                        Sign out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Mobile User Avatar */}
+                <div className="md:hidden">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
+                    <AvatarFallback>
+                      {user.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
               </>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 <Button variant="ghost" asChild>
                   <Link href="/auth/signin">Sign in</Link>
                 </Button>
@@ -165,6 +180,9 @@ export function Navigation() {
                 </Button>
               </div>
             )}
+
+            {/* Mobile Navigation */}
+            <MobileNavigation isOpen={isOpen} onToggle={toggle} onClose={close} />
           </div>
         </div>
       </div>
@@ -172,42 +190,3 @@ export function Navigation() {
   );
 }
 
-/**
- * Mobile navigation component
- * Provides a collapsible menu for mobile devices
- * 
- * @returns Mobile navigation JSX component
- */
-export function MobileNavigation() {
-  return (
-    <div className="md:hidden">
-      {/* Mobile menu implementation would go here */}
-      <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-        <Link
-          href="/matches"
-          className="text-slate-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-        >
-          Matches
-        </Link>
-        <Link
-          href="/cohorts"
-          className="text-slate-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-        >
-          Cohorts
-        </Link>
-        <Link
-          href="/connections"
-          className="text-slate-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-        >
-          Connections
-        </Link>
-        <Link
-          href="/referrals"
-          className="text-slate-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-        >
-          Referrals
-        </Link>
-      </div>
-    </div>
-  );
-}
