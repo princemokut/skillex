@@ -115,14 +115,16 @@ export default function CohortPage() {
           name: 'John Doe',
           handle: 'johndoe',
           avatar: '/avatars/john.jpg',
-          title: 'Senior Software Engineer'
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
         },
         toUser: {
           id: 'user-4',
           name: 'Sarah Wilson',
           handle: 'sarahw',
           avatar: '/avatars/sarah.jpg',
-          title: 'Frontend Developer'
+          title: 'Frontend Developer',
+          skills: ['React', 'JavaScript', 'CSS', 'UI/UX']
         }
       },
       {
@@ -145,14 +147,16 @@ export default function CohortPage() {
           name: 'Mike Johnson',
           handle: 'mikej',
           avatar: '/avatars/mike.jpg',
-          title: 'Full Stack Developer'
+          title: 'Full Stack Developer',
+          skills: ['React', 'Node.js', 'Python', 'MongoDB']
         },
         toUser: {
           id: MOCK_CURRENT_USER_ID,
           name: 'John Doe',
           handle: 'johndoe',
           avatar: '/avatars/john.jpg',
-          title: 'Senior Software Engineer'
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
         }
       }
     ] : []

@@ -40,6 +40,8 @@ interface ReferralCardProps {
   referral: ReferralWithType;
   /** Whether this is the current user's referral (for sent/received) */
   isCurrentUser: boolean;
+  /** Current active tab to determine badge visibility */
+  activeTab?: 'given' | 'received' | 'requests';
   /** Callback when referral status changes */
   onStatusChange?: (referralId: string, newStatus: ReferralStatus) => void;
   /** Callback when referral is deleted */
@@ -147,6 +149,7 @@ function getContextTypeDisplayName(contextType: ReferralContextType): string {
 export function ReferralCard({ 
   referral, 
   isCurrentUser, 
+  activeTab,
   onStatusChange, 
   onDelete, 
   className 
@@ -201,23 +204,32 @@ export function ReferralCard({
               <h3 className="font-semibold text-slate-900 truncate">
                 {isSender ? referral.toUser.name : referral.fromUser.name}
               </h3>
-              <Badge variant="outline" className="text-xs">
-                {isSender ? (isRequest ? 'Requesting from' : 'To') : (isRequest ? 'Requested by' : 'From')}
-              </Badge>
             </div>
               <p className="text-sm text-slate-600 truncate">
                 {isSender ? referral.toUser.title : referral.fromUser.title}
               </p>
-              <p className="text-xs text-slate-500">
-                @{isSender ? referral.toUser.handle : referral.fromUser.handle}
-              </p>
+              <div className="flex items-center space-x-1 mt-1">
+                {(isSender ? referral.toUser.skills || [] : referral.fromUser.skills || []).slice(0, 2).map((skill, index) => (
+                  <span key={index} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">
+                    {skill}
+                  </span>
+                ))}
+                {(isSender ? referral.toUser.skills || [] : referral.fromUser.skills || []).length > 2 && (
+                  <span className="text-xs text-slate-500">
+                    +{(isSender ? referral.toUser.skills || [] : referral.fromUser.skills || []).length - 2} more
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           
           <div className="flex items-center space-x-2">
-            <Badge className={cn('text-xs', getStatusColorClass(referral.status))}>
-              {referral.status.charAt(0).toUpperCase() + referral.status.slice(1)}
-            </Badge>
+            {/* Only show status badge in Requests tab */}
+            {activeTab === 'requests' && (
+              <Badge className={cn('text-xs', getStatusColorClass(referral.status))}>
+                {referral.status.charAt(0).toUpperCase() + referral.status.slice(1)}
+              </Badge>
+            )}
             <Button
               variant="ghost"
               size="sm"

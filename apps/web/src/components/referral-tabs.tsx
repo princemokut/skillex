@@ -12,7 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { 
   Send, 
-  Inbox
+  Inbox,
+  MessageCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,9 +22,9 @@ import { cn } from '@/lib/utils';
  */
 interface ReferralTabsProps {
   /** Currently active tab */
-  activeTab: 'sent' | 'received';
+  activeTab: 'given' | 'received' | 'requests';
   /** Callback when tab changes */
-  onTabChange: (tab: 'sent' | 'received') => void;
+  onTabChange: (tab: 'given' | 'received' | 'requests') => void;
   /** Referral statistics */
   stats: {
     sent: {
@@ -34,6 +35,12 @@ interface ReferralTabsProps {
       declined: number;
     };
     received: {
+      total: number;
+      pending: number;
+      accepted: number;
+      declined: number;
+    };
+    requests: {
       total: number;
       pending: number;
       accepted: number;
@@ -63,35 +70,45 @@ export function ReferralTabs({
    * @param value - Tab value from Tabs component
    */
   const handleTabChange = (value: string) => {
-    onTabChange(value as 'sent' | 'received');
+    onTabChange(value as 'given' | 'received' | 'requests');
   };
 
   return (
     <div className={cn('w-full', className)}>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="sent" className="flex items-center space-x-2">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="received" className="flex items-center space-x-2">
+            <Inbox className="h-4 w-4" />
+            <span>Referrals Received</span>
+            <Badge variant="secondary" className="ml-1">
+              {stats.received.total}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="given" className="flex items-center space-x-2">
             <Send className="h-4 w-4" />
-            <span>Sent</span>
+            <span>Referrals Given</span>
             <Badge variant="secondary" className="ml-1">
               {stats.sent.total}
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value="received" className="flex items-center space-x-2">
-            <Inbox className="h-4 w-4" />
-            <span>Received</span>
+          <TabsTrigger value="requests" className="flex items-center space-x-2">
+            <MessageCircle className="h-4 w-4" />
+            <span>Requests</span>
             <Badge variant="secondary" className="ml-1">
-              {stats.received.total}
+              {stats.requests.total}
             </Badge>
           </TabsTrigger>
         </TabsList>
 
         {/* Tab content placeholders */}
-        <TabsContent value="sent" className="mt-6">
-          {/* Sent referrals content will be rendered here */}
-        </TabsContent>
         <TabsContent value="received" className="mt-6">
           {/* Received referrals content will be rendered here */}
+        </TabsContent>
+        <TabsContent value="given" className="mt-6">
+          {/* Given referrals content will be rendered here */}
+        </TabsContent>
+        <TabsContent value="requests" className="mt-6">
+          {/* Requests content will be rendered here */}
         </TabsContent>
       </Tabs>
     </div>

@@ -14,8 +14,9 @@ import {
   ReferralWithType, 
   ReferralContextType,
   getUserReferrals,
-  getSentReferrals,
+  getGivenReferrals,
   getReceivedReferrals,
+  getReferralRequests,
   getCohortReferrals,
   getReferralStats,
   getCohortReferralStats,
@@ -46,7 +47,7 @@ export const referralQueryKeys = {
  * @returns Object containing referral data and operations
  */
 export function useReferrals(userId: string) {
-  const [activeTab, setActiveTab] = useState<'sent' | 'received'>('sent');
+  const [activeTab, setActiveTab] = useState<'given' | 'received' | 'requests'>('received');
   const [statusFilter, setStatusFilter] = useState<ReferralStatus | 'all'>('all');
   const [cohortFilter, setCohortFilter] = useState<string | 'all'>('all');
   const queryClient = useQueryClient();
@@ -71,16 +72,18 @@ export function useReferrals(userId: string) {
         // For now, use mock data
         const mockData = getUserReferrals(userId);
         return {
-          sent: getSentReferrals(userId),
+          given: getGivenReferrals(userId),
           received: getReceivedReferrals(userId),
+          requests: getReferralRequests(userId),
           all: mockData
         };
       } catch (error) {
         console.error('Error fetching referrals:', error);
         // Fallback to mock data
         return {
-          sent: getSentReferrals(userId),
+          given: getGivenReferrals(userId),
           received: getReceivedReferrals(userId),
+          requests: getReferralRequests(userId),
           all: getUserReferrals(userId)
         };
       }
@@ -143,19 +146,22 @@ export function useReferrals(userId: string) {
           cohortTitle: 'Mock Cohort', // This would come from cohort data
           sessionCompletionPercentage: 87, // This would be calculated
           isEligible: true,
+          direction: 'send', // This is a referral being sent by the current user
           fromUser: {
             id: userId,
             name: 'Current User',
             handle: 'currentuser',
             avatar: '/avatars/current.jpg',
-            title: 'Software Engineer'
+            title: 'Software Engineer',
+            skills: ['React', 'TypeScript', 'Node.js']
           },
           toUser: {
             id: referralData.toUserId,
             name: 'Referred User',
             handle: 'referreduser',
             avatar: '/avatars/referred.jpg',
-            title: 'Developer'
+            title: 'Developer',
+            skills: ['JavaScript', 'Python', 'SQL']
           }
         });
         return newReferral;
@@ -246,7 +252,16 @@ export function useReferrals(userId: string) {
   const getFilteredReferrals = (): ReferralWithType[] => {
     if (!referralsData) return [];
 
-    const referrals = activeTab === 'sent' ? referralsData.sent : referralsData.received;
+    let referrals: ReferralWithType[] = [];
+    
+    // Use abstract functions for cleaner, more maintainable code
+    if (activeTab === 'given') {
+      referrals = referralsData.given || [];
+    } else if (activeTab === 'received') {
+      referrals = referralsData.received || [];
+    } else if (activeTab === 'requests') {
+      referrals = referralsData.requests || [];
+    }
     
     let filtered = referrals;
 
@@ -291,7 +306,7 @@ export function useReferrals(userId: string) {
    * 
    * @param tab - New active tab
    */
-  const handleTabChange = (tab: 'sent' | 'received') => {
+  const handleTabChange = (tab: 'given' | 'received' | 'requests') => {
     setActiveTab(tab);
     setStatusFilter('all');
   };
@@ -359,9 +374,14 @@ export function useReferrals(userId: string) {
     // Data
     referrals: getFilteredReferrals(),
     allReferrals: referralsData?.all || [],
-    sentReferrals: referralsData?.sent || [],
+    givenReferrals: referralsData?.given || [],
     receivedReferrals: referralsData?.received || [],
-    stats: stats || { sent: { total: 0, draft: 0, sent: 0, accepted: 0, declined: 0 }, received: { total: 0, pending: 0, accepted: 0, declined: 0 } },
+    requestReferrals: referralsData?.requests || [],
+    stats: stats || { 
+      sent: { total: 0, draft: 0, sent: 0, accepted: 0, declined: 0 }, 
+      received: { total: 0, pending: 0, accepted: 0, declined: 0 },
+      requests: { total: 0, pending: 0, accepted: 0, declined: 0 }
+    },
     availableCohorts: getAvailableCohorts(),
     
     // Loading states

@@ -54,8 +54,9 @@ export default function ReferralsPage() {
   const {
     referrals,
     allReferrals,
-    sentReferrals,
+    givenReferrals,
     receivedReferrals,
+    requestReferrals,
     stats,
     availableCohorts,
     isLoading,
@@ -477,9 +478,11 @@ export default function ReferralsPage() {
                 <p className="text-slate-600 mb-4">
                   {searchFilters.query || searchFilters.contextTypeFilter.length > 0 || searchFilters.statusFilter !== 'all' || searchFilters.cohortFilter !== 'all'
                     ? 'No referrals match your current filters.'
-                    : activeTab === 'sent'
-                    ? 'You haven\'t sent any referrals yet.'
-                    : 'You haven\'t received any referrals yet.'
+                    : activeTab === 'given'
+                    ? 'You haven\'t given any referrals yet.'
+                    : activeTab === 'received'
+                    ? 'You haven\'t received any referrals yet.'
+                    : 'You haven\'t made or received any requests yet.'
                   }
                 </p>
                 {availableCohorts.length > 0 && (
@@ -527,7 +530,8 @@ export default function ReferralsPage() {
                   <ReferralCard
                     key={referral.id}
                     referral={referral}
-                    isCurrentUser={activeTab === 'sent'}
+                    isCurrentUser={activeTab === 'given'}
+                    activeTab={activeTab}
                     onStatusChange={handleUpdateReferralStatus}
                     onDelete={handleDeleteReferral}
                   />

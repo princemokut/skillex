@@ -19,6 +19,7 @@ export interface ReferralWithContext extends Referral {
     handle: string;
     avatar: string;
     title: string;
+    skills: string[];
   };
   toUser: {
     id: string;
@@ -26,6 +27,7 @@ export interface ReferralWithContext extends Referral {
     handle: string;
     avatar: string;
     title: string;
+    skills: string[];
   };
 }
 
@@ -133,14 +135,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'John Doe',
       handle: 'johndoe',
       avatar: '/avatars/john.jpg',
-      title: 'Senior Software Engineer'
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
     },
     toUser: {
       id: 'user-4',
       name: 'Sarah Wilson',
       handle: 'sarahw',
       avatar: '/avatars/sarah.jpg',
-      title: 'Frontend Developer'
+      title: 'Frontend Developer',
+      skills: ['React', 'JavaScript', 'CSS', 'UI/UX']
     }
   },
   {
@@ -163,14 +167,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'Sarah Wilson',
       handle: 'sarahw',
       avatar: '/avatars/sarah.jpg',
-      title: 'Frontend Developer'
+      title: 'Frontend Developer',
+      skills: ['React', 'JavaScript', 'CSS', 'UI/UX']
     },
     toUser: {
       id: 'user-5',
       name: 'Mike Chen',
       handle: 'mikec',
       avatar: '/avatars/mike.jpg',
-      title: 'Full Stack Developer'
+      title: 'Full Stack Developer',
+      skills: ['React', 'Node.js', 'Python', 'MongoDB']
     }
   },
   {
@@ -193,14 +199,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'Dr. Emily Rodriguez',
       handle: 'emilyr',
       avatar: '/avatars/emily.jpg',
-      title: 'Data Science Lead'
+      title: 'Data Science Lead',
+      skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
     },
     toUser: {
       id: 'user-7',
       name: 'Alex Thompson',
       handle: 'alext',
       avatar: '/avatars/alex.jpg',
-      title: 'Data Analyst'
+      title: 'Data Analyst',
+      skills: ['SQL', 'Python', 'Tableau', 'Excel']
     }
   },
   {
@@ -222,14 +230,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'David Kim',
       handle: 'davidk',
       avatar: '/avatars/david.jpg',
-      title: 'Senior UX Designer'
+      title: 'Senior UX Designer',
+      skills: ['Figma', 'Sketch', 'Adobe XD', 'Prototyping']
     },
     toUser: {
       id: 'user-12',
       name: 'Lisa Park',
       handle: 'lisap',
       avatar: '/avatars/lisa.jpg',
-      title: 'UI Designer'
+      title: 'UI Designer',
+      skills: ['UI Design', 'Illustration', 'Branding', 'Figma']
     }
   },
   {
@@ -252,14 +262,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'Mike Chen',
       handle: 'mikec',
       avatar: '/avatars/mike.jpg',
-      title: 'Full Stack Developer'
+      title: 'Full Stack Developer',
+      skills: ['React', 'Node.js', 'Python', 'MongoDB']
     },
     toUser: {
       id: 'user-6',
       name: 'Tom Anderson',
       handle: 'toma',
       avatar: '/avatars/tom.jpg',
-      title: 'Software Developer'
+      title: 'Software Developer',
+      skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL']
     }
   },
   // Referral Requests (user asking for referrals)
@@ -284,14 +296,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'Sarah Wilson',
       handle: 'sarahw',
       avatar: '/avatars/sarah.jpg',
-      title: 'Frontend Developer'
+      title: 'Frontend Developer',
+      skills: ['React', 'JavaScript', 'CSS', 'UI/UX']
     },
     toUser: {
       id: 'user-1',
       name: 'John Doe',
       handle: 'johndoe',
       avatar: '/avatars/john.jpg',
-      title: 'Senior Software Engineer'
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
     }
   },
   {
@@ -314,14 +328,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'Tom Anderson',
       handle: 'toma',
       avatar: '/avatars/tom.jpg',
-      title: 'Software Developer'
+      title: 'Software Developer',
+      skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL']
     },
     toUser: {
       id: 'user-5',
       name: 'Mike Chen',
       handle: 'mikec',
       avatar: '/avatars/mike.jpg',
-      title: 'Full Stack Developer'
+      title: 'Full Stack Developer',
+      skills: ['React', 'Node.js', 'Python', 'MongoDB']
     }
   },
   {
@@ -344,14 +360,16 @@ export const mockReferrals: ReferralWithType[] = [
       name: 'Alex Thompson',
       handle: 'alext',
       avatar: '/avatars/alex.jpg',
-      title: 'Data Analyst'
+      title: 'Data Analyst',
+      skills: ['SQL', 'Python', 'Tableau', 'Excel']
     },
     toUser: {
       id: 'user-2',
       name: 'Dr. Emily Rodriguez',
       handle: 'emilyr',
       avatar: '/avatars/emily.jpg',
-      title: 'Data Science Lead'
+      title: 'Data Science Lead',
+      skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
     }
   }
 ];
@@ -368,21 +386,46 @@ export function getUserReferrals(userId: string): ReferralWithType[] {
 }
 
 /**
- * Get referrals sent by a specific user
- * @param userId - The user ID to get sent referrals for
- * @returns Array of referrals sent by the user
+ * Get referrals given by a specific user (direction 'send' where user is sender)
+ * @param userId - The user ID to get given referrals for
+ * @returns Array of referrals given by the user
  */
-export function getSentReferrals(userId: string): ReferralWithType[] {
-  return mockReferrals.filter(referral => referral.fromUserId === userId);
+export function getGivenReferrals(userId: string): ReferralWithType[] {
+  return mockReferrals.filter(referral => 
+    referral.fromUserId === userId && referral.direction === 'send'
+  );
 }
 
 /**
- * Get referrals received by a specific user
+ * Get referrals received by a specific user (direction 'send' where user is receiver)
  * @param userId - The user ID to get received referrals for
  * @returns Array of referrals received by the user
  */
 export function getReceivedReferrals(userId: string): ReferralWithType[] {
-  return mockReferrals.filter(referral => referral.toUserId === userId);
+  return mockReferrals.filter(referral => 
+    referral.toUserId === userId && referral.direction === 'send'
+  );
+}
+
+/**
+ * Get referral requests for a specific user (direction 'request' where user is sender or receiver)
+ * @param userId - The user ID to get requests for
+ * @returns Array of referral requests involving the user
+ */
+export function getReferralRequests(userId: string): ReferralWithType[] {
+  return mockReferrals.filter(referral => 
+    referral.direction === 'request' && 
+    (referral.fromUserId === userId || referral.toUserId === userId)
+  );
+}
+
+/**
+ * Get referrals sent by a specific user (legacy function for backward compatibility)
+ * @param userId - The user ID to get sent referrals for
+ * @returns Array of referrals sent by the user
+ */
+export function getSentReferrals(userId: string): ReferralWithType[] {
+  return getGivenReferrals(userId);
 }
 
 /**
@@ -409,22 +452,30 @@ export function getReferralsByStatus(status: ReferralStatus): ReferralWithType[]
  * @returns Object with referral statistics
  */
 export function getReferralStats(userId: string) {
-  const sentReferrals = getSentReferrals(userId);
+  // Use abstract functions for cleaner, more maintainable code
+  const givenReferrals = getGivenReferrals(userId);
   const receivedReferrals = getReceivedReferrals(userId);
+  const requestReferrals = getReferralRequests(userId);
   
   return {
     sent: {
-      total: sentReferrals.length,
-      draft: sentReferrals.filter(r => r.status === 'draft').length,
-      sent: sentReferrals.filter(r => r.status === 'sent').length,
-      accepted: sentReferrals.filter(r => r.status === 'accepted').length,
-      declined: sentReferrals.filter(r => r.status === 'declined').length,
+      total: givenReferrals.length,
+      draft: givenReferrals.filter(r => r.status === 'draft').length,
+      sent: givenReferrals.filter(r => r.status === 'sent').length,
+      accepted: givenReferrals.filter(r => r.status === 'accepted').length,
+      declined: givenReferrals.filter(r => r.status === 'declined').length,
     },
     received: {
       total: receivedReferrals.length,
       pending: receivedReferrals.filter(r => r.status === 'sent').length,
       accepted: receivedReferrals.filter(r => r.status === 'accepted').length,
       declined: receivedReferrals.filter(r => r.status === 'declined').length,
+    },
+    requests: {
+      total: requestReferrals.length,
+      pending: requestReferrals.filter(r => r.status === 'sent').length,
+      accepted: requestReferrals.filter(r => r.status === 'accepted').length,
+      declined: requestReferrals.filter(r => r.status === 'declined').length,
     }
   };
 }
