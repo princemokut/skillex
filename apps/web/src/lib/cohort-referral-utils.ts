@@ -4,7 +4,7 @@
  */
 
 import { mockCohorts, mockCohortMembers, mockSessions } from './cohort-mock-data';
-import { ReferralContextType } from './referral-mock-data';
+import { ReferralContextType, ReferralRequestType } from './referral-mock-data';
 
 // Referral eligibility threshold (75%)
 export const REFERRAL_ELIGIBILITY_THRESHOLD = 75;
@@ -82,11 +82,17 @@ export function getEligibleCohortMembersForReferrals(cohortId: string, currentUs
  * Generate referral context based on cohort work
  * @param cohortId - The cohort ID to generate context for
  * @param contextType - The type of referral context
+ * @param referralType - Whether this is for sending or requesting a referral
+ * @param requestType - The type of request (for request referrals)
+ * @param companyName - The company name (for company-specific requests)
  * @returns Generated context string
  */
 export function generateReferralContext(
   cohortId: string, 
-  contextType: ReferralContextType
+  contextType: ReferralContextType,
+  referralType: 'send' | 'request' = 'send',
+  requestType?: ReferralRequestType,
+  companyName?: string
 ): string {
   const cohort = mockCohorts.find(c => c.id === cohortId);
   if (!cohort) return '';
@@ -94,15 +100,40 @@ export function generateReferralContext(
   const completionPercentage = calculateSessionCompletionPercentage(cohortId);
   const cohortTitle = cohort.title;
 
-  const contextTemplates = {
-    job: `Based on our work together in the ${cohortTitle} cohort (${completionPercentage}% sessions completed), I can confidently recommend this person for the position. They demonstrated strong technical skills and excellent collaboration throughout our sessions.`,
-    project: `Having worked closely with this person in our ${cohortTitle} cohort, I believe they would be an excellent fit for this project. Their problem-solving approach and attention to detail were consistently impressive.`,
-    collaboration: `Our collaboration in the ${cohortTitle} cohort has shown me that this person brings valuable skills and a great work ethic. I'd love to work with them again on this opportunity.`,
-    mentorship: `Through our ${cohortTitle} cohort sessions, I've seen this person's potential and dedication to learning. They would benefit greatly from mentorship and have the drive to succeed.`,
-    freelance: `Based on their performance in our ${cohortTitle} cohort, this person has the skills and reliability needed for freelance work. They consistently delivered quality work and met deadlines.`
-  };
-
-  return contextTemplates[contextType] || contextTemplates.job;
+  if (referralType === 'send') {
+    // Templates for sending referrals (recommending someone)
+    const sendTemplates = {
+      job: `Based on our work together in the ${cohortTitle} cohort (${completionPercentage}% sessions completed), I can confidently recommend this person for the position. They demonstrated strong technical skills and excellent collaboration throughout our sessions.`,
+      project: `Having worked closely with this person in our ${cohortTitle} cohort, I believe they would be an excellent fit for this project. Their problem-solving approach and attention to detail were consistently impressive.`,
+      collaboration: `Our collaboration in the ${cohortTitle} cohort has shown me that this person brings valuable skills and a great work ethic. I'd love to work with them again on this opportunity.`,
+      mentorship: `Through our ${cohortTitle} cohort sessions, I've seen this person's potential and dedication to learning. They would benefit greatly from mentorship and have the drive to succeed.`,
+      freelance: `Based on their performance in our ${cohortTitle} cohort, this person has the skills and reliability needed for freelance work. They consistently delivered quality work and met deadlines.`
+    };
+    return sendTemplates[contextType] || sendTemplates.job;
+  } else {
+    // Templates for requesting referrals (asking for help)
+    if (requestType === 'company_specific' && companyName) {
+      // Company-specific request templates
+      const companySpecificTemplates = {
+        job: `Hi! I'm interested in applying to ${companyName} and would love to get a referral. Since you work there and have seen my work in our ${cohortTitle} cohort, would you be able to refer me for any opportunities?`,
+        project: `I'm looking for project opportunities at ${companyName} and thought you might be able to help. Having worked together in our ${cohortTitle} cohort, would you be able to refer me for any projects there?`,
+        collaboration: `I'm interested in collaboration opportunities at ${companyName} and would love to work with you again. Based on our experience in the ${cohortTitle} cohort, do you know of any joint projects we could explore there?`,
+        mentorship: `I'm seeking mentorship opportunities at ${companyName} to continue growing my skills. Since you work there and have seen my work in our ${cohortTitle} cohort, would you be able to connect me with any mentors?`,
+        freelance: `I'm exploring freelance opportunities at ${companyName} and would appreciate any referrals. Having worked together in our ${cohortTitle} cohort, I'd love to hear about any freelance projects you might know of there.`
+      };
+      return companySpecificTemplates[contextType] || companySpecificTemplates.job;
+    } else {
+      // General request templates
+      const generalTemplates = {
+        job: `Hi! I'm exploring job opportunities and would love to work on some projects. Since you've seen my work in our ${cohortTitle} cohort, would you be able to refer me for any opportunities you know about?`,
+        project: `I'm looking for project opportunities and thought you might know of some good ones. Having worked together in our ${cohortTitle} cohort, I'd appreciate any referrals you could provide.`,
+        collaboration: `I'm interested in collaboration opportunities and would love to work with you again. Based on our experience in the ${cohortTitle} cohort, do you know of any joint projects we could explore?`,
+        mentorship: `I'm seeking mentorship opportunities to continue growing my skills. Since you've seen my work in our ${cohortTitle} cohort, would you be able to connect me with any mentors or guidance?`,
+        freelance: `I'm exploring freelance opportunities and would appreciate any referrals. Having worked together in our ${cohortTitle} cohort, I'd love to hear about any freelance projects you might know of.`
+      };
+      return generalTemplates[contextType] || generalTemplates.job;
+    }
+  }
 }
 
 /**

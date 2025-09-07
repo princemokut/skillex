@@ -9,8 +9,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useReferrals } from '@/hooks/use-referrals';
 import { ReferralTabs } from '@/components/referral-tabs';
 import { ReferralCard } from '@/components/referral-card';
-import { ReferralRequestModal } from '@/components/referral-request-modal';
-import { RequestReferralModal } from '@/components/request-referral-modal';
+import { UnifiedReferralModal } from '@/components/unified-referral-modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -79,8 +78,7 @@ export default function ReferralsPage() {
     urgencyFilter: []
   });
 
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showReferralModal, setShowReferralModal] = useState(false);
   const [selectedCohortId, setSelectedCohortId] = useState<string>('');
 
   /**
@@ -167,27 +165,6 @@ export default function ReferralsPage() {
     }
   };
 
-  /**
-   * Handle create referral
-   * Opens create modal with selected cohort
-   * 
-   * @param cohortId - Cohort ID to create referral for
-   */
-  const handleCreateReferralClick = (cohortId: string) => {
-    setSelectedCohortId(cohortId);
-    setShowCreateModal(true);
-  };
-
-  /**
-   * Handle request referral
-   * Opens request modal with selected cohort
-   * 
-   * @param cohortId - Cohort ID to request referral for
-   */
-  const handleRequestReferralClick = (cohortId: string) => {
-    setSelectedCohortId(cohortId);
-    setShowRequestModal(true);
-  };
 
   /**
    * Handle referral creation
@@ -208,7 +185,7 @@ export default function ReferralsPage() {
         ...referralData,
         cohortId: selectedCohortId
       });
-      setShowCreateModal(false);
+      setShowReferralModal(false);
       setSelectedCohortId('');
     } catch (error) {
       console.error('Error creating referral:', error);
@@ -234,7 +211,7 @@ export default function ReferralsPage() {
       // Mock creation - in production, this would be an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      setShowRequestModal(false);
+      setShowReferralModal(false);
       setSelectedCohortId('');
     } catch (error) {
       console.error('Error creating referral request:', error);
@@ -262,21 +239,23 @@ export default function ReferralsPage() {
         <Card className="mb-6">
           <CardContent className="">
             <div className="space-y-4">
-              {/* Description and Refresh Button */}
+              {/* Description and Referral Button */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <p className="text-base text-slate-600">
                   Manage your professional referrals and recommendations
                 </p>
-                <Button 
-                  onClick={() => refetch()} 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full sm:w-auto"
-                  disabled={isLoading}
-                >
-                  <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
+                {availableCohorts.length > 0 && (
+                  <Button 
+                    onClick={() => {
+                      setSelectedCohortId(availableCohorts[0].id);
+                      setShowReferralModal(true);
+                    }} 
+                    className="w-full sm:w-auto"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Referral
+                  </Button>
+                )}
               </div>
               
               {/* Search and Filter Controls */}
@@ -306,27 +285,6 @@ export default function ReferralsPage() {
                     >
                       Clear
                     </Button>
-                  )}
-                  {availableCohorts.length > 0 && (
-                    <>
-                      <Button
-                        onClick={() => handleCreateReferralClick(availableCohorts[0].id)}
-                        className="flex items-center space-x-2"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline">Send Referral</span>
-                        <span className="sm:hidden">Send</span>
-                      </Button>
-                      <Button
-                        onClick={() => handleRequestReferralClick(availableCohorts[0].id)}
-                        variant="outline"
-                        className="flex items-center space-x-2"
-                      >
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline">Request Referral</span>
-                        <span className="sm:hidden">Request</span>
-                      </Button>
-                    </>
                   )}
                 </div>
               </div>
@@ -462,14 +420,14 @@ export default function ReferralsPage() {
                 </p>
                 {availableCohorts.length > 0 && (
                   <div className="flex items-center space-x-3">
-                    <Button onClick={() => handleCreateReferralClick(availableCohorts[0].id)}>
-                      Send Your First Referral
-                    </Button>
                     <Button 
-                      onClick={() => handleRequestReferralClick(availableCohorts[0].id)}
-                      variant="outline"
+                      onClick={() => {
+                        setSelectedCohortId(availableCohorts[0].id);
+                        setShowReferralModal(true);
+                      }}
                     >
-                      Request Your First Referral
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Your First Referral
                     </Button>
                   </div>
                 )}
@@ -558,28 +516,15 @@ export default function ReferralsPage() {
           </div>
         </div>
 
-        {/* Create Referral Modal */}
-        {showCreateModal && selectedCohortId && (
-          <ReferralRequestModal
-            isOpen={showCreateModal}
+        {/* Unified Referral Modal */}
+        {showReferralModal && selectedCohortId && (
+          <UnifiedReferralModal
+            isOpen={showReferralModal}
             onClose={() => {
-              setShowCreateModal(false);
+              setShowReferralModal(false);
               setSelectedCohortId('');
             }}
             onCreateReferral={handleReferralCreation}
-            cohortId={selectedCohortId}
-            currentUserId={MOCK_CURRENT_USER_ID}
-          />
-        )}
-
-        {/* Request Referral Modal */}
-        {showRequestModal && selectedCohortId && (
-          <RequestReferralModal
-            isOpen={showRequestModal}
-            onClose={() => {
-              setShowRequestModal(false);
-              setSelectedCohortId('');
-            }}
             onCreateRequest={handleReferralRequestCreation}
             cohortId={selectedCohortId}
             currentUserId={MOCK_CURRENT_USER_ID}
