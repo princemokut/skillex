@@ -154,7 +154,10 @@ export function MatchCard({
                 title={`${skill.name} (${skill.level})`}
               >
                 <span className="truncate block w-full">
-                  {skill.name.length > 7 ? `${skill.name.substring(0, 7)}...` : skill.name}
+                  <span className="sm:hidden">
+                    {skill.name.length > 7 ? `${skill.name.substring(0, 7)}...` : skill.name}
+                  </span>
+                  <span className="hidden sm:inline">{skill.name}</span>
                 </span>
               </Badge>
             ))}
@@ -185,7 +188,10 @@ export function MatchCard({
                 title={`${skill.name} (${skill.level})`}
               >
                 <span className="truncate block w-full">
-                  {skill.name.length > 7 ? `${skill.name.substring(0, 7)}...` : skill.name}
+                  <span className="sm:hidden">
+                    {skill.name.length > 7 ? `${skill.name.substring(0, 7)}...` : skill.name}
+                  </span>
+                  <span className="hidden sm:inline">{skill.name}</span>
                 </span>
               </Badge>
             ))}
@@ -218,7 +224,10 @@ export function MatchCard({
                     title={skill}
                   >
                     <span className="truncate block w-full">
-                      {skill.length > 7 ? `${skill.substring(0, 7)}...` : skill}
+                      <span className="sm:hidden">
+                        {skill.length > 7 ? `${skill.substring(0, 7)}...` : skill}
+                      </span>
+                      <span className="hidden sm:inline">{skill}</span>
                     </span>
                   </Badge>
                 ))}
