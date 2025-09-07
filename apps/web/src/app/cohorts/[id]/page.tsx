@@ -94,6 +94,7 @@ export default function CohortPage() {
   // Mock referrals data
   const [referrals, setReferrals] = useState<ReferralWithType[]>(() => 
     cohortId === 'cohort-1' ? [
+      // Referrals Given (direction: 'send', fromUserId: MOCK_CURRENT_USER_ID)
       {
         id: 'referral-1',
         fromUserId: MOCK_CURRENT_USER_ID,
@@ -109,7 +110,6 @@ export default function CohortPage() {
         companyName: 'TechCorp Inc.',
         urgency: 'high' as const,
         direction: 'send' as const,
-        requestType: 'company_specific' as const,
         fromUser: {
           id: MOCK_CURRENT_USER_ID,
           name: 'John Doe',
@@ -129,23 +129,249 @@ export default function CohortPage() {
       },
       {
         id: 'referral-2',
-        fromUserId: 'user-2',
-        toUserId: MOCK_CURRENT_USER_ID,
-        context: 'Can you refer me for opportunities at your company? I\'m looking for a full-stack developer role and would love to work with your team.',
-        status: 'sent' as ReferralStatus,
-        createdAt: new Date('2024-02-12T14:30:00Z'),
+        fromUserId: MOCK_CURRENT_USER_ID,
+        toUserId: 'user-5',
+        context: 'Mike would be perfect for this freelance React project. He showed great attention to detail in our cohort sessions and has excellent communication skills.',
+        status: 'accepted' as ReferralStatus,
+        createdAt: new Date('2024-02-08T14:30:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'freelance' as ReferralContextType,
+        projectTitle: 'E-commerce Dashboard',
+        urgency: 'medium' as const,
+        direction: 'send' as const,
+        fromUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        },
+        toUser: {
+          id: 'user-5',
+          name: 'Mike Chen',
+          handle: 'mikec',
+          avatar: '/avatars/mike.jpg',
+          title: 'Full Stack Developer',
+          skills: ['React', 'Node.js', 'Python', 'MongoDB']
+        }
+      },
+      {
+        id: 'referral-3',
+        fromUserId: MOCK_CURRENT_USER_ID,
+        toUserId: 'user-6',
+        context: 'Tom\'s TypeScript skills have improved dramatically throughout our cohort. He\'d be a great fit for the TypeScript Developer role at StartupXYZ.',
+        status: 'draft' as ReferralStatus,
+        createdAt: new Date('2024-02-11T11:20:00Z'),
         cohortId: cohortId,
         cohortTitle: cohort?.title || 'React & TypeScript Mastery',
         sessionCompletionPercentage: 80,
         isEligible: true,
         contextType: 'job' as ReferralContextType,
+        companyName: 'StartupXYZ',
+        urgency: 'high' as const,
+        direction: 'send' as const,
+        fromUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        },
+        toUser: {
+          id: 'user-6',
+          name: 'Tom Anderson',
+          handle: 'toma',
+          avatar: '/avatars/tom.jpg',
+          title: 'Software Developer',
+          skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL']
+        }
+      },
+      // Referrals Received (direction: 'send', toUserId: MOCK_CURRENT_USER_ID)
+      {
+        id: 'referral-4',
+        fromUserId: 'user-2',
+        toUserId: MOCK_CURRENT_USER_ID,
+        context: 'John is an exceptional developer with strong leadership skills. I highly recommend him for any senior engineering role.',
+        status: 'accepted' as ReferralStatus,
+        createdAt: new Date('2024-02-09T16:45:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'job' as ReferralContextType,
+        companyName: 'TechCorp Inc.',
         urgency: 'medium' as const,
-        direction: 'request' as const,
-        requestType: 'general' as const,
+        direction: 'send' as const,
         fromUser: {
           id: 'user-2',
-          name: 'Mike Johnson',
-          handle: 'mikej',
+          name: 'Dr. Emily Rodriguez',
+          handle: 'emilyr',
+          avatar: '/avatars/emily.jpg',
+          title: 'Data Science Lead',
+          skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
+        },
+        toUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        }
+      },
+      {
+        id: 'referral-5',
+        fromUserId: 'user-3',
+        toUserId: MOCK_CURRENT_USER_ID,
+        context: 'John has incredible design intuition and would be an excellent mentor for junior developers. His work in our UI/UX cohort was outstanding.',
+        status: 'sent' as ReferralStatus,
+        createdAt: new Date('2024-02-05T16:45:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'mentorship' as ReferralContextType,
+        urgency: 'medium' as const,
+        direction: 'send' as const,
+        fromUser: {
+          id: 'user-3',
+          name: 'David Kim',
+          handle: 'davidk',
+          avatar: '/avatars/david.jpg',
+          title: 'Senior UX Designer',
+          skills: ['Figma', 'Sketch', 'Adobe XD', 'Prototyping']
+        },
+        toUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        }
+      },
+      {
+        id: 'referral-6',
+        fromUserId: 'user-7',
+        toUserId: MOCK_CURRENT_USER_ID,
+        context: 'John has shown remarkable analytical thinking in our Data Science cohort. I\'d love to collaborate with him on our upcoming machine learning project.',
+        status: 'declined' as ReferralStatus,
+        createdAt: new Date('2024-02-12T09:15:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'collaboration' as ReferralContextType,
+        projectTitle: 'ML Model Optimization',
+        urgency: 'low' as const,
+        direction: 'send' as const,
+        fromUser: {
+          id: 'user-7',
+          name: 'Alex Thompson',
+          handle: 'alext',
+          avatar: '/avatars/alex.jpg',
+          title: 'Data Analyst',
+          skills: ['SQL', 'Python', 'Tableau', 'Excel']
+        },
+        toUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        }
+      },
+      // Referral Requests (direction: 'request')
+      {
+        id: 'referral-7',
+        fromUserId: MOCK_CURRENT_USER_ID,
+        toUserId: 'user-2',
+        context: 'Hi Emily! I know you work at TechCorp and I\'m looking for new opportunities. Would you be able to refer me for any open positions? I\'ve really enjoyed working with you in our React cohort.',
+        status: 'sent' as ReferralStatus,
+        createdAt: new Date('2024-02-13T14:30:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'job' as ReferralContextType,
+        direction: 'request' as const,
+        requestType: 'company_specific' as const,
+        companyName: 'TechCorp Inc.',
+        urgency: 'medium' as const,
+        fromUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        },
+        toUser: {
+          id: 'user-2',
+          name: 'Dr. Emily Rodriguez',
+          handle: 'emilyr',
+          avatar: '/avatars/emily.jpg',
+          title: 'Data Science Lead',
+          skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
+        }
+      },
+      {
+        id: 'referral-8',
+        fromUserId: 'user-4',
+        toUserId: MOCK_CURRENT_USER_ID,
+        context: 'Hey John! I\'m exploring freelance opportunities and would love to work on some React projects. Since you\'ve seen my work in our cohort, would you be able to refer me for any freelance gigs you know about?',
+        status: 'accepted' as ReferralStatus,
+        createdAt: new Date('2024-02-09T16:45:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'freelance' as ReferralContextType,
+        direction: 'request' as const,
+        requestType: 'general' as const,
+        urgency: 'low' as const,
+        fromUser: {
+          id: 'user-4',
+          name: 'Sarah Wilson',
+          handle: 'sarahw',
+          avatar: '/avatars/sarah.jpg',
+          title: 'Frontend Developer',
+          skills: ['React', 'JavaScript', 'CSS', 'UI/UX']
+        },
+        toUser: {
+          id: MOCK_CURRENT_USER_ID,
+          name: 'John Doe',
+          handle: 'johndoe',
+          avatar: '/avatars/john.jpg',
+          title: 'Senior Software Engineer',
+          skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+        }
+      },
+      {
+        id: 'referral-9',
+        fromUserId: 'user-5',
+        toUserId: MOCK_CURRENT_USER_ID,
+        context: 'John, I\'m really interested in data science opportunities and would love to work on machine learning projects. Would you be able to refer me for any positions or collaborations in your network?',
+        status: 'sent' as ReferralStatus,
+        createdAt: new Date('2024-02-14T10:15:00Z'),
+        cohortId: cohortId,
+        cohortTitle: cohort?.title || 'React & TypeScript Mastery',
+        sessionCompletionPercentage: 80,
+        isEligible: true,
+        contextType: 'collaboration' as ReferralContextType,
+        direction: 'request' as const,
+        requestType: 'general' as const,
+        urgency: 'medium' as const,
+        fromUser: {
+          id: 'user-5',
+          name: 'Mike Chen',
+          handle: 'mikec',
           avatar: '/avatars/mike.jpg',
           title: 'Full Stack Developer',
           skills: ['React', 'Node.js', 'Python', 'MongoDB']
@@ -162,11 +388,12 @@ export default function CohortPage() {
     ] : []
   );
   const [referralStats, setReferralStats] = useState({
-    totalReferrals: cohortId === 'cohort-1' ? 2 : 0,
+    totalReferrals: cohortId === 'cohort-1' ? 9 : 0,
     byStatus: {
-      sent: cohortId === 'cohort-1' ? 2 : 0,
-      accepted: cohortId === 'cohort-1' ? 0 : 0,
-      declined: 0
+      sent: cohortId === 'cohort-1' ? 4 : 0,
+      accepted: cohortId === 'cohort-1' ? 3 : 0,
+      declined: cohortId === 'cohort-1' ? 1 : 0,
+      draft: cohortId === 'cohort-1' ? 1 : 0
     },
     sessionCompletionPercentage: MOCK_COHORT.sessionCompletionPercentage
   });

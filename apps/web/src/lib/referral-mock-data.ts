@@ -274,12 +274,172 @@ export const mockReferrals: ReferralWithType[] = [
       skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL']
     }
   },
-  // Referral Requests (user asking for referrals)
+  // Additional Referrals Given (user-1 giving more referrals)
   {
     id: 'referral-6',
-    fromUserId: 'user-4',
+    fromUserId: 'user-1',
+    toUserId: 'user-6',
+    context: 'Tom\'s TypeScript skills have improved dramatically throughout our cohort. He\'d be a great fit for the TypeScript Developer role at StartupXYZ.',
+    status: 'draft',
+    createdAt: new Date('2024-02-11T11:20:00Z'),
+    cohortId: 'cohort-1',
+    cohortTitle: 'React & TypeScript Mastery',
+    sessionCompletionPercentage: 87,
+    isEligible: true,
+    contextType: 'job',
+    direction: 'send',
+    companyName: 'StartupXYZ',
+    urgency: 'high',
+    fromUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    },
+    toUser: {
+      id: 'user-6',
+      name: 'Tom Anderson',
+      handle: 'toma',
+      avatar: '/avatars/tom.jpg',
+      title: 'Software Developer',
+      skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL']
+    }
+  },
+  {
+    id: 'referral-7',
+    fromUserId: 'user-1',
+    toUserId: 'user-8',
+    context: 'Lisa has incredible design intuition and would be an excellent mentor for junior designers. Her work in our UI/UX cohort was outstanding.',
+    status: 'accepted',
+    createdAt: new Date('2024-02-05T16:45:00Z'),
+    cohortId: 'cohort-3',
+    cohortTitle: 'UI/UX Design Principles',
+    sessionCompletionPercentage: 100,
+    isEligible: true,
+    contextType: 'mentorship',
+    direction: 'send',
+    urgency: 'medium',
+    fromUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    },
+    toUser: {
+      id: 'user-8',
+      name: 'Lisa Park',
+      handle: 'lisap',
+      avatar: '/avatars/lisa.jpg',
+      title: 'UI Designer',
+      skills: ['UI Design', 'Illustration', 'Branding', 'Figma']
+    }
+  },
+  // Additional Referrals Received (more referrals about user-1)
+  {
+    id: 'referral-8',
+    fromUserId: 'user-2',
     toUserId: 'user-1',
-    context: 'Hi John! I know you work at TechCorp and I\'m looking for new opportunities. Would you be able to refer me for any open positions? I\'ve really enjoyed working with you in our React cohort and would love to continue learning in a professional setting.',
+    context: 'John is an exceptional developer with strong leadership skills. I highly recommend him for any senior engineering role.',
+    status: 'accepted',
+    createdAt: new Date('2024-02-09T16:45:00Z'),
+    cohortId: 'cohort-1',
+    cohortTitle: 'React & TypeScript Mastery',
+    sessionCompletionPercentage: 87,
+    isEligible: true,
+    contextType: 'job',
+    direction: 'send',
+    companyName: 'TechCorp Inc.',
+    urgency: 'medium',
+    fromUser: {
+      id: 'user-2',
+      name: 'Dr. Emily Rodriguez',
+      handle: 'emilyr',
+      avatar: '/avatars/emily.jpg',
+      title: 'Data Science Lead',
+      skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
+    },
+    toUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    }
+  },
+  {
+    id: 'referral-9',
+    fromUserId: 'user-3',
+    toUserId: 'user-1',
+    context: 'John has incredible design intuition and would be an excellent mentor for junior developers. His work in our UI/UX cohort was outstanding.',
+    status: 'sent',
+    createdAt: new Date('2024-02-05T16:45:00Z'),
+    cohortId: 'cohort-3',
+    cohortTitle: 'UI/UX Design Principles',
+    sessionCompletionPercentage: 100,
+    isEligible: true,
+    contextType: 'mentorship',
+    direction: 'send',
+    urgency: 'medium',
+    fromUser: {
+      id: 'user-3',
+      name: 'David Kim',
+      handle: 'davidk',
+      avatar: '/avatars/david.jpg',
+      title: 'Senior UX Designer',
+      skills: ['Figma', 'Sketch', 'Adobe XD', 'Prototyping']
+    },
+    toUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    }
+  },
+  {
+    id: 'referral-10',
+    fromUserId: 'user-7',
+    toUserId: 'user-1',
+    context: 'John has shown remarkable analytical thinking in our Data Science cohort. I\'d love to collaborate with him on our upcoming machine learning project.',
+    status: 'declined',
+    createdAt: new Date('2024-02-12T09:15:00Z'),
+    cohortId: 'cohort-2',
+    cohortTitle: 'Data Science Fundamentals',
+    sessionCompletionPercentage: 50,
+    isEligible: false,
+    contextType: 'collaboration',
+    direction: 'send',
+    projectTitle: 'ML Model Optimization',
+    urgency: 'low',
+    fromUser: {
+      id: 'user-7',
+      name: 'Alex Thompson',
+      handle: 'alext',
+      avatar: '/avatars/alex.jpg',
+      title: 'Data Analyst',
+      skills: ['SQL', 'Python', 'Tableau', 'Excel']
+    },
+    toUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    }
+  },
+  // Referral Requests (user asking for referrals)
+  {
+    id: 'referral-11',
+    fromUserId: 'user-1',
+    toUserId: 'user-2',
+    context: 'Hi Emily! I know you work at TechCorp and I\'m looking for new opportunities. Would you be able to refer me for any open positions? I\'ve really enjoyed working with you in our React cohort.',
     status: 'sent',
     createdAt: new Date('2024-02-13T14:30:00Z'),
     cohortId: 'cohort-1',
@@ -291,6 +451,38 @@ export const mockReferrals: ReferralWithType[] = [
     requestType: 'company_specific',
     companyName: 'TechCorp Inc.',
     urgency: 'medium',
+    fromUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    },
+    toUser: {
+      id: 'user-2',
+      name: 'Dr. Emily Rodriguez',
+      handle: 'emilyr',
+      avatar: '/avatars/emily.jpg',
+      title: 'Data Science Lead',
+      skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
+    }
+  },
+  {
+    id: 'referral-12',
+    fromUserId: 'user-4',
+    toUserId: 'user-1',
+    context: 'Hey John! I\'m exploring freelance opportunities and would love to work on some React projects. Since you\'ve seen my work in our cohort, would you be able to refer me for any freelance gigs you know about?',
+    status: 'accepted',
+    createdAt: new Date('2024-02-09T16:45:00Z'),
+    cohortId: 'cohort-1',
+    cohortTitle: 'React & TypeScript Mastery',
+    sessionCompletionPercentage: 87,
+    isEligible: true,
+    contextType: 'freelance',
+    direction: 'request',
+    requestType: 'general',
+    urgency: 'low',
     fromUser: {
       id: 'user-4',
       name: 'Sarah Wilson',
@@ -309,42 +501,10 @@ export const mockReferrals: ReferralWithType[] = [
     }
   },
   {
-    id: 'referral-7',
-    fromUserId: 'user-6',
-    toUserId: 'user-5',
-    context: 'Hey Mike! I\'m exploring freelance opportunities and would love to work on some React projects. Since you\'ve seen my work in our cohort, would you be able to refer me for any freelance gigs you know about?',
-    status: 'accepted',
-    createdAt: new Date('2024-02-09T16:45:00Z'),
-    cohortId: 'cohort-1',
-    cohortTitle: 'React & TypeScript Mastery',
-    sessionCompletionPercentage: 87,
-    isEligible: true,
-    contextType: 'freelance',
-    direction: 'request',
-    requestType: 'general',
-    urgency: 'low',
-    fromUser: {
-      id: 'user-6',
-      name: 'Tom Anderson',
-      handle: 'toma',
-      avatar: '/avatars/tom.jpg',
-      title: 'Software Developer',
-      skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL']
-    },
-    toUser: {
-      id: 'user-5',
-      name: 'Mike Chen',
-      handle: 'mikec',
-      avatar: '/avatars/mike.jpg',
-      title: 'Full Stack Developer',
-      skills: ['React', 'Node.js', 'Python', 'MongoDB']
-    }
-  },
-  {
-    id: 'referral-8',
-    fromUserId: 'user-7',
-    toUserId: 'user-2',
-    context: 'Dr. Rodriguez, I\'m really interested in data science opportunities and would love to work on machine learning projects. Would you be able to refer me for any positions or collaborations in your network?',
+    id: 'referral-13',
+    fromUserId: 'user-5',
+    toUserId: 'user-1',
+    context: 'John, I\'m really interested in data science opportunities and would love to work on machine learning projects. Would you be able to refer me for any positions or collaborations in your network?',
     status: 'sent',
     createdAt: new Date('2024-02-14T10:15:00Z'),
     cohortId: 'cohort-2',
@@ -356,20 +516,20 @@ export const mockReferrals: ReferralWithType[] = [
     requestType: 'general',
     urgency: 'medium',
     fromUser: {
-      id: 'user-7',
-      name: 'Alex Thompson',
-      handle: 'alext',
-      avatar: '/avatars/alex.jpg',
-      title: 'Data Analyst',
-      skills: ['SQL', 'Python', 'Tableau', 'Excel']
+      id: 'user-5',
+      name: 'Mike Chen',
+      handle: 'mikec',
+      avatar: '/avatars/mike.jpg',
+      title: 'Full Stack Developer',
+      skills: ['React', 'Node.js', 'Python', 'MongoDB']
     },
     toUser: {
-      id: 'user-2',
-      name: 'Dr. Emily Rodriguez',
-      handle: 'emilyr',
-      avatar: '/avatars/emily.jpg',
-      title: 'Data Science Lead',
-      skills: ['Python', 'Machine Learning', 'Statistics', 'TensorFlow']
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
     }
   }
 ];
