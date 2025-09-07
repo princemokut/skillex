@@ -21,7 +21,8 @@ import {
   Calendar,
   MessageCircle,
   Trash2,
-  X
+  X,
+  CheckCircle
 } from 'lucide-react';
 import { Connection, UserProfile } from '@/lib/connection-mock-data';
 import { cn } from '@/lib/utils';
@@ -181,12 +182,14 @@ export function ConnectionCard({
     return skills.slice(0, 1);
   };
   
-  return (
-    <div 
-      className={cn('w-full transition-all duration-200 hover:bg-slate-100 cursor-pointer', className)}
-      onClick={() => onViewProfile?.(connection.id)}
-    >
-      <div className="p-6">
+  // If className includes 'border-0 shadow-none', render without extra padding
+  if (className?.includes('border-0 shadow-none')) {
+    return (
+      <div 
+        className={cn('w-full transition-all duration-200', className)}
+        onClick={() => onViewProfile?.(connection.id)}
+      >
+        <div className="p-0">
         <div className="flex items-start justify-between">
           {/* User Info Section */}
           <div className="flex items-start space-x-4 flex-1">
@@ -320,6 +323,149 @@ export function ConnectionCard({
                 </Button>
               )}
             </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    );
+  }
+
+  // Default rendering with padding
+  return (
+    <div 
+      className={cn('w-full transition-all duration-200', className)}
+      onClick={() => onViewProfile?.(connection.id)}
+    >
+      <div className="p-6">
+        <div className="flex items-start justify-between">
+          {/* User Info Section */}
+          <div className="flex items-start space-x-4 flex-1">
+            {/* Avatar */}
+            <Avatar className="h-16 w-16">
+              <AvatarImage 
+                src={displayUser.avatarUrl} 
+                alt={`${displayUser.fullName}'s avatar`}
+              />
+              <AvatarFallback className="text-lg font-semibold">
+                {displayUser.fullName.split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
+            </Avatar>
+            
+            {/* User Details */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-2 mb-1">
+                <h3 className="text-lg font-semibold text-slate-900 truncate">
+                  {displayUser.fullName}
+                </h3>
+                <StatusIcon className="h-4 w-4 text-slate-400" />
+              </div>
+              <p className="text-sm text-slate-600 mb-2 truncate">
+                {displayUser.title}
+              </p>
+              <p className="text-sm text-slate-500 mb-3 line-clamp-2">
+                {displayUser.bio}
+              </p>
+              
+              {/* Skills */}
+              <div className="flex flex-wrap gap-1 mb-3">
+                {getPrimarySkills(displayUser.skills || []).map((skill, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="secondary" 
+                    className="text-xs px-2 py-1 bg-slate-100 text-slate-700"
+                  >
+                    {skill}
+                  </Badge>
+                ))}
+                {(displayUser.skills?.length || 0) > 1 && (
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs px-2 py-1 text-slate-500"
+                  >
+                    +{(displayUser.skills?.length || 0) - 1} more
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Actions */}
+          <div className="flex items-center space-x-2 ml-4">
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            ) : (
+              <>
+                {connection.status === 'accepted' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAction('message');
+                    }}
+                    className="flex items-center space-x-1"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                )}
+                
+                {connection.status === 'pending' && isCurrentUser && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAction('remove');
+                    }}
+                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+                
+                {connection.status === 'pending' && !isCurrentUser && (
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAction('accept');
+                      }}
+                      className="flex items-center space-x-1 text-green-600 hover:text-green-700 hover:bg-green-50"
+                    >
+                      <CheckCircle className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAction('decline');
+                      }}
+                      className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+                
+                {connection.status === 'accepted' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAction('remove');
+                    }}
+                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </>
+            )}
           </div>
         </div>
         

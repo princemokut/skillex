@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ListContainer, ListItem } from '@/components/ui/list-container';
 import { 
   Search, 
   Filter, 
@@ -501,24 +502,23 @@ export default function ReferralsPage() {
               </CardContent>
             </Card>
           ) : (
-            <Card>
-              <CardContent className="p-0">
-                <div className="divide-y divide-slate-200">
-                  {filteredReferrals.map((referral, index) => (
-                    <div key={referral.id} className="p-6">
-                      <ReferralCard
-                        referral={referral}
-                        isCurrentUser={activeTab === 'given'}
-                        activeTab={activeTab}
-                        onStatusChange={handleUpdateReferralStatus}
-                        onDelete={handleDeleteReferral}
-                        className="border-0 shadow-none"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <ListContainer>
+              {filteredReferrals.map((referral, index) => (
+                <ListItem 
+                  key={referral.id}
+                  showDivider={index < filteredReferrals.length - 1}
+                >
+                  <ReferralCard
+                    referral={referral}
+                    isCurrentUser={activeTab === 'given'}
+                    activeTab={activeTab}
+                    onStatusChange={handleUpdateReferralStatus}
+                    onDelete={handleDeleteReferral}
+                    className="border-0 shadow-none"
+                  />
+                </ListItem>
+              ))}
+            </ListContainer>
           )}
         </div>
           </div>

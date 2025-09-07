@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ListContainer, ListItem } from '@/components/ui/list-container';
 import { 
   Search, 
   Filter, 
@@ -25,7 +26,7 @@ import { getAdTargeting } from '@/lib/ad-context';
 import { trackPageView, trackAdInteraction } from '@/lib/analytics';
 import { NoConnectionsEmptyState } from '@/components/ui/empty-state';
 import { ConnectionCardSkeleton } from '@/components/ui/skeleton';
-import { AnimationWrapper, StaggerWrapper } from '@/components/ui/animations';
+import { AnimationWrapper } from '@/components/ui/animations';
 import { ResponsiveCard } from '@/components/ui/responsive-card';
 import { useIsMobile, useIsTablet } from '@/lib/responsive';
 
@@ -260,32 +261,28 @@ export default function ConnectionsPage() {
         />
         
         {/* Connections List */}
-        <div className="bg-white rounded-lg border border-slate-200">
+        <ListContainer>
           {filteredConnections.length > 0 ? (
-            <StaggerWrapper staggerDelay={100}>
+            <>
               {filteredConnections.map((connection, index) => (
-                <div key={connection.id}>
-                  <AnimationWrapper
-                    hover="hoverScale"
-                    transition="standard"
-                  >
-                    <ConnectionCard
-                      connection={connection}
-                      isCurrentUser={activeTab === 'sent'}
-                      onStatusChange={handleStatusChange}
-                      onRemove={handleRemove}
-                      onViewProfile={(connectionId) => {
-                        // TODO: Navigate to profile page
-                        console.log('View profile for connection:', connectionId);
-                      }}
-                    />
-                  </AnimationWrapper>
-                  {index < filteredConnections.length - 1 && (
-                    <div className="ml-20 border-t border-slate-100"></div>
-                  )}
-                </div>
+                <ListItem 
+                  key={connection.id}
+                  showDivider={index < filteredConnections.length - 1}
+                >
+                  <ConnectionCard
+                    connection={connection}
+                    isCurrentUser={activeTab === 'sent'}
+                    onStatusChange={handleStatusChange}
+                    onRemove={handleRemove}
+                    onViewProfile={(connectionId) => {
+                      // TODO: Navigate to profile page
+                      console.log('View profile for connection:', connectionId);
+                    }}
+                    className="border-0 shadow-none"
+                  />
+                </ListItem>
               ))}
-            </StaggerWrapper>
+            </>
           ) : (
             <AnimationWrapper animation="fadeIn">
               <NoConnectionsEmptyState
@@ -296,7 +293,7 @@ export default function ConnectionsPage() {
               />
             </AnimationWrapper>
           )}
-        </div>
+        </ListContainer>
           </div>
           
           {/* Right Sidebar with Ads */}
