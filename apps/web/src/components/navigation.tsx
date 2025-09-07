@@ -69,14 +69,15 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
           <div className="flex justify-between items-center h-16">
             {/* Logo and Search */}
             <div className="flex items-center space-x-4">
+              {/* Logo - Always visible, text hidden on mobile */}
               <Link href="/" className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">S</span>
                 </div>
-                <span className="text-xl font-bold text-slate-900">skillex</span>
+                <span className="hidden sm:block text-xl font-bold text-slate-900">skillex</span>
               </Link>
               
-              {/* Global Search Field */}
+              {/* Global Search Field - Desktop */}
               {user && pathname !== '/auth/signin' && pathname !== '/auth/signup' && (
                 <div className="hidden sm:block relative w-64">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -88,6 +89,20 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
                 </div>
               )}
             </div>
+
+            {/* Mobile Search Field - Centered */}
+            {user && pathname !== '/auth/signin' && pathname !== '/auth/signup' && (
+              <div className="flex-1 sm:hidden mx-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search name, skills and more"
+                    onChange={handleSearch}
+                    className="pl-10 h-9 bg-slate-50 border-slate-200 w-full"
+                  />
+                </div>
+              </div>
+            )}
 
           {/* Main Navigation */}
           {user && (
@@ -211,15 +226,6 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
                   </DropdownMenu>
                 </div>
 
-                {/* Mobile User Avatar */}
-                <div className="md:hidden">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
-                    <AvatarFallback>
-                      {user.email?.charAt(0).toUpperCase() || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
               </>
             ) : (
               <div className="hidden md:flex items-center space-x-2">

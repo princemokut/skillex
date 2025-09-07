@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/components/auth-provider";
 import { toast } from "sonner";
-import { Menu, User, Settings, LogOut, Bell } from "lucide-react";
+import { User, Settings, LogOut, Bell } from "lucide-react";
 
 /**
  * Mobile user menu component with user actions dropdown
@@ -82,8 +82,13 @@ export function MobileUserMenu() {
     <div className="mobile-user-menu md:hidden">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="p-2">
-            <Menu className="h-5 w-5" />
+          <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
+              <AvatarFallback>
+                {user.email?.charAt(0).toUpperCase() || 'U'}
+              </AvatarFallback>
+            </Avatar>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>

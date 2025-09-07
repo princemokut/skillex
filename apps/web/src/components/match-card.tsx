@@ -82,7 +82,7 @@ export function MatchCard({
   };
 
   return (
-    <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden rounded-none sm:rounded-lg py-3 px-3 sm:py-6 sm:px-6 ${className}`}>
+    <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden rounded-lg py-3 px-3 sm:py-6 sm:px-6 ${className}`}>
       <CardHeader className="px-0 py-0">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_60px] gap-2">
           {/* First column: Avatar with name/title/location */}

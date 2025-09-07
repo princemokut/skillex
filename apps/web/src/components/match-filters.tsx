@@ -77,7 +77,18 @@ export function MatchFilters({
     <div className={`w-full bg-card border rounded-xl py-4 p-2 ${className}`}>
         {/* Top row with filters and buttons */}
         <div className="flex items-center h-8">
-          <div className="flex-1 grid grid-cols-1 xl:grid-cols-4 gap-2 pr-2">
+          <div className="flex-1 grid grid-cols-1 xl:grid-cols-5 gap-2 pr-2">
+            {/* Search Field - Hidden on mobile, shown on desktop */}
+            <div className="relative w-full hidden xl:block">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
+              <Input
+                id="search"
+                placeholder="Search name, skills..."
+                value={filters.search}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
+                className="pl-7 pr-3 h-9 w-full text-xs"
+              />
+            </div>
             {/* Skill Level - Always visible */}
             <div className="w-full">
               <Select 
@@ -180,6 +191,18 @@ export function MatchFilters({
           <div className="space-y-4 pt-3 mt-2 border-t border-slate-100">
             {/* Filter Fields for Mobile/Tablet - Only show hidden fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:hidden gap-3">
+              {/* Search Field - Mobile/Tablet */}
+              <div className="relative w-full sm:col-span-2">
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Search</label>
+                <Search className="absolute left-2 top-8 transform -translate-y-1/2 h-3 w-3 text-slate-400" />
+                <Input
+                  id="search-mobile"
+                  placeholder="Search name, skills..."
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  className="pl-7 pr-3 h-9 w-full text-xs"
+                />
+              </div>
               {/* Location */}
               <div className="relative w-full">
                 <label className="text-xs font-medium text-slate-700 mb-1 block">Location</label>
