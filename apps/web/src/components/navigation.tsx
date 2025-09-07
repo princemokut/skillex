@@ -77,8 +77,8 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
                 <span className="hidden sm:block text-xl font-bold text-slate-900">skillex</span>
               </Link>
               
-              {/* Global Search Field - Desktop */}
-              {user && pathname !== '/auth/signin' && pathname !== '/auth/signup' && (
+              {/* Global Search Field - Desktop - Only on matches page */}
+              {user && pathname === '/matches' && (
                 <div className="hidden sm:block relative w-64">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
@@ -90,8 +90,8 @@ export function Navigation({ onSearch, filtersComponent, isMatchesPage = false }
               )}
             </div>
 
-            {/* Mobile Search Field - Centered */}
-            {user && pathname !== '/auth/signin' && pathname !== '/auth/signup' && (
+            {/* Mobile Search Field - Centered - Only on matches page */}
+            {user && pathname === '/matches' && (
               <div className="flex-1 sm:hidden mx-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
