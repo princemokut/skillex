@@ -12,17 +12,17 @@ export declare const artifactSchema: z.ZodObject<{
     kind: z.ZodEnum<["repo", "doc", "video", "image", "other"]>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    url?: string;
-    id?: string;
-    createdAt?: Date;
-    kind?: "repo" | "doc" | "video" | "image" | "other";
-    cohortId?: string;
+    id: string;
+    createdAt: Date;
+    kind: "repo" | "doc" | "video" | "image" | "other";
+    cohortId: string;
+    url: string;
 }, {
-    url?: string;
-    id?: string;
-    createdAt?: Date;
-    kind?: "repo" | "doc" | "video" | "image" | "other";
-    cohortId?: string;
+    id: string;
+    createdAt: Date;
+    kind: "repo" | "doc" | "video" | "image" | "other";
+    cohortId: string;
+    url: string;
 }>;
 export declare const artifactCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -31,13 +31,13 @@ export declare const artifactCreateSchema: z.ZodObject<Omit<{
     kind: z.ZodEnum<["repo", "doc", "video", "image", "other"]>;
     createdAt: z.ZodDate;
 }, "id" | "createdAt">, "strip", z.ZodTypeAny, {
-    url?: string;
-    kind?: "repo" | "doc" | "video" | "image" | "other";
-    cohortId?: string;
+    kind: "repo" | "doc" | "video" | "image" | "other";
+    cohortId: string;
+    url: string;
 }, {
-    url?: string;
-    kind?: "repo" | "doc" | "video" | "image" | "other";
-    cohortId?: string;
+    kind: "repo" | "doc" | "video" | "image" | "other";
+    cohortId: string;
+    url: string;
 }>;
 export declare const artifactResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -46,17 +46,17 @@ export declare const artifactResponseSchema: z.ZodObject<{
     kind: z.ZodEnum<["repo", "doc", "video", "image", "other"]>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    url?: string;
-    id?: string;
-    createdAt?: Date;
-    kind?: "repo" | "doc" | "video" | "image" | "other";
-    cohortId?: string;
+    id: string;
+    createdAt: Date;
+    kind: "repo" | "doc" | "video" | "image" | "other";
+    cohortId: string;
+    url: string;
 }, {
-    url?: string;
-    id?: string;
-    createdAt?: Date;
-    kind?: "repo" | "doc" | "video" | "image" | "other";
-    cohortId?: string;
+    id: string;
+    createdAt: Date;
+    kind: "repo" | "doc" | "video" | "image" | "other";
+    cohortId: string;
+    url: string;
 }>;
 export type Artifact = z.infer<typeof artifactSchema>;
 export type ArtifactCreate = z.infer<typeof artifactCreateSchema>;

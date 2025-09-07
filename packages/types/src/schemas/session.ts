@@ -13,6 +13,7 @@ export const sessionSchema = z.object({
   startsAt: z.date(),
   durationMinutes: z.number().int().min(15).max(240).default(60),
   notesUrl: z.string().url().optional(),
+  attendeeCount: z.number().int().min(0).default(0),
 });
 
 // Schema for creating a session

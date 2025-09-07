@@ -80,7 +80,7 @@ export default function OnboardingPage() {
       // This will be implemented when we integrate with the API
       console.log("Completing onboarding with data:", formData);
       
-      toast.success("Welcome to Skillsin! Your profile has been created.");
+      toast.success("Welcome to Skillex! Your profile has been created.");
       router.push("/matches");
     } catch (error) {
       console.error("Error completing onboarding:", error);
@@ -90,17 +90,21 @@ export default function OnboardingPage() {
 
   // Redirect if not authenticated
   if (!user) {
-    router.push("/auth/signin");
+    if (typeof window !== 'undefined') {
+      router.push("/auth/signin");
+    }
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    // <div className="min-h-screen bg-slate-50 py-8">
+    //   <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Welcome to Skillsin!
+            Welcome to Skillex!
           </h1>
           <p className="text-slate-600">
             Let's set up your profile to get started with skill exchanges

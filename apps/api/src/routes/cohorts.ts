@@ -19,14 +19,39 @@ export default async function cohortRoutes(fastify: FastifyInstance): Promise<vo
     handler: async (request, reply) => {
       try {
         // TODO: Implement cohort retrieval
-        return {
-          message: 'Cohort retrieval not yet implemented',
-        };
+        // For now, return a 404 to trigger mock data fallback
+        reply.status(404).send({
+          code: 'NOT_FOUND',
+          message: 'Cohort not found',
+        });
       } catch (error: any) {
         console.error('Error fetching cohort:', error);
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while fetching cohort',
+        });
+      }
+    },
+  });
+
+  /**
+   * GET /v1/cohorts
+   * Get all cohorts
+   */
+  fastify.get('/cohorts', {
+    handler: async (request, reply) => {
+      try {
+        // TODO: Implement cohort list retrieval
+        // For now, return a 404 to trigger mock data fallback
+        reply.status(404).send({
+          code: 'NOT_FOUND',
+          message: 'Cohorts not found',
+        });
+      } catch (error: any) {
+        console.error('Error fetching cohorts:', error);
+        reply.status(500).send({
+          code: 'INTERNAL_ERROR',
+          message: 'An error occurred while fetching cohorts',
         });
       }
     },

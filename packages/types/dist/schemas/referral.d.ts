@@ -13,19 +13,19 @@ export declare const referralSchema: z.ZodObject<{
     status: z.ZodEnum<["draft", "sent", "accepted", "declined"]>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    status?: "accepted" | "draft" | "sent" | "declined";
-    id?: string;
-    createdAt?: Date;
-    fromUserId?: string;
-    toUserId?: string;
-    context?: string;
+    id: string;
+    status: "accepted" | "draft" | "sent" | "declined";
+    createdAt: Date;
+    fromUserId: string;
+    toUserId: string;
+    context: string;
 }, {
-    status?: "accepted" | "draft" | "sent" | "declined";
-    id?: string;
-    createdAt?: Date;
-    fromUserId?: string;
-    toUserId?: string;
-    context?: string;
+    id: string;
+    status: "accepted" | "draft" | "sent" | "declined";
+    createdAt: Date;
+    fromUserId: string;
+    toUserId: string;
+    context: string;
 }>;
 export declare const referralCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -34,25 +34,25 @@ export declare const referralCreateSchema: z.ZodObject<Omit<{
     context: z.ZodString;
     status: z.ZodEnum<["draft", "sent", "accepted", "declined"]>;
     createdAt: z.ZodDate;
-}, "status" | "id" | "createdAt"> & {
+}, "id" | "status" | "createdAt"> & {
     status: z.ZodDefault<z.ZodOptional<z.ZodLiteral<"draft">>>;
 }, "strip", z.ZodTypeAny, {
-    status?: "draft";
-    fromUserId?: string;
-    toUserId?: string;
-    context?: string;
+    status: "draft";
+    fromUserId: string;
+    toUserId: string;
+    context: string;
 }, {
-    status?: "draft";
-    fromUserId?: string;
-    toUserId?: string;
-    context?: string;
+    fromUserId: string;
+    toUserId: string;
+    context: string;
+    status?: "draft" | undefined;
 }>;
 export declare const referralUpdateSchema: z.ZodObject<{
     status: z.ZodEnum<["draft", "sent", "accepted", "declined"]>;
 }, "strip", z.ZodTypeAny, {
-    status?: "accepted" | "draft" | "sent" | "declined";
+    status: "accepted" | "draft" | "sent" | "declined";
 }, {
-    status?: "accepted" | "draft" | "sent" | "declined";
+    status: "accepted" | "draft" | "sent" | "declined";
 }>;
 export declare const referralResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -62,19 +62,19 @@ export declare const referralResponseSchema: z.ZodObject<{
     status: z.ZodEnum<["draft", "sent", "accepted", "declined"]>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    status?: "accepted" | "draft" | "sent" | "declined";
-    id?: string;
-    createdAt?: Date;
-    fromUserId?: string;
-    toUserId?: string;
-    context?: string;
+    id: string;
+    status: "accepted" | "draft" | "sent" | "declined";
+    createdAt: Date;
+    fromUserId: string;
+    toUserId: string;
+    context: string;
 }, {
-    status?: "accepted" | "draft" | "sent" | "declined";
-    id?: string;
-    createdAt?: Date;
-    fromUserId?: string;
-    toUserId?: string;
-    context?: string;
+    id: string;
+    status: "accepted" | "draft" | "sent" | "declined";
+    createdAt: Date;
+    fromUserId: string;
+    toUserId: string;
+    context: string;
 }>;
 export type Referral = z.infer<typeof referralSchema>;
 export type ReferralCreate = z.infer<typeof referralCreateSchema>;

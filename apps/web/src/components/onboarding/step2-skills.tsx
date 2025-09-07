@@ -123,7 +123,7 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
   };
 
   /**
-   * Render skill level selector
+   * Render skill level selector with accessibility features
    */
   const renderLevelSelector = (skill: Skill) => {
     const levels = [
@@ -134,7 +134,11 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
     ] as const;
 
     return (
-      <div className="flex space-x-1">
+      <div 
+        className="flex space-x-1" 
+        role="group" 
+        aria-label={`Skill level for ${skill.name}`}
+      >
         {levels.map((level) => (
           <button
             key={level.value}
@@ -145,6 +149,8 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
                 ? level.color
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
+            aria-pressed={skill.level === level.value}
+            aria-label={`Set ${skill.name} skill level to ${level.label}`}
           >
             {level.label}
           </button>
@@ -154,7 +160,13 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" role="form" aria-label="Skills selection form">
+      {/* Form Description for Screen Readers */}
+      <div className="sr-only">
+        <h2>Skills Selection - Step 2 of 3</h2>
+        <p>Add skills you want to teach and learn. This helps us match you with the right people.</p>
+      </div>
+
       <div className="text-center mb-6">
         <p className="text-slate-600">
           Add skills you want to teach and learn. This helps us match you with the right people.
@@ -162,64 +174,95 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "teach" | "learn")}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="teach">
-            Skills I Can Teach ({getSkillsByType("teach").length})
+        <TabsList className="grid w-full grid-cols-2" role="tablist" aria-label="Skills categories">
+          <TabsTrigger 
+            value="teach"
+            role="tab"
+            aria-selected={activeTab === "teach"}
+            aria-controls="teach-panel"
+            aria-label={`Skills I Can Teach - ${getSkillsByType("teach").length} skills added`}
+          >
+            I Can Teach ({getSkillsByType("teach").length})
           </TabsTrigger>
-          <TabsTrigger value="learn">
-            Skills I Want to Learn ({getSkillsByType("learn").length})
+          <TabsTrigger 
+            value="learn"
+            role="tab"
+            aria-selected={activeTab === "learn"}
+            aria-controls="learn-panel"
+            aria-label={`Skills I Want to Learn - ${getSkillsByType("learn").length} skills added`}
+          >
+            I Want to Learn ({getSkillsByType("learn").length})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="teach" className="space-y-4">
+        <TabsContent 
+          value="teach" 
+          className="space-y-4"
+          role="tabpanel"
+          id="teach-panel"
+          aria-labelledby="teach-tab"
+          aria-label="Skills I can teach"
+        >
           {/* Add new skill */}
-          <div className="flex space-x-2">
-            <Input
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              placeholder="Add a skill you can teach..."
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addSkill(newSkill, "teach");
-                }
-              }}
-            />
-            <Button
-              type="button"
-              onClick={() => addSkill(newSkill, "teach")}
-              disabled={!newSkill.trim()}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          <fieldset className="space-y-2">
+            <legend className="sr-only">Add Teaching Skill</legend>
+            <div className="flex space-x-2">
+              <Input
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                placeholder="Add a skill you can teach..."
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSkill(newSkill, "teach");
+                  }
+                }}
+                aria-label="Add a skill you can teach"
+                aria-describedby="teach-skill-help"
+              />
+              <Button
+                type="button"
+                onClick={() => addSkill(newSkill, "teach")}
+                disabled={!newSkill.trim()}
+                aria-label="Add skill to teaching list"
+              >
+                <Plus className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </div>
+            <p id="teach-skill-help" className="sr-only">
+              Enter a skill you can teach others, then press Enter or click the plus button to add it
+            </p>
+          </fieldset>
 
           {/* Skill suggestions */}
-          <div className="space-y-2">
-            <Label className="text-sm text-slate-600">Popular skills:</Label>
-            <div className="flex flex-wrap gap-2">
+          <fieldset className="space-y-2">
+            <legend className="text-sm text-slate-600 font-medium">Popular skills:</legend>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Popular teaching skills">
               {skillSuggestions.map((skill) => (
                 <button
                   key={skill}
                   type="button"
                   onClick={() => addSkill(skill, "teach")}
                   className="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+                  aria-label={`Add ${skill} to teaching skills`}
                 >
                   + {skill}
                 </button>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           {/* Added skills */}
-          <div className="space-y-3">
+          <div className="space-y-3" role="list" aria-label="Teaching skills list">
             {getSkillsByType("teach").map((skill) => (
-              <Card key={skill.id}>
+              <Card key={skill.id} role="listitem">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span className="font-medium">{skill.name}</span>
+                      <Star className="h-4 w-4 text-yellow-500" aria-hidden="true" />
+                      <span className="font-medium" aria-label={`Teaching skill: ${skill.name}`}>
+                        {skill.name}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2">
                       {renderLevelSelector(skill)}
@@ -228,8 +271,9 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
                         variant="ghost"
                         size="sm"
                         onClick={() => removeSkill(skill.id)}
+                        aria-label={`Remove ${skill.name} from teaching skills`}
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>
@@ -239,54 +283,73 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
           </div>
         </TabsContent>
 
-        <TabsContent value="learn" className="space-y-4">
+        <TabsContent 
+          value="learn" 
+          className="space-y-4"
+          role="tabpanel"
+          id="learn-panel"
+          aria-labelledby="learn-tab"
+          aria-label="Skills I want to learn"
+        >
           {/* Add new skill */}
-          <div className="flex space-x-2">
-            <Input
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              placeholder="Add a skill you want to learn..."
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addSkill(newSkill, "learn");
-                }
-              }}
-            />
-            <Button
-              type="button"
-              onClick={() => addSkill(newSkill, "learn")}
-              disabled={!newSkill.trim()}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          <fieldset className="space-y-2">
+            <legend className="sr-only">Add Learning Skill</legend>
+            <div className="flex space-x-2">
+              <Input
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                placeholder="Add a skill you want to learn..."
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSkill(newSkill, "learn");
+                  }
+                }}
+                aria-label="Add a skill you want to learn"
+                aria-describedby="learn-skill-help"
+              />
+              <Button
+                type="button"
+                onClick={() => addSkill(newSkill, "learn")}
+                disabled={!newSkill.trim()}
+                aria-label="Add skill to learning list"
+              >
+                <Plus className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </div>
+            <p id="learn-skill-help" className="sr-only">
+              Enter a skill you want to learn, then press Enter or click the plus button to add it
+            </p>
+          </fieldset>
 
           {/* Skill suggestions */}
-          <div className="space-y-2">
-            <Label className="text-sm text-slate-600">Popular skills:</Label>
-            <div className="flex flex-wrap gap-2">
+          <fieldset className="space-y-2">
+            <legend className="text-sm text-slate-600 font-medium">Popular skills:</legend>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Popular learning skills">
               {skillSuggestions.map((skill) => (
                 <button
                   key={skill}
                   type="button"
                   onClick={() => addSkill(skill, "learn")}
                   className="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+                  aria-label={`Add ${skill} to learning skills`}
                 >
                   + {skill}
                 </button>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           {/* Added skills */}
-          <div className="space-y-3">
+          <div className="space-y-3" role="list" aria-label="Learning skills list">
             {getSkillsByType("learn").map((skill) => (
-              <Card key={skill.id}>
+              <Card key={skill.id} role="listitem">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <span className="font-medium">{skill.name}</span>
+                      <span className="font-medium" aria-label={`Learning skill: ${skill.name}`}>
+                        {skill.name}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2">
                       {renderLevelSelector(skill)}
@@ -295,8 +358,9 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
                         variant="ghost"
                         size="sm"
                         onClick={() => removeSkill(skill.id)}
+                        aria-label={`Remove ${skill.name} from learning skills`}
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>
@@ -309,13 +373,28 @@ export function OnboardingStep2({ data, onUpdate, onNext, onPrevious }: Onboardi
 
       {/* Navigation Buttons */}
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onPrevious}>
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={onPrevious}
+          aria-label="Go back to previous step"
+        >
           Previous
         </Button>
-        <Button type="submit" disabled={isValidating || data.skills.length === 0}>
+        <Button 
+          type="submit" 
+          disabled={isValidating || data.skills.length === 0}
+          aria-describedby="submit-help"
+        >
           {isValidating ? "Validating..." : "Continue"}
         </Button>
       </div>
+      <p id="submit-help" className="sr-only">
+        {data.skills.length === 0 
+          ? "Add at least one skill to continue to the next step"
+          : `Continue to next step with ${data.skills.length} skills added`
+        }
+      </p>
     </form>
   );
 }

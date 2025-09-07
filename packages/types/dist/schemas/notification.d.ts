@@ -13,19 +13,19 @@ export declare const notificationSchema: z.ZodObject<{
     readAt: z.ZodOptional<z.ZodDate>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
-    payload?: Record<string, unknown>;
-    readAt?: Date;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
+    payload: Record<string, unknown>;
+    readAt?: Date | undefined;
 }, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
-    payload?: Record<string, unknown>;
-    readAt?: Date;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
+    payload: Record<string, unknown>;
+    readAt?: Date | undefined;
 }>;
 export declare const notificationCreateSchema: z.ZodObject<Omit<{
     id: z.ZodString;
@@ -35,20 +35,20 @@ export declare const notificationCreateSchema: z.ZodObject<Omit<{
     readAt: z.ZodOptional<z.ZodDate>;
     createdAt: z.ZodDate;
 }, "id" | "createdAt" | "readAt">, "strip", z.ZodTypeAny, {
-    userId?: string;
-    kind?: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
-    payload?: Record<string, unknown>;
+    userId: string;
+    kind: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
+    payload: Record<string, unknown>;
 }, {
-    userId?: string;
-    kind?: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
-    payload?: Record<string, unknown>;
+    userId: string;
+    kind: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
+    payload: Record<string, unknown>;
 }>;
 export declare const notificationUpdateSchema: z.ZodObject<{
     readAt: z.ZodOptional<z.ZodDate>;
 }, "strip", z.ZodTypeAny, {
-    readAt?: Date;
+    readAt?: Date | undefined;
 }, {
-    readAt?: Date;
+    readAt?: Date | undefined;
 }>;
 export declare const notificationResponseSchema: z.ZodObject<{
     id: z.ZodString;
@@ -58,19 +58,19 @@ export declare const notificationResponseSchema: z.ZodObject<{
     readAt: z.ZodOptional<z.ZodDate>;
     createdAt: z.ZodDate;
 }, "strip", z.ZodTypeAny, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
-    payload?: Record<string, unknown>;
-    readAt?: Date;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
+    payload: Record<string, unknown>;
+    readAt?: Date | undefined;
 }, {
-    id?: string;
-    createdAt?: Date;
-    userId?: string;
-    kind?: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
-    payload?: Record<string, unknown>;
-    readAt?: Date;
+    id: string;
+    createdAt: Date;
+    userId: string;
+    kind: "connection_request" | "connection_accepted" | "cohort_invitation" | "session_reminder" | "new_message" | "feedback_received" | "endorsement_received" | "referral_received" | "referral_accepted" | "system";
+    payload: Record<string, unknown>;
+    readAt?: Date | undefined;
 }>;
 export type Notification = z.infer<typeof notificationSchema>;
 export type NotificationCreate = z.infer<typeof notificationCreateSchema>;

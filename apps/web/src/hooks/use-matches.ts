@@ -53,7 +53,7 @@ export function useMatches() {
         console.warn('API not available, using mock data:', error);
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
-        return getMockMatchPreview();
+        return getMockMatchPreview(apiRequest);
       }
     },
     staleTime: 5 * 60 * 1000, // 5 minutes

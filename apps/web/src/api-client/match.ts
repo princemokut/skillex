@@ -88,14 +88,15 @@ export async function getMatchPreview(request: MatchPreviewRequest = {}): Promis
     params.append('sort_by', request.sort_by);
   }
 
-  const queryString = params.toString();
-  const url = `${apiConfig.endpoints.matches}/preview${queryString ? `?${queryString}` : ''}`;
+  const url = `${apiConfig.endpoints.matches}/preview`;
   
+  // Use the params to build a body instead of query string for POST requests
   return fetcher(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(request),
   });
 }
 
