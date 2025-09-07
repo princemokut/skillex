@@ -165,7 +165,7 @@ export default function MatchesPageClient() {
                   {/* Matches Grid */}
                   {matches.length > 0 ? (
                     <StaggerWrapper staggerDelay={100}>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                         {matches.map((match: MatchData) => (
                           <AnimationWrapper
                             key={match.id}
