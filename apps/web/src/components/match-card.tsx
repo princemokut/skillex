@@ -82,9 +82,9 @@ export function MatchCard({
   };
 
   return (
-    <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden ${className}`}>
+    <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden rounded-none sm:rounded-lg ${className}`}>
       <CardHeader>
-        <div className="grid grid-cols-[1fr_60px] gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_60px] gap-2">
           {/* First column: Avatar with name/title/location */}
           <div className="flex items-center space-x-3 overflow-hidden">
             <Avatar className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 flex-shrink-0">
@@ -112,8 +112,8 @@ export function MatchCard({
             </div>
           </div>
           
-          {/* Second column: Match percentage */}
-          <div className="text-right">
+          {/* Second column: Match percentage - Hidden on mobile */}
+          <div className="text-right hidden sm:block">
             <div className={`text-base sm:text-lg md:text-xl font-bold ${getMatchScoreColor(match.match_score)}`}>
               {match.match_score}%
             </div>
@@ -123,22 +123,29 @@ export function MatchCard({
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col">
-        {/* Bio */}
+        {/* Bio - Hidden on mobile */}
         {match.bio && (
-          <div className="mb-6">
+          <div className="mb-6 hidden sm:block">
             <p className="text-sm text-slate-600 line-clamp-2">
               {match.bio}
             </p>
           </div>
         )}
 
+        {/* Match Percentage - Mobile only, where bio used to be */}
+        <div className="sm:hidden mb-4 text-center">
+          <div className={`text-lg font-bold ${getMatchScoreColor(match.match_score)}`}>
+            {match.match_score}% Match
+          </div>
+        </div>
+
         {/* Skills to Teach */}
         <div className="h-12 sm:h-14 mb-3 flex flex-col">
-          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center">
+          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center justify-center sm:justify-start">
             <Star className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-amber-500" />
             Can Teach
           </h4>
-          <div className="flex flex-wrap gap-1 items-start line-clamp-1 sm:line-clamp-2 overflow-hidden">
+          <div className="flex flex-wrap gap-1 items-start justify-center sm:justify-start line-clamp-1 sm:line-clamp-2 overflow-hidden">
             {sortSkillsByLevel(match.skills_to_teach).slice(0, 2).map((skill, index) => (
               <Badge
                 key={`teach-${index}`}
@@ -163,11 +170,11 @@ export function MatchCard({
 
         {/* Skills to Learn */}
         <div className="h-12 sm:h-14 mb-3 flex flex-col">
-          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center">
+          <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center justify-center sm:justify-start">
             <User className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-blue-500" />
             Wants to Learn
           </h4>
-          <div className="flex flex-wrap gap-1 items-start line-clamp-1 sm:line-clamp-2 overflow-hidden">
+          <div className="flex flex-wrap gap-1 items-start justify-center sm:justify-start line-clamp-1 sm:line-clamp-2 overflow-hidden">
             {sortSkillsByLevel(match.skills_to_learn).slice(0, 2).map((skill, index) => (
               <Badge
                 key={`learn-${index}`}
@@ -190,8 +197,8 @@ export function MatchCard({
           </div>
         </div>
 
-        {/* Common Skills */}
-        <div className="h-12 sm:h-14 mb-3 flex flex-col">
+        {/* Common Skills - Hidden on mobile */}
+        <div className="h-12 sm:h-14 mb-3 flex flex-col hidden sm:flex">
           <h4 className="text-xs sm:text-sm font-medium text-slate-700 mb-1 flex items-center">
             Common Skills
             <span className="text-xs text-slate-500 ml-1 hidden sm:inline">(shared)</span>
@@ -230,13 +237,13 @@ export function MatchCard({
         <div className="flex-1"></div>
 
         {/* Availability and Status - Sticky above buttons */}
-        <div className="space-y-1 mb-4">
+        <div className="space-y-1 mb-4 text-center sm:text-left">
           {/* Availability Summary - Line by line */}
           {match.availability_summary && (
             <div className="text-xs text-slate-500">
               <Clock className="h-3 w-3 mr-1 inline" />
               <span className="font-medium">Available:</span>
-              <div className="ml-4 mt-1">
+              <div className="ml-4 mt-1 sm:ml-4">
                 {match.availability_summary.split(', ').map((time, index) => (
                   <div key={index} className="text-xs text-slate-500">
                     • {time}
@@ -258,7 +265,7 @@ export function MatchCard({
         <div className="flex gap-2 pt-4 border-t border-slate-100">
           <Button
             size="sm"
-            className="flex-1"
+            className="flex-1 sm:flex-1"
             onClick={() => onConnect?.(match.id)}
           >
             Connect
@@ -266,6 +273,7 @@ export function MatchCard({
           <Button
             size="sm"
             variant="outline"
+            className="flex-1 sm:flex-none"
             onClick={() => onViewProfile?.(match.id)}
           >
             Profile

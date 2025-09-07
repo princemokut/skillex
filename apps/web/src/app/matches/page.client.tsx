@@ -114,10 +114,10 @@ export default function MatchesPageClient() {
       {/* Custom Navigation with Filters */}
       <MatchesNavigation />
       
-      <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-20 pb-20 md:pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-0 sm:py-6 lg:py-8 px-0 sm:px-6 lg:px-8 mt-20 pb-20 md:pb-48">
+        <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
           {/* Header - Left aligned */}
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-6 sm:mb-8 px-4 sm:px-0 pt-4 sm:pt-0">
             <p className="text-sm sm:text-base text-slate-600 mb-4">
               Discover professionals who match your skills and learning goals.
             </p>
@@ -141,7 +141,7 @@ export default function MatchesPageClient() {
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Main Content Area (Left) */}
-            <div className="lg:col-span-3 order-1">
+            <div className="lg:col-span-3 order-1 px-4 sm:px-0">
               {/* Error State */}
               {error && (
                 <Alert className="mb-6">
@@ -154,7 +154,7 @@ export default function MatchesPageClient() {
               {/* Loading State */}
               {isLoading && matches.length === 0 ? (
                 <AnimationWrapper animation="fadeIn">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:gap-6">
                     {Array.from({ length: 6 }).map((_, i) => (
                       <MatchCardSkeleton key={i} />
                     ))}
@@ -165,7 +165,7 @@ export default function MatchesPageClient() {
                   {/* Matches Grid */}
                   {matches.length > 0 ? (
                     <StaggerWrapper staggerDelay={100}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:gap-6">
                         {matches.map((match: MatchData) => (
                           <AnimationWrapper
                             key={match.id}
@@ -214,7 +214,7 @@ export default function MatchesPageClient() {
             </div>
             
             {/* Right Sidebar with Ad */}
-            <div className="lg:col-span-1 order-2">
+            <div className="lg:col-span-1 order-2 px-4 sm:px-0 pb-8 md:pb-16">
               <AdSlot
                 slotId="matches-sidebar"
                 size="sidebar"
