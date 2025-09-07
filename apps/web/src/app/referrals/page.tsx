@@ -40,7 +40,8 @@ interface SearchFilters {
   query: string;
   showFilters: boolean;
   contextTypeFilter: ReferralContextType[];
-  urgencyFilter: string[];
+  statusFilter: ReferralStatus | 'all';
+  cohortFilter: string | 'all';
 }
 
 /**
@@ -75,7 +76,8 @@ export default function ReferralsPage() {
     query: '',
     showFilters: false,
     contextTypeFilter: [],
-    urgencyFilter: []
+    statusFilter: 'all',
+    cohortFilter: 'all'
   });
 
   const [showReferralModal, setShowReferralModal] = useState(false);
@@ -83,7 +85,7 @@ export default function ReferralsPage() {
 
   /**
    * Get filtered referrals based on search and filters
-   * Returns referrals filtered by search query and context type
+   * Returns referrals filtered by search query, context type, status, and cohort
    */
   const getFilteredReferrals = (): ReferralWithType[] => {
     let filtered = referrals;
@@ -107,10 +109,18 @@ export default function ReferralsPage() {
       );
     }
 
-    // Filter by urgency
-    if (searchFilters.urgencyFilter.length > 0) {
+
+    // Filter by status
+    if (searchFilters.statusFilter !== 'all') {
       filtered = filtered.filter(referral => 
-        searchFilters.urgencyFilter.includes(referral.urgency)
+        referral.status === searchFilters.statusFilter
+      );
+    }
+
+    // Filter by cohort
+    if (searchFilters.cohortFilter !== 'all') {
+      filtered = filtered.filter(referral => 
+        referral.cohortId === searchFilters.cohortFilter
       );
     }
 
@@ -278,10 +288,16 @@ export default function ReferralsPage() {
                     <Filter className="h-4 w-4 mr-2" />
                     Filters
                   </Button>
-                  {searchFilters.query && (
+                  {(searchFilters.query || searchFilters.contextTypeFilter.length > 0 || searchFilters.statusFilter !== 'all' || searchFilters.cohortFilter !== 'all') && (
                     <Button 
                       variant="outline" 
-                      onClick={() => setSearchFilters(prev => ({ ...prev, query: '' }))}
+                      onClick={() => setSearchFilters(prev => ({ 
+                        ...prev, 
+                        query: '',
+                        contextTypeFilter: [],
+                        statusFilter: 'all',
+                        cohortFilter: 'all'
+                      }))}
                     >
                       Clear
                     </Button>
@@ -299,7 +315,7 @@ export default function ReferralsPage() {
                     <label className="text-sm font-medium text-slate-700 mb-2 block">
                       Referral Type
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
                       {(['job', 'project', 'collaboration', 'mentorship', 'freelance'] as ReferralContextType[]).map((type) => {
                         const Icon = getContextTypeIcon(type);
                         return (
@@ -315,7 +331,7 @@ export default function ReferralsPage() {
                                   : [...prev.contextTypeFilter, type]
                               }));
                             }}
-                            className="flex items-center space-x-1"
+                            className="flex items-center space-x-1 flex-shrink-0"
                           >
                             <Icon className="h-3 w-3" />
                             <span>{getContextTypeDisplayName(type)}</span>
@@ -325,29 +341,83 @@ export default function ReferralsPage() {
                     </div>
                   </div>
 
-                  {/* Urgency Filter */}
+
+                  {/* Status Filter */}
                   <div>
                     <label className="text-sm font-medium text-slate-700 mb-2 block">
-                      Priority Level
+                      Status
                     </label>
-                    <div className="flex flex-wrap gap-2">
-                      {(['low', 'medium', 'high'] as const).map((urgency) => (
+                    <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
+                      {[
+                        { value: 'all', label: 'All' },
+                        { value: 'draft', label: 'Draft' },
+                        { value: 'sent', label: 'Sent' },
+                        { value: 'accepted', label: 'Accepted' },
+                        { value: 'declined', label: 'Declined' }
+                      ].map((option) => (
                         <Button
-                          key={urgency}
-                          variant={searchFilters.urgencyFilter.includes(urgency) ? 'default' : 'outline'}
+                          key={option.value}
+                          variant={searchFilters.statusFilter === option.value ? 'default' : 'outline'}
                           size="sm"
                           onClick={() => {
                             setSearchFilters(prev => ({
                               ...prev,
-                              urgencyFilter: prev.urgencyFilter.includes(urgency)
-                                ? prev.urgencyFilter.filter(u => u !== urgency)
-                                : [...prev.urgencyFilter, urgency]
+                              statusFilter: option.value as ReferralStatus | 'all'
                             }));
                           }}
+                          className="flex-shrink-0"
                         >
-                          {urgency.charAt(0).toUpperCase() + urgency.slice(1)}
+                          {option.label}
                         </Button>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Cohort Filter */}
+                  <div>
+                    <label className="text-sm font-medium text-slate-700 mb-2 block">
+                      Cohort
+                    </label>
+                    <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
+                      <Button
+                        variant={searchFilters.cohortFilter === 'all' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => {
+                          setSearchFilters(prev => ({
+                            ...prev,
+                            cohortFilter: 'all'
+                          }));
+                        }}
+                        className="flex-shrink-0"
+                      >
+                        All Cohorts
+                      </Button>
+                      {availableCohorts.map((cohort) => {
+                        const displayTitle = cohort.title.length > 15 
+                          ? `${cohort.title.substring(0, 15)}...` 
+                          : cohort.title;
+                        
+                        return (
+                          <Button
+                            key={cohort.id}
+                            variant={searchFilters.cohortFilter === cohort.id ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => {
+                              setSearchFilters(prev => ({
+                                ...prev,
+                                cohortFilter: cohort.id
+                              }));
+                            }}
+                            className="flex items-center space-x-1 flex-shrink-0 max-w-full"
+                            title={cohort.title} // Show full title on hover
+                          >
+                            <span className="truncate">{displayTitle}</span>
+                            <Badge variant="secondary" className="ml-1 text-xs flex-shrink-0">
+                              {cohort.sessionCompletionPercentage}%
+                            </Badge>
+                          </Button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -360,13 +430,7 @@ export default function ReferralsPage() {
         <ReferralTabs
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          statusFilter={statusFilter}
-          onStatusFilterChange={handleStatusFilterChange}
-          cohortFilter={cohortFilter}
-          onCohortFilterChange={handleCohortFilterChange}
-          cohorts={availableCohorts}
           stats={stats}
-          showCohortFilter={true}
         />
 
         {/* Referrals List */}
@@ -411,7 +475,7 @@ export default function ReferralsPage() {
                   No Referrals Found
                 </h3>
                 <p className="text-slate-600 mb-4">
-                  {searchFilters.query || searchFilters.contextTypeFilter.length > 0 || searchFilters.urgencyFilter.length > 0
+                  {searchFilters.query || searchFilters.contextTypeFilter.length > 0 || searchFilters.statusFilter !== 'all' || searchFilters.cohortFilter !== 'all'
                     ? 'No referrals match your current filters.'
                     : activeTab === 'sent'
                     ? 'You haven\'t sent any referrals yet.'

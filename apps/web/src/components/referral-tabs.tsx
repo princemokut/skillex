@@ -10,18 +10,10 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { 
   Send, 
-  Inbox, 
-  Clock, 
-  CheckCircle, 
-  XCircle,
-  Filter,
-  Users,
-  Calendar
+  Inbox
 } from 'lucide-react';
-import { ReferralStatus } from '@skillex/types';
 import { cn } from '@/lib/utils';
 
 /**
@@ -32,16 +24,6 @@ interface ReferralTabsProps {
   activeTab: 'sent' | 'received';
   /** Callback when tab changes */
   onTabChange: (tab: 'sent' | 'received') => void;
-  /** Currently selected status filter */
-  statusFilter: ReferralStatus | 'all';
-  /** Callback when status filter changes */
-  onStatusFilterChange: (status: ReferralStatus | 'all') => void;
-  /** Currently selected cohort filter */
-  cohortFilter: string | 'all';
-  /** Callback when cohort filter changes */
-  onCohortFilterChange: (cohortId: string | 'all') => void;
-  /** Available cohorts for filtering */
-  cohorts: Array<{ id: string; title: string; sessionCompletionPercentage: number }>;
   /** Referral statistics */
   stats: {
     sent: {
@@ -58,67 +40,10 @@ interface ReferralTabsProps {
       declined: number;
     };
   };
-  /** Whether to show cohort filtering */
-  showCohortFilter?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
 
-/**
- * Status filter options
- */
-const statusFilterOptions: Array<{ value: ReferralStatus | 'all'; label: string; icon: any; count?: number }> = [
-  { value: 'all', label: 'All', icon: null },
-  { value: 'draft', label: 'Draft', icon: Clock },
-  { value: 'sent', label: 'Sent', icon: Send },
-  { value: 'accepted', label: 'Accepted', icon: CheckCircle },
-  { value: 'declined', label: 'Declined', icon: XCircle },
-];
-
-/**
- * Get status count for a specific status
- * Returns the count for the given status in the stats object
- * 
- * @param stats - Statistics object
- * @param status - Status to get count for
- * @param isSent - Whether to look in sent or received stats
- * @returns Count for the status
- */
-function getStatusCount(
-  stats: ReferralTabsProps['stats'], 
-  status: ReferralStatus | 'all', 
-  isSent: boolean
-): number {
-  if (status === 'all') {
-    return isSent ? stats.sent.total : stats.received.total;
-  }
-
-  if (isSent) {
-    switch (status) {
-      case 'draft':
-        return stats.sent.draft;
-      case 'sent':
-        return stats.sent.sent;
-      case 'accepted':
-        return stats.sent.accepted;
-      case 'declined':
-        return stats.sent.declined;
-      default:
-        return 0;
-    }
-  } else {
-    switch (status) {
-      case 'sent':
-        return stats.received.pending;
-      case 'accepted':
-        return stats.received.accepted;
-      case 'declined':
-        return stats.received.declined;
-      default:
-        return 0;
-    }
-  }
-}
 
 /**
  * ReferralTabs component for tab-based referral navigation
@@ -129,25 +54,16 @@ function getStatusCount(
 export function ReferralTabs({
   activeTab,
   onTabChange,
-  statusFilter,
-  onStatusFilterChange,
-  cohortFilter,
-  onCohortFilterChange,
-  cohorts,
   stats,
-  showCohortFilter = true,
   className
 }: ReferralTabsProps) {
   /**
-   * Handle tab change
-   * Updates active tab and resets status filter
+   * Handle tab change with proper type casting
    * 
-   * @param tab - New active tab
+   * @param value - Tab value from Tabs component
    */
-  const handleTabChange = (tab: 'sent' | 'received') => {
-    onTabChange(tab);
-    // Reset status filter when switching tabs
-    onStatusFilterChange('all');
+  const handleTabChange = (value: string) => {
+    onTabChange(value as 'sent' | 'received');
   };
 
   return (
@@ -169,67 +85,6 @@ export function ReferralTabs({
             </Badge>
           </TabsTrigger>
         </TabsList>
-
-        {/* Status filter */}
-        <div className="flex items-center space-x-2 mt-4">
-          <Filter className="h-4 w-4 text-slate-500" />
-          <span className="text-sm font-medium text-slate-700">Filter by status:</span>
-          <div className="flex items-center space-x-1">
-            {statusFilterOptions.map((option) => {
-              const Icon = option.icon;
-              const count = getStatusCount(stats, option.value, activeTab === 'sent');
-              
-              return (
-                <Button
-                  key={option.value}
-                  variant={statusFilter === option.value ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => onStatusFilterChange(option.value)}
-                  className="flex items-center space-x-1"
-                >
-                  {Icon && <Icon className="h-3 w-3" />}
-                  <span>{option.label}</span>
-                  {count > 0 && (
-                    <Badge variant="secondary" className="ml-1 text-xs">
-                      {count}
-                    </Badge>
-                  )}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Cohort filter */}
-        {showCohortFilter && cohorts.length > 0 && (
-          <div className="flex items-center space-x-2 mt-3">
-            <Users className="h-4 w-4 text-slate-500" />
-            <span className="text-sm font-medium text-slate-700">Filter by cohort:</span>
-            <div className="flex items-center space-x-1">
-              <Button
-                variant={cohortFilter === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => onCohortFilterChange('all')}
-              >
-                All Cohorts
-              </Button>
-              {cohorts.map((cohort) => (
-                <Button
-                  key={cohort.id}
-                  variant={cohortFilter === cohort.id ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => onCohortFilterChange(cohort.id)}
-                  className="flex items-center space-x-1"
-                >
-                  <span>{cohort.title}</span>
-                  <Badge variant="secondary" className="ml-1 text-xs">
-                    {cohort.sessionCompletionPercentage}%
-                  </Badge>
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Tab content placeholders */}
         <TabsContent value="sent" className="mt-6">
