@@ -19,12 +19,8 @@ import {
   Search, 
   Filter, 
   RefreshCw, 
-  Users, 
   Plus, 
-  CheckCircle,
-  Clock,
   AlertCircle,
-  TrendingUp,
   Building2,
   Briefcase,
   Handshake,
@@ -250,12 +246,9 @@ export default function ReferralsPage() {
   // Track page view and analytics
   useEffect(() => {
     trackPageView('referrals', {
-      total_referrals: stats.sent.total + stats.received.total,
-      sent_referrals: stats.sent.total,
-      received_referrals: stats.received.total,
       active_tab: activeTab
     });
-  }, [stats, activeTab]);
+  }, [activeTab]);
 
   return (
     // <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
@@ -265,110 +258,30 @@ export default function ReferralsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-slate-600 mt-2">
-                Manage your professional referrals and recommendations
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="outline"
-                onClick={() => refetch()}
-                disabled={isLoading}
-                className="flex items-center space-x-2"
-              >
-                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
-              </Button>
-              {availableCohorts.length > 0 && (
-                <div className="flex items-center space-x-2">
-                  <Button
-                    onClick={() => handleCreateReferralClick(availableCohorts[0].id)}
-                    className="flex items-center space-x-2"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span>Send Referral</span>
-                  </Button>
-                  <Button
-                    onClick={() => handleRequestReferralClick(availableCohorts[0].id)}
-                    variant="outline"
-                    className="flex items-center space-x-2"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    <span>Request Referral</span>
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Total Referrals</p>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {stats.sent.total + stats.received.total}
-                  </p>
-                </div>
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Sent</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.sent.total}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Accepted</p>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {stats.sent.accepted + stats.received.accepted}
-                  </p>
-                </div>
-                <CheckCircle className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Pending</p>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {stats.sent.sent + stats.received.pending}
-                  </p>
-                </div>
-                <Clock className="h-8 w-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Search and Filters */}
         <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-              <div className="flex-1 max-w-md">
-                <div className="relative">
+          <CardContent className="">
+            <div className="space-y-4">
+              {/* Description and Refresh Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <p className="text-base text-slate-600">
+                  Manage your professional referrals and recommendations
+                </p>
+                <Button 
+                  onClick={() => refetch()} 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full sm:w-auto"
+                  disabled={isLoading}
+                >
+                  <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </div>
+              
+              {/* Search and Filter Controls */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
                     placeholder="Search referrals..."
@@ -377,17 +290,45 @@ export default function ReferralsPage() {
                     className="pl-10"
                   />
                 </div>
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setSearchFilters(prev => ({ ...prev, showFilters: !prev.showFilters }))}
-                  className="flex items-center space-x-2"
-                >
-                  <Filter className="h-4 w-4" />
-                  <span>Filters</span>
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setSearchFilters(prev => ({ ...prev, showFilters: !prev.showFilters }))}
+                    className={searchFilters.showFilters ? 'bg-slate-100' : ''}
+                  >
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filters
+                  </Button>
+                  {searchFilters.query && (
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSearchFilters(prev => ({ ...prev, query: '' }))}
+                    >
+                      Clear
+                    </Button>
+                  )}
+                  {availableCohorts.length > 0 && (
+                    <>
+                      <Button
+                        onClick={() => handleCreateReferralClick(availableCohorts[0].id)}
+                        className="flex items-center space-x-2"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        <span className="hidden sm:inline">Send Referral</span>
+                        <span className="sm:hidden">Send</span>
+                      </Button>
+                      <Button
+                        onClick={() => handleRequestReferralClick(availableCohorts[0].id)}
+                        variant="outline"
+                        className="flex items-center space-x-2"
+                      >
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        <span className="hidden sm:inline">Request Referral</span>
+                        <span className="sm:hidden">Request</span>
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -507,7 +448,7 @@ export default function ReferralsPage() {
           ) : filteredReferrals.length === 0 ? (
             <Card>
               <CardContent className="p-6 text-center">
-                <Users className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+                <Handshake className="h-12 w-12 text-slate-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-slate-900 mb-2">
                   No Referrals Found
                 </h3>
