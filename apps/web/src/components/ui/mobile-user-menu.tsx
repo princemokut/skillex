@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -46,24 +46,6 @@ export function MobileUserMenu() {
     }
   };
 
-  /**
-   * Close menu when clicking outside
-   */
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen && !(event.target as Element).closest('.mobile-user-menu')) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('click', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [isOpen]);
 
   if (!user) {
     return (
@@ -79,7 +61,7 @@ export function MobileUserMenu() {
   }
 
   return (
-    <div className="mobile-user-menu md:hidden">
+    <div className="md:hidden">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
