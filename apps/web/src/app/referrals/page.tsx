@@ -435,12 +435,12 @@ export default function ReferralsPage() {
         />
 
         {/* Referrals List */}
-        <div className="mt-6">
+        <div className="mt-0">
           {isLoading ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {[...Array(4)].map((_, i) => (
                 <Card key={i} className="animate-pulse">
-                  <CardContent className="p-6">
+                  <CardContent className="p-0">
                     <div className="flex items-start space-x-3">
                       <div className="h-12 w-12 bg-slate-200 rounded-full" />
                       <div className="flex-1 space-y-2">
@@ -501,43 +501,24 @@ export default function ReferralsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-6">
-              {/* In-content Ad after first 2 referrals */}
-              {filteredReferrals.length > 2 && (
-                <div className="flex justify-center">
-                  <AdSlot
-                    slotId="referrals-in-content-1"
-                    size="in-content"
-                    context="referrals"
-                    targeting={getAdTargeting({
-                      skills: ['React', 'TypeScript', 'JavaScript'],
-                      location: 'San Francisco',
-                      timezone: 'America/Los_Angeles',
-                      cohortTopics: ['React & TypeScript Mastery'],
-                      referralActivity: 'active',
-                      connectionActivity: 'moderate',
-                      adCategories: ['jobs', 'services'],
-                      adFrequency: 'medium',
-                      adInteractions: []
-                    }, 'referrals')}
-                    onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('referrals-in-content-1', action)}
-                  />
+            <Card>
+              <CardContent className="p-0">
+                <div className="divide-y divide-slate-200">
+                  {filteredReferrals.map((referral, index) => (
+                    <div key={referral.id} className="p-6">
+                      <ReferralCard
+                        referral={referral}
+                        isCurrentUser={activeTab === 'given'}
+                        activeTab={activeTab}
+                        onStatusChange={handleUpdateReferralStatus}
+                        onDelete={handleDeleteReferral}
+                        className="border-0 shadow-none"
+                      />
+                    </div>
+                  ))}
                 </div>
-              )}
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {filteredReferrals.map((referral) => (
-                  <ReferralCard
-                    key={referral.id}
-                    referral={referral}
-                    isCurrentUser={activeTab === 'given'}
-                    activeTab={activeTab}
-                    onStatusChange={handleUpdateReferralStatus}
-                    onDelete={handleDeleteReferral}
-                  />
-                ))}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           )}
         </div>
           </div>

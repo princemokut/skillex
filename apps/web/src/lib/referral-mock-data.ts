@@ -308,6 +308,38 @@ export const mockReferrals: ReferralWithType[] = [
     }
   },
   {
+    id: 'referral-14',
+    fromUserId: 'user-1',
+    toUserId: 'user-14',
+    context: 'Juan is a pragmatic IT leader who makes decisions using data and can quickly interprete various scenarios from data. This has helped tremendously in our digital transformation journey. His ability to plan, execute and review technology goals while ensuring a continuous feedback process with stakeholders is one of the many traits I admire about Juan. With his leadership, we moved to progressively adopting agile practices with adequately assigned work items based on trends from previous data, improved and streamline IT processes while also empowering every member of the team to meet collective goals with little/no disruptions!\n\nJuan is a great mentor interested in further development and growth of his team. He encourages continuous feedback with his team, open to learning different perspective and incorporating key discussions in the overall strategy.\n\nYou\'ll find Juan a great peer and leader to work with. No matter the size or complexity of the goals, he\'ll deliver with his team, and provide metrics-based decision making tools for continuous improvement!',
+    status: 'accepted',
+    createdAt: new Date('2024-02-15T09:30:00Z'),
+    cohortId: 'cohort-1',
+    cohortTitle: 'React & TypeScript Mastery',
+    sessionCompletionPercentage: 87,
+    isEligible: true,
+    contextType: 'job',
+    direction: 'send',
+    companyName: 'WGU',
+    urgency: 'medium',
+    fromUser: {
+      id: 'user-1',
+      name: 'John Doe',
+      handle: 'johndoe',
+      avatar: '/avatars/john.jpg',
+      title: 'Senior Software Engineer',
+      skills: ['React', 'TypeScript', 'Node.js', 'AWS']
+    },
+    toUser: {
+      id: 'user-14',
+      name: 'Juan Cercos',
+      handle: 'juanc',
+      avatar: '/avatars/juan.jpg',
+      title: 'Director of Product Quality',
+      skills: ['Product Management', 'Data Analysis', 'Agile Leadership', 'Team Development']
+    }
+  },
+  {
     id: 'referral-7',
     fromUserId: 'user-1',
     toUserId: 'user-8',

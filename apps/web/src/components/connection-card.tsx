@@ -183,7 +183,7 @@ export function ConnectionCard({
   
   return (
     <div 
-      className={cn('w-full transition-all duration-200 hover:bg-slate-50 cursor-pointer', className)}
+      className={cn('w-full transition-all duration-200 hover:bg-slate-100 cursor-pointer', className)}
       onClick={() => onViewProfile?.(connection.id)}
     >
       <div className="p-6">

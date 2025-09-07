@@ -184,9 +184,11 @@ export function ReferralCard({
     setShowActions(false);
   };
 
-  return (
-    <Card className={cn('w-full transition-all duration-200 hover:shadow-md', className)}>
-      <CardContent className="p-6">
+  // If className includes 'border-0 shadow-none', render without Card wrapper
+  if (className?.includes('border-0 shadow-none')) {
+    return (
+      <div className={cn('w-full transition-all duration-200', className)}>
+        <div className="p-0">
         {/* Header with user info and status */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start space-x-3">
@@ -271,12 +273,12 @@ export function ReferralCard({
 
         {/* Referral context */}
         <div className="mb-4">
-          <p className={cn(
-            'text-sm text-slate-700 leading-relaxed',
+          <div className={cn(
+            'text-sm text-slate-700 leading-relaxed whitespace-pre-line',
             !isExpanded && 'line-clamp-3'
           )}>
             {referral.context}
-          </p>
+          </div>
           {referral.context.length > 150 && (
             <Button
               variant="ghost"
@@ -342,6 +344,162 @@ export function ReferralCard({
             )}
             
             {(isSender || referral.status === 'declined') && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleDelete}
+                className="flex items-center space-x-1 text-red-600 hover:text-red-700"
+              >
+                <XCircle className="h-4 w-4" />
+                <span>Delete</span>
+              </Button>
+            )}
+            
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowActions(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
+        </div>
+      </div>
+    );
+  }
+
+  // Default Card wrapper rendering
+  return (
+    <Card className={cn('w-full transition-all duration-200 hover:shadow-md', className)}>
+      <CardContent className="p-6">
+        {/* Header with user info and status */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start space-x-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage 
+                src={isSender ? referral.toUser.avatar : referral.fromUser.avatar} 
+                alt={isSender ? referral.toUser.name : referral.fromUser.name}
+              />
+              <AvatarFallback>
+                {isSender ? referral.toUser.name.charAt(0) : referral.fromUser.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+            <div className="flex items-center space-x-2 mb-1">
+              <h3 className="font-semibold text-slate-900 truncate">
+                {isSender ? referral.toUser.name : referral.fromUser.name}
+              </h3>
+            </div>
+              <p className="text-sm text-slate-600 truncate">
+                {isSender ? referral.toUser.title : referral.fromUser.title}
+              </p>
+              <div className="flex items-center space-x-1 mt-1">
+                {(isSender ? referral.toUser.skills || [] : referral.fromUser.skills || []).slice(0, 2).map((skill, index) => (
+                  <span key={index} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">
+                    {skill}
+                  </span>
+                ))}
+                {(isSender ? referral.toUser.skills || [] : referral.fromUser.skills || []).length > 2 && (
+                  <span className="text-xs text-slate-500">
+                    +{(isSender ? referral.toUser.skills || [] : referral.fromUser.skills || []).length - 2} more
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            {/* Only show status badge in Requests tab */}
+            {activeTab === 'requests' && (
+              <Badge className={cn('text-xs', getStatusColorClass(referral.status))}>
+                {referral.status.charAt(0).toUpperCase() + referral.status.slice(1)}
+              </Badge>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowActions(!showActions)}
+              className="h-8 w-8 p-0"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Context type and urgency */}
+        <div className="flex items-center space-x-2 mb-3">
+          <div className="flex items-center space-x-1">
+            <ContextIcon className="h-4 w-4 text-slate-500" />
+            <span className="text-sm font-medium text-slate-700">
+              {contextDisplayName}
+            </span>
+          </div>
+          {referral.companyName && (
+            <span className="text-sm text-slate-500">•</span>
+          )}
+          {referral.companyName && (
+            <span className="text-sm text-slate-600">{referral.companyName}</span>
+          )}
+          {referral.projectTitle && (
+            <>
+              <span className="text-sm text-slate-500">•</span>
+              <span className="text-sm text-slate-600">{referral.projectTitle}</span>
+            </>
+          )}
+          <span className="text-sm text-slate-500">•</span>
+          <Badge className={cn('text-xs', getUrgencyColorClass(referral.urgency))}>
+            {referral.urgency} priority
+          </Badge>
+        </div>
+
+        {/* Referral context */}
+        <div className="mb-4">
+          <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+            {referral.context}
+          </div>
+        </div>
+
+        {/* Cohort info */}
+        <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="flex items-center space-x-1">
+            <Users className="h-3 w-3" />
+            <span>{referral.cohortTitle}</span>
+            <span>•</span>
+            <span>{referral.sessionCompletionPercentage}% sessions completed</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Calendar className="h-3 w-3" />
+            <span>{formatDate(referral.createdAt)}</span>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        {showActions && (
+          <div className="mt-4 pt-4 border-t border-slate-200 flex items-center space-x-2">
+            {isRequest && isReceiver && referral.status === 'sent' && (
+              <>
+                <Button
+                  size="sm"
+                  onClick={() => handleStatusChange('accepted')}
+                  className="flex items-center space-x-1 text-green-600 hover:text-green-700"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Accept</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleStatusChange('declined')}
+                  className="flex items-center space-x-1 text-red-600 hover:text-red-700"
+                >
+                  <XCircle className="h-4 w-4" />
+                  <span>Decline</span>
+                </Button>
+              </>
+            )}
+            
+            {isSend && isSender && (
               <Button
                 size="sm"
                 variant="outline"
