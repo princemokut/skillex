@@ -82,8 +82,8 @@ export function MatchCard({
   };
 
   return (
-    <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden rounded-none sm:rounded-lg ${className}`}>
-      <CardHeader>
+    <Card className={`w-full h-full flex flex-col hover:shadow-lg transition-all duration-200 overflow-hidden rounded-none sm:rounded-lg py-3 px-3 sm:py-6 sm:px-6 ${className}`}>
+      <CardHeader className="px-0 py-0">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_60px] gap-2">
           {/* First column: Avatar with name/title/location */}
           <div className="flex items-center space-x-3 overflow-hidden">
@@ -122,7 +122,7 @@ export function MatchCard({
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col">
+      <CardContent className="flex-1 flex flex-col px-0 py-0">
         {/* Bio - Hidden on mobile */}
         {match.bio && (
           <div className="mb-6 hidden sm:block">
@@ -241,11 +241,13 @@ export function MatchCard({
           {/* Availability Summary - Line by line */}
           {match.availability_summary && (
             <div className="text-xs text-slate-500">
-              <Clock className="h-3 w-3 mr-1 inline" />
-              <span className="font-medium">Available:</span>
-              <div className="ml-4 mt-1 sm:ml-4">
+              <div className="flex items-center justify-center sm:justify-start">
+                <Clock className="h-3 w-3 mr-1" />
+                <span className="font-medium">Available:</span>
+              </div>
+              <div className="mt-1 sm:ml-4">
                 {match.availability_summary.split(', ').map((time, index) => (
-                  <div key={index} className="text-xs text-slate-500">
+                  <div key={index} className="text-xs text-slate-500 text-center sm:text-left">
                     • {time}
                   </div>
                 ))}
@@ -255,7 +257,7 @@ export function MatchCard({
 
           {/* Last Active */}
           {match.last_active && (
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-400 text-center sm:text-left">
               Last active {formatRelativeTime(new Date(match.last_active))}
             </div>
           )}
