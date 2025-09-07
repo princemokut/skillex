@@ -9,6 +9,7 @@ import { MatchGridSkeleton } from "@/components/match-skeleton";
 import { useMatches } from "@/hooks/use-matches";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent } from "@/components/ui/card";
 import { RefreshCw, Users, Filter } from "lucide-react";
 import { AdSlot, AdSlotContainer } from "@/components/AdSlot";
 import { getAdTargeting } from "@/lib/ad-context";
@@ -114,34 +115,41 @@ export default function MatchesPageClient() {
       {/* Custom Navigation with Filters */}
       <MatchesNavigation />
       
-      <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-0 sm:py-6 lg:py-8 px-0 sm:px-6 lg:px-8 mt-20 pb-20 md:pb-48">
+      <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-0 sm:py-6 lg:py-8 px-0 sm:px-6 lg:px-8 mt-16 pb-20 md:pb-48">
         <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
-          {/* Header - Left aligned */}
-          <div className="mb-6 sm:mb-8 px-4 sm:px-0 pt-4 sm:pt-0">
-            <p className="text-sm sm:text-base text-slate-600 mb-4">
-              Discover professionals who match your skills and learning goals.
-            </p>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm text-slate-500">
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                {totalMatches} matches found
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={refreshMatches}
-                disabled={isLoading}
-                className="flex items-center gap-1"
-              >
-                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Main Content Area (Left) */}
-            <div className="lg:col-span-3 order-1 px-4 sm:px-0">
+            <div className="lg:col-span-3 order-1">
+              {/* Header - Left aligned */}
+                <Card className="mb-6 rounded-none sm:rounded-lg">
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Description and Refresh Button */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        {/* <p className="text-sm sm:text-base text-slate-600"> */}
+                        <p className="text-base text-slate-600">
+                          Discover professionals who match your skills and learning goals.
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={refreshMatches}
+                          disabled={isLoading}
+                          className="w-full sm:w-auto flex items-center gap-1"
+                        >
+                          <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                          Refresh
+                        </Button>
+                      </div>
+                      
+                      {/* Matches Count */}
+                      <div className="flex items-center gap-1 text-sm text-slate-500">
+                        <Users className="h-4 w-4" />
+                        {totalMatches} matches found
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               {/* Error State */}
               {error && (
                 <Alert className="mb-6">
@@ -154,10 +162,12 @@ export default function MatchesPageClient() {
               {/* Loading State */}
               {isLoading && matches.length === 0 ? (
                 <AnimationWrapper animation="fadeIn">
-                  <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:gap-6">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <MatchCardSkeleton key={i} />
-                    ))}
+                  <div className="bg-white rounded-none sm:rounded-lg border border-slate-200 p-3 sm:p-6">
+                    <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:gap-6">
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <MatchCardSkeleton key={i} />
+                      ))}
+                    </div>
                   </div>
                 </AnimationWrapper>
               ) : (
@@ -165,20 +175,22 @@ export default function MatchesPageClient() {
                   {/* Matches Grid */}
                   {matches.length > 0 ? (
                     <StaggerWrapper staggerDelay={100}>
-                      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:gap-6">
-                        {matches.map((match: MatchData) => (
-                          <AnimationWrapper
-                            key={match.id}
-                            hover="hoverScale"
-                            transition="standard"
-                          >
-                            <MatchCard
-                              match={match}
-                              onConnect={handleConnect}
-                              onViewProfile={handleViewProfile}
-                            />
-                          </AnimationWrapper>
-                        ))}
+                      <div className="bg-white rounded-none sm:rounded-lg border border-slate-200 p-3 sm:p-6">
+                        <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:gap-6">
+                          {matches.map((match: MatchData) => (
+                            <AnimationWrapper
+                              key={match.id}
+                              hover="hoverScale"
+                              transition="standard"
+                            >
+                              <MatchCard
+                                match={match}
+                                onConnect={handleConnect}
+                                onViewProfile={handleViewProfile}
+                              />
+                            </AnimationWrapper>
+                          ))}
+                        </div>
                       </div>
                     </StaggerWrapper>
                   ) : (
@@ -213,25 +225,45 @@ export default function MatchesPageClient() {
               )}
             </div>
             
-            {/* Right Sidebar with Ad */}
-            <div className="lg:col-span-1 order-2 px-4 sm:px-0 pb-8 md:pb-16">
-              <AdSlot
-                slotId="matches-sidebar"
-                size="sidebar"
-                context="matches"
-                targeting={getAdTargeting({
-                  skills: ['React', 'TypeScript', 'JavaScript'],
-                  location: 'San Francisco',
-                  timezone: 'America/Los_Angeles',
-                  cohortTopics: ['React & TypeScript Mastery'],
-                  referralActivity: 'low',
-                  connectionActivity: 'moderate',
-                  adCategories: ['jobs', 'learning'],
-                  adFrequency: 'medium',
-                  adInteractions: []
-                }, 'matches')}
-                onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('matches-sidebar', action)}
-              />
+            {/* Right Sidebar with Ads */}
+            <div className="lg:col-span-1 order-2 pb-8 md:pb-16">
+              <AdSlotContainer>
+                <AdSlot
+                  slotId="matches-sidebar-1"
+                  size="sidebar"
+                  context="matches"
+                  targeting={getAdTargeting({
+                    skills: ['React', 'TypeScript', 'JavaScript'],
+                    location: 'San Francisco',
+                    timezone: 'America/Los_Angeles',
+                    cohortTopics: ['React & TypeScript Mastery'],
+                    referralActivity: 'low',
+                    connectionActivity: 'moderate',
+                    adCategories: ['jobs', 'learning'],
+                    adFrequency: 'medium',
+                    adInteractions: []
+                  }, 'matches')}
+                  onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('matches-sidebar-1', action)}
+                />
+                
+                <AdSlot
+                  slotId="matches-sidebar-2"
+                  size="sidebar"
+                  context="matches"
+                  targeting={getAdTargeting({
+                    skills: ['React', 'TypeScript', 'JavaScript'],
+                    location: 'San Francisco',
+                    timezone: 'America/Los_Angeles',
+                    cohortTopics: ['React & TypeScript Mastery'],
+                    referralActivity: 'low',
+                    connectionActivity: 'moderate',
+                    adCategories: ['services', 'events'],
+                    adFrequency: 'medium',
+                    adInteractions: []
+                  }, 'matches')}
+                  onAdInteraction={(action: 'viewed' | 'clicked' | 'closed') => trackAdInteraction('matches-sidebar-2', action)}
+                />
+              </AdSlotContainer>
             </div>
           </div>
         </div>
