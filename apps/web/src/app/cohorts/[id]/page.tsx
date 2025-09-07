@@ -552,10 +552,10 @@ export default function CohortPage() {
   return (
     // <div className="min-h-screen bg-slate-50">
     //   <div className="max-w-7xl mx-auto p-6">
-    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-0 sm:py-6 lg:py-8 px-0 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-48">
+        <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 mb-6 px-4 sm:px-0 pt-4 sm:pt-0">
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-slate-900">{cohort.title}</h1>
           </div>
@@ -586,7 +586,7 @@ export default function CohortPage() {
               {/* Overview Tab */}
               <TabsContent value="overview" className="space-y-6">
                 {/* Cohort Details Card */}
-                <Card>
+                <Card className="rounded-none sm:rounded-lg">
                   <CardContent className="space-y-4 ">
                     <div>
                       <h4 className="font-medium text-slate-900 mb-2">Description</h4>
@@ -742,7 +742,7 @@ export default function CohortPage() {
                   </div>
 
                   {/* Search */}
-                  <Card>
+                  <Card className="rounded-none sm:rounded-lg">
                     <CardContent className="p-6">
                       <div className="flex items-center space-x-4">
                         <div className="flex-1 max-w-md">
@@ -873,7 +873,7 @@ export default function CohortPage() {
           {/* Right Column - Stats and Members */}
           <div className="space-y-6">
             {/* Stats Card */}
-            <Card>
+            <Card className="rounded-none sm:rounded-lg">
               <CardHeader>
                 <CardTitle>Project stats</CardTitle>
               </CardHeader>
@@ -940,7 +940,7 @@ export default function CohortPage() {
             </Card>
 
             {/* Members Card */}
-            <Card>
+            <Card className="rounded-none sm:rounded-lg">
               <CardHeader>
                 <CardTitle>
                   Members ({cohort.members?.length || 0})

@@ -242,13 +242,13 @@ export default function ReferralsPage() {
   return (
     // <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
     //   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-0 sm:py-6 lg:py-8 px-0 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-48">
+      <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
         {/* Search and Filters */}
-        <Card className="mb-6">
+        <Card className="mb-6 rounded-none sm:rounded-lg">
           <CardContent className="">
             <div className="space-y-4">
               {/* Description and Referral Button */}
@@ -502,7 +502,7 @@ export default function ReferralsPage() {
               </CardContent>
             </Card>
           ) : (
-            <ListContainer>
+            <ListContainer className="rounded-none sm:rounded-lg">
               {filteredReferrals.map((referral, index) => (
                 <ListItem 
                   key={referral.id}
@@ -524,7 +524,7 @@ export default function ReferralsPage() {
           </div>
           
           {/* Right Sidebar with Ads */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 pb-8 md:pb-16">
             <AdSlotContainer>
               <AdSlot
                 slotId="referrals-sidebar-1"

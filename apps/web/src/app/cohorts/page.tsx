@@ -76,23 +76,25 @@ export default function CohortsPage() {
   return (
     // <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
     //   <div className="max-w-7xl mx-auto p-6">
-    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-100px)] bg-slate-50 py-0 sm:py-6 lg:py-8 px-0 sm:px-6 lg:px-8 mt-0 pb-20 md:pb-48">
+      <div className="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <p className="text-slate-600 mt-2">
-              Manage your skill exchange groups and learning sessions
-            </p>
+        <div className="mb-8 px-4 sm:px-0 pt-4 sm:pt-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600">
+                Manage your skill exchange groups and learning sessions
+              </p>
+            </div>
+            <Button onClick={handleCreateCohort} className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Create Cohort
+            </Button>
           </div>
-          <Button onClick={handleCreateCohort} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Create Cohort
-          </Button>
         </div>
 
         {/* Stats Cards */}
-        <Card className="mb-8">
+        <Card className="mb-8 rounded-none sm:rounded-lg">
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Cohorts */}
@@ -180,7 +182,7 @@ export default function CohortsPage() {
         ) : cohorts.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {cohorts.map((cohort) => (
-              <Card key={cohort.id} className="hover:shadow-lg transition-shadow cursor-pointer flex flex-col h-full">
+              <Card key={cohort.id} className="hover:shadow-lg transition-shadow cursor-pointer flex flex-col h-full rounded-none sm:rounded-lg">
                 <CardHeader className="pb-4">
                   <div className="space-y-2">
                     <CardTitle className="text-xl font-bold text-slate-900">

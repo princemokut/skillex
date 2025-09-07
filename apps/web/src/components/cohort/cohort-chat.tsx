@@ -79,7 +79,7 @@ export function CohortChat({ cohortId, messages, isMember }: CohortChatProps) {
 
   if (!isMember) {
     return (
-      <Card>
+      <Card className="rounded-none sm:rounded-lg">
         <CardContent className="p-12 text-center">
           <MessageSquare className="h-12 w-12 text-slate-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-2">Join to participate in chat</h3>
@@ -110,7 +110,7 @@ export function CohortChat({ cohortId, messages, isMember }: CohortChatProps) {
       </Card>
 
       {/* Chat Messages */}
-      <Card className="h-96">
+      <Card className="h-96 rounded-none sm:rounded-lg">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg">Messages</CardTitle>
         </CardHeader>
@@ -159,7 +159,7 @@ export function CohortChat({ cohortId, messages, isMember }: CohortChatProps) {
       </Card>
 
       {/* Message Input */}
-      <Card>
+      <Card className="rounded-none sm:rounded-lg">
         <CardContent className="p-4">
           <form onSubmit={handleSendMessage} className="flex gap-3">
             <div className="flex-1">

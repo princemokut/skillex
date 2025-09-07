@@ -100,7 +100,7 @@ export function CohortArtifacts({ cohortId, artifacts, isMember }: CohortArtifac
   return (
     <div className="space-y-6">
       {/* Header Card */}
-      <Card>
+      <Card className="rounded-none sm:rounded-lg">
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
@@ -123,7 +123,7 @@ export function CohortArtifacts({ cohortId, artifacts, isMember }: CohortArtifac
           {artifacts
             .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())
             .map((artifact) => (
-              <Card key={artifact.id} className="group hover:shadow-lg transition-all duration-200 border-slate-200 hover:border-slate-300 flex flex-col">
+              <Card key={artifact.id} className="group hover:shadow-lg transition-all duration-200 border-slate-200 hover:border-slate-300 flex flex-col rounded-none sm:rounded-lg">
                 <CardContent className="flex flex-col flex-1">
                   <div className="space-y-4">
                     {/* Header with icon and title */}
@@ -186,7 +186,7 @@ export function CohortArtifacts({ cohortId, artifacts, isMember }: CohortArtifac
         </div>
       ) : (
         /* Empty State */
-        <Card className="border-dashed border-2 border-slate-200 bg-slate-50/50">
+        <Card className="border-dashed border-2 border-slate-200 bg-slate-50/50 rounded-none sm:rounded-lg">
           <CardContent className="p-12 text-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <FileText className="h-8 w-8 text-slate-400" />
@@ -213,7 +213,7 @@ export function CohortArtifacts({ cohortId, artifacts, isMember }: CohortArtifac
 
       {/* Resource Types Info */}
       {artifacts.length > 0 && (
-        <Card className="bg-gradient-to-r from-slate-50 to-slate-100 border-slate-200">
+        <Card className="bg-gradient-to-r from-slate-50 to-slate-100 border-slate-200 rounded-none sm:rounded-lg">
           <CardContent>
             <div className="space-y-4">
               <h4 className="font-semibold text-slate-900 flex items-center gap-2">

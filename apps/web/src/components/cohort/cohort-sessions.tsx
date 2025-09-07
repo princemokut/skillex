@@ -90,7 +90,7 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
   return (
     <div className="space-y-6">
       {/* Header Card */}
-      <Card>
+      <Card className="rounded-none sm:rounded-lg">
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
@@ -118,7 +118,7 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
               const endTime = addMinutes(startTime, session.durationMinutes);
 
               return (
-                <Card key={session.id} className="hover:shadow-md transition-shadow">
+                <Card key={session.id} className="hover:shadow-md transition-shadow rounded-none sm:rounded-lg">
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex items-start justify-between">

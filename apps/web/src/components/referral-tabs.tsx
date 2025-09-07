@@ -75,24 +75,24 @@ export function ReferralTabs({
 
   return (
     <div className={cn('w-full', className)}>
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full gap-0">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="received" className="flex items-center space-x-2">
-            <Inbox className="h-4 w-4" />
-            <span>Referrals Received</span>
+          <TabsTrigger value="received" className="flex items-center space-x-0">
+            {/* <Inbox className="h-2 w-2" /> */}
+            <span>Received</span>
             <Badge variant="secondary" className="ml-1">
               {stats.received.total}
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value="given" className="flex items-center space-x-2">
-            <Send className="h-4 w-4" />
-            <span>Referrals Given</span>
+          <TabsTrigger value="given" className="flex items-center space-x-0">
+            {/* <Send className="h-4 w-4" /> */}
+            <span>Given</span>
             <Badge variant="secondary" className="ml-1">
               {stats.sent.total}
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value="requests" className="flex items-center space-x-2">
-            <MessageCircle className="h-4 w-4" />
+          <TabsTrigger value="requests" className="flex items-center space-x-0">
+            {/* <MessageCircle className="h-4 w-4" /> */}
             <span>Requests</span>
             <Badge variant="secondary" className="ml-1">
               {stats.requests.total}
