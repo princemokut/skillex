@@ -19,9 +19,9 @@ import {
   Clock, 
   MapPin, 
   Calendar,
-  MoreHorizontal,
   MessageCircle,
-  ExternalLink
+  Trash2,
+  X
 } from 'lucide-react';
 import { Connection, UserProfile } from '@/lib/connection-mock-data';
 import { cn } from '@/lib/utils';
@@ -38,6 +38,8 @@ interface ConnectionCardProps {
   onStatusChange?: (connectionId: string, newStatus: string) => void;
   /** Callback when connection is removed */
   onRemove?: (connectionId: string) => void;
+  /** Callback when profile is clicked */
+  onViewProfile?: (connectionId: string) => void;
   /** Additional CSS classes */
   className?: string;
 }
@@ -135,6 +137,7 @@ export function ConnectionCard({
   isCurrentUser, 
   onStatusChange, 
   onRemove, 
+  onViewProfile,
   className 
 }: ConnectionCardProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -169,18 +172,21 @@ export function ConnectionCard({
   
   /**
    * Get primary skills to display
-   * Returns up to 3 skills for display in the card
+   * Returns up to 1 skill for display in the card
    * 
    * @param skills - Array of user skills
    * @returns Array of skills to display
    */
   const getPrimarySkills = (skills: any[]) => {
-    return skills.slice(0, 3);
+    return skills.slice(0, 1);
   };
   
   return (
-    <Card className={cn('w-full transition-all duration-200 hover:shadow-md', className)}>
-      <CardContent className="p-6">
+    <div 
+      className={cn('w-full transition-all duration-200 hover:bg-slate-50 cursor-pointer', className)}
+      onClick={() => onViewProfile?.(connection.id)}
+    >
+      <div className="p-6">
         <div className="flex items-start justify-between">
           {/* User Info Section */}
           <div className="flex items-start space-x-4 flex-1">
@@ -201,27 +207,25 @@ export function ConnectionCard({
                 <h3 className="text-lg font-semibold text-slate-900 truncate">
                   {displayUser.fullName}
                 </h3>
-                <Badge variant="outline" className="text-xs">
-                  @{displayUser.handle}
-                </Badge>
+                {connection.status === 'accepted' && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // TODO: Implement message functionality
+                      console.log('Message user:', displayUser.handle);
+                    }}
+                    className="h-6 w-6 p-0 text-slate-500 hover:text-slate-700"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
               
-              <p className="text-sm text-slate-600 mb-2 truncate">
+              <p className="text-sm text-slate-600 mb-3 truncate">
                 {displayUser.title}
               </p>
-              
-              <div className="flex items-center space-x-4 text-xs text-slate-500 mb-3">
-                {displayUser.locationCity && (
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="h-3 w-3" />
-                    <span>{displayUser.locationCity}</span>
-                  </div>
-                )}
-                <div className="flex items-center space-x-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>{formatRelativeTime(displayUser.lastActive)}</span>
-                </div>
-              </div>
               
               {/* Skills Preview */}
               <div className="flex flex-wrap gap-1 mb-3">
@@ -237,9 +241,9 @@ export function ConnectionCard({
                     {skill.name}
                   </Badge>
                 ))}
-                {displayUser.skills.length > 3 && (
+                {displayUser.skills.length > 1 && (
                   <Badge variant="outline" className="text-xs px-2 py-1 text-slate-500">
-                    +{displayUser.skills.length - 3} more
+                    +{displayUser.skills.length - 1} more
                   </Badge>
                 )}
               </div>
@@ -253,97 +257,73 @@ export function ConnectionCard({
           
           {/* Actions Section */}
           <div className="flex flex-col items-end space-y-2">
-            {/* Status Badge */}
-            <Badge className={cn('text-xs px-3 py-1', statusInfo.className)}>
-              <StatusIcon className="h-3 w-3 mr-1" />
-              {statusInfo.text}
-            </Badge>
-            
             {/* Action Buttons */}
             <div className="flex items-center space-x-2">
               {connection.status === 'pending' && !isCurrentUser && (
-                <>
+                <div className="flex items-center space-x-2">
                   <Button
                     size="sm"
-                    onClick={() => handleAction('accepted')}
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAction('accepted');
+                    }}
                     disabled={isLoading}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                    title="Accept connection"
                   >
-                    <UserCheck className="h-4 w-4 mr-1" />
-                    Accept
+                    <UserCheck className="h-4 w-4" />
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
-                    onClick={() => handleAction('blocked')}
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAction('blocked');
+                    }}
                     disabled={isLoading}
-                    className="border-red-300 text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    title="Decline connection"
                   >
-                    <UserX className="h-4 w-4 mr-1" />
-                    Decline
+                    <UserX className="h-4 w-4" />
                   </Button>
-                </>
+                </div>
               )}
               
               {connection.status === 'accepted' && (
                 <Button
                   size="sm"
-                  variant="outline"
-                  onClick={() => setShowActions(!showActions)}
-                  className="border-slate-300"
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAction('remove');
+                  }}
+                  disabled={isLoading}
+                  className="text-slate-500 hover:text-red-600 hover:bg-red-50"
                 >
-                  <MoreHorizontal className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               )}
               
               {connection.status === 'pending' && isCurrentUser && (
                 <Button
                   size="sm"
-                  variant="outline"
-                  onClick={() => handleAction('remove')}
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAction('remove');
+                  }}
                   disabled={isLoading}
-                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                  className="text-slate-500 hover:text-red-600 hover:bg-red-50"
                 >
-                  Cancel
+                  <X className="h-4 w-4" />
                 </Button>
               )}
             </div>
           </div>
         </div>
         
-        {/* Additional Actions Dropdown */}
-        {showActions && connection.status === 'accepted' && (
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <div className="flex items-center space-x-2">
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex-1"
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Message
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex-1"
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View Profile
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleAction('remove')}
-                disabled={isLoading}
-                className="border-red-300 text-red-700 hover:bg-red-50"
-              >
-                Remove
-              </Button>
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -38,7 +38,7 @@ export const connectionQueryKeys = {
  * @returns Object containing connection data and operations
  */
 export function useConnections() {
-  const [activeTab, setActiveTab] = useState<string>('sent');
+  const [activeTab, setActiveTab] = useState<string>('accepted');
   const queryClient = useQueryClient();
   
   /**

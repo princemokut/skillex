@@ -54,7 +54,7 @@ export function ConnectionTabs({
   sentConnections,
   receivedConnections,
   acceptedConnections,
-  activeTab = 'sent',
+  activeTab = 'accepted',
   onTabChange,
   className
 }: ConnectionTabsProps) {
@@ -78,6 +78,23 @@ export function ConnectionTabs({
     <div className={cn('w-full', className)}>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-slate-100">
+          {/* Accepted Tab */}
+          <TabsTrigger 
+            value="accepted" 
+            className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            <span>Accepted</span>
+            <Badge 
+              variant="secondary" 
+              className={cn(
+                'text-xs px-2 py-0.5',
+                acceptedCount.count > 0 ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-500'
+              )}
+            >
+              {acceptedCount.count}
+            </Badge>
+          </TabsTrigger>
+          
           {/* Sent Tab */}
           <TabsTrigger 
             value="sent" 
@@ -116,27 +133,32 @@ export function ConnectionTabs({
               )}
             </div>
           </TabsTrigger>
-          
-          {/* Accepted Tab */}
-          <TabsTrigger 
-            value="accepted" 
-            className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
-          >
-            <span>Accepted</span>
-            <Badge 
-              variant="secondary" 
-              className={cn(
-                'text-xs px-2 py-0.5',
-                acceptedCount.count > 0 ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-500'
-              )}
-            >
-              {acceptedCount.count}
-            </Badge>
-          </TabsTrigger>
         </TabsList>
         
         {/* Tab Content */}
-        <div className="mt-6">
+        <div className="mt-0">
+          <TabsContent value="accepted" className="mt-0">
+            <div className="space-y-4">
+              {acceptedConnections.length > 0 ? (
+                acceptedConnections.map((connection) => (
+                  <div key={connection.id}>
+                    {/* Connection content will be rendered by parent */}
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <div className="text-slate-400 mb-2">
+                    <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-slate-900 mb-1">No accepted connections</h3>
+                  <p className="text-slate-500">You don't have any connections yet.</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          
           <TabsContent value="sent" className="mt-0">
             <div className="space-y-4">
               {sentConnections.length > 0 ? (
@@ -176,28 +198,6 @@ export function ConnectionTabs({
                   </div>
                   <h3 className="text-lg font-medium text-slate-900 mb-1">No received requests</h3>
                   <p className="text-slate-500">You don't have any pending connection requests.</p>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="accepted" className="mt-0">
-            <div className="space-y-4">
-              {acceptedConnections.length > 0 ? (
-                acceptedConnections.map((connection) => (
-                  <div key={connection.id}>
-                    {/* Connection content will be rendered by parent */}
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-12">
-                  <div className="text-slate-400 mb-2">
-                    <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium text-slate-900 mb-1">No accepted connections</h3>
-                  <p className="text-slate-500">You don't have any accepted connections yet.</p>
                 </div>
               )}
             </div>
