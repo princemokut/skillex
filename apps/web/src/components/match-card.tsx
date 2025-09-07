@@ -150,10 +150,12 @@ export function MatchCard({
               <Badge
                 key={`teach-${index}`}
                 variant="secondary"
-                className={`text-xs h-5 sm:h-6 truncate max-w-full ${getSkillLevelColor(skill.level)}`}
+                className={`text-xs h-5 sm:h-6 max-w-[80px] sm:max-w-[140px] sm:w-auto overflow-hidden ${getSkillLevelColor(skill.level)}`}
                 title={`${skill.name} (${skill.level})`}
               >
-                <span className="truncate">{skill.name}</span>
+                <span className="truncate block w-full">
+                  {skill.name.length > 7 ? `${skill.name.substring(0, 7)}...` : skill.name}
+                </span>
               </Badge>
             ))}
             {match.skills_to_teach.length > 2 && (
@@ -179,10 +181,12 @@ export function MatchCard({
               <Badge
                 key={`learn-${index}`}
                 variant="outline"
-                className={`text-xs h-5 sm:h-6 truncate max-w-full ${getSkillLevelColor(skill.level)}`}
+                className={`text-xs h-5 sm:h-6 max-w-[80px] sm:max-w-[140px] sm:w-auto overflow-hidden ${getSkillLevelColor(skill.level)}`}
                 title={`${skill.name} (${skill.level})`}
               >
-                <span className="truncate">{skill.name}</span>
+                <span className="truncate block w-full">
+                  {skill.name.length > 7 ? `${skill.name.substring(0, 7)}...` : skill.name}
+                </span>
               </Badge>
             ))}
             {match.skills_to_learn.length > 2 && (
@@ -210,10 +214,12 @@ export function MatchCard({
                   <Badge
                     key={`common-${index}`}
                     variant="default"
-                    className="text-xs h-5 sm:h-6 bg-primary-100 text-primary-700 border-primary-200 truncate max-w-full"
+                    className="text-xs h-5 sm:h-6 bg-primary-100 text-primary-700 border-primary-200 max-w-[80px] sm:max-w-[140px] sm:w-auto overflow-hidden"
                     title={skill}
                   >
-                    <span className="truncate">{skill}</span>
+                    <span className="truncate block w-full">
+                      {skill.length > 7 ? `${skill.substring(0, 7)}...` : skill}
+                    </span>
                   </Badge>
                 ))}
                 {match.common_skills.length > 2 && (
