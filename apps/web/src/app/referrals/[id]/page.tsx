@@ -33,6 +33,15 @@ import { ReferralStatus } from '@skillex/types';
 import { formatDate, formatRelativeTime } from '@/lib/utils';
 
 /**
+ * Generate static params for dynamic routes
+ * Required for static export with dynamic routes
+ */
+export async function generateStaticParams() {
+  // Return empty array for now - in production, this would fetch from API
+  return [];
+}
+
+/**
  * Mock current user ID for development
  * In production, this would come from authentication context
  */
@@ -128,15 +137,20 @@ function getUrgencyColorClass(urgency: string): string {
   }
 }
 
-export default function ReferralDetailsPage() {
-  const params = useParams();
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function ReferralDetailsPage({ params }: PageProps) {
   const router = useRouter();
   const [referral, setReferral] = useState<ReferralWithType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const referralId = params.id as string;
+  const referralId = params.id;
 
   /**
    * Load referral data

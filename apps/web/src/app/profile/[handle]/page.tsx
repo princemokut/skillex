@@ -3,9 +3,6 @@
  * Displays a user's public profile information
  */
 
-'use client';
-
-import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,9 +16,23 @@ import {
   UserPlus
 } from 'lucide-react';
 
-export default function PublicProfilePage() {
-  const params = useParams();
-  const handle = params.handle as string;
+/**
+ * Generate static params for dynamic routes
+ * Required for static export with dynamic routes
+ */
+export async function generateStaticParams() {
+  // Return empty array for now - in production, this would fetch from API
+  return [];
+}
+
+interface PageProps {
+  params: {
+    handle: string;
+  };
+}
+
+export default function PublicProfilePage({ params }: PageProps) {
+  const handle = params.handle;
 
   // Mock user data
   const user = {
