@@ -171,14 +171,16 @@ export default function ReferralDetailsPage() {
               name: 'John Doe',
               handle: 'johndoe',
               avatar: '/avatars/john.jpg',
-              title: 'Senior Software Engineer'
+              title: 'Senior Software Engineer',
+              skills: ['React', 'TypeScript', 'Node.js', 'AWS']
             },
             toUser: {
               id: 'user-4',
               name: 'Sarah Wilson',
               handle: 'sarahw',
               avatar: '/avatars/sarah.jpg',
-              title: 'Frontend Developer'
+              title: 'Frontend Developer',
+              skills: ['React', 'JavaScript', 'CSS', 'UI/UX']
             }
           }
         ];
