@@ -16,6 +16,9 @@ COPY packages/ ./packages/
 # Copy API package files
 COPY apps/api/package.json ./apps/api/
 
+# Copy TypeScript config files
+COPY tsconfig.base.json ./
+
 # Install dependencies for the entire monorepo
 RUN pnpm install --frozen-lockfile
 

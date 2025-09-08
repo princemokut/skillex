@@ -7,6 +7,7 @@ import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from '../auth/verify';
+import { logger } from '../config/logger';
 import { userUpdateSchema, userResponseSchema } from '@skillex/types';
 
 // Create Prisma client instance
@@ -52,7 +53,7 @@ export default async function userRoutes(fastify: FastifyInstance): Promise<void
         return userResponseSchema.parse(user);
         
       } catch (error) {
-        request.log.error({ error }, 'Error fetching user profile');
+        logger.error({ error }, 'Error fetching user profile');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while fetching user profile',
@@ -95,7 +96,7 @@ export default async function userRoutes(fastify: FastifyInstance): Promise<void
         return userResponseSchema.parse(user);
         
       } catch (error) {
-        request.log.error({ error }, 'Error fetching user by handle');
+        logger.error({ error }, 'Error fetching user by handle');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while fetching user profile',
@@ -166,7 +167,7 @@ export default async function userRoutes(fastify: FastifyInstance): Promise<void
           });
         }
         
-        request.log.error({ error }, 'Error updating user profile');
+        logger.error({ error }, 'Error updating user profile');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while updating user profile',

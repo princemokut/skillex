@@ -7,6 +7,7 @@ import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from '../auth/verify';
+import { logger } from '../config/logger';
 import { 
   ConnectionStatus,
   connectionCreateSchema, 
@@ -111,7 +112,7 @@ export default async function connectionRoutes(fastify: FastifyInstance): Promis
 
         return connectionResponseSchema.parse(connection);
       } catch (error) {
-        request.log.error({ error }, 'Error creating connection request');
+        logger.error({ error }, 'Error creating connection request');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'Failed to create connection request',
@@ -196,7 +197,7 @@ export default async function connectionRoutes(fastify: FastifyInstance): Promis
 
         return connectionResponseSchema.parse(updatedConnection);
       } catch (error) {
-        request.log.error({ error }, 'Error accepting connection request');
+        logger.error({ error }, 'Error accepting connection request');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'Failed to accept connection request',
@@ -268,7 +269,7 @@ export default async function connectionRoutes(fastify: FastifyInstance): Promis
 
         return { success: true };
       } catch (error) {
-        request.log.error({ error }, 'Error declining connection request');
+        logger.error({ error }, 'Error declining connection request');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'Failed to decline connection request',
@@ -344,7 +345,7 @@ export default async function connectionRoutes(fastify: FastifyInstance): Promis
         });
 
         // Format the response
-        const formattedConnections = connections.map((connection) => {
+        const formattedConnections = connections.map((connection: any) => {
           const isRequester = connection.requesterId === userId;
           const otherUser = isRequester ? connection.addressee : connection.requester;
           
@@ -356,7 +357,7 @@ export default async function connectionRoutes(fastify: FastifyInstance): Promis
 
         return { connections: formattedConnections };
       } catch (error) {
-        request.log.error({ error }, 'Error fetching connections');
+        logger.error({ error }, 'Error fetching connections');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'Failed to fetch connections',
