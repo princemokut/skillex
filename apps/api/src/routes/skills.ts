@@ -7,6 +7,7 @@ import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from '../auth/verify';
+import { logger } from '../config/logger';
 import { 
   skillCreateSchema, 
   skillResponseSchema 
@@ -48,7 +49,7 @@ export default async function skillRoutes(fastify: FastifyInstance): Promise<voi
         return { skills: skills.map(skill => skillResponseSchema.parse(skill)) };
         
       } catch (error) {
-        request.log.error({ error }, 'Error fetching user skills');
+        logger.error({ error }, 'Error fetching user skills');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while fetching skills',
@@ -89,7 +90,7 @@ export default async function skillRoutes(fastify: FastifyInstance): Promise<voi
         
         // Validate with schema
         const skillData = skillCreateSchema.parse({
-          ...request.body,
+          ...(request.body as Record<string, unknown>),
           userId,
         });
         
@@ -110,7 +111,7 @@ export default async function skillRoutes(fastify: FastifyInstance): Promise<voi
           });
         }
         
-        request.log.error({ error }, 'Error creating skill');
+        logger.error({ error }, 'Error creating skill');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while creating skill',
@@ -176,7 +177,7 @@ export default async function skillRoutes(fastify: FastifyInstance): Promise<voi
         return { success: true };
         
       } catch (error) {
-        request.log.error({ error }, 'Error deleting skill');
+        logger.error({ error }, 'Error deleting skill');
         reply.status(500).send({
           code: 'INTERNAL_ERROR',
           message: 'An error occurred while deleting skill',

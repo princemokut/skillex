@@ -4,7 +4,7 @@
  */
 
 import { FastifyRequest, FastifyReply } from 'fastify';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
