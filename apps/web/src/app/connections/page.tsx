@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useConnections } from '@/hooks/use-connections';
 import { ConnectionTabs } from '@/components/connection-tabs';
 import { ConnectionCard } from '@/components/connection-card';
@@ -68,7 +68,7 @@ export default function ConnectionsPage() {
   /**
    * Filter connections based on search criteria
    */
-  const filterConnections = (connections: Connection[]): Connection[] => {
+  const filterConnections = useCallback((connections: Connection[]): Connection[] => {
     return connections.filter((connection) => {
       const displayUser = activeTab === 'sent' ? connection.addressee : connection.requester;
       
@@ -109,11 +109,11 @@ export default function ConnectionsPage() {
       
       return true;
     });
-  };
+  }, [activeTab, searchFilters]);
   
   const filteredConnections = useMemo(() => {
     return filterConnections(currentTabData);
-  }, [currentTabData, searchFilters, activeTab]);
+  }, [currentTabData, filterConnections]);
   
   const handleSearchChange = (value: string) => {
     setSearchFilters(prev => ({
@@ -179,7 +179,7 @@ export default function ConnectionsPage() {
                   Error Loading Connections
                 </h3>
                 <p className="text-red-700 mb-4">
-                  We couldn't load your connections. Please try again.
+                  We couldn&apos;t load your connections. Please try again.
                 </p>
                 <Button 
                   onClick={() => refetch()} 

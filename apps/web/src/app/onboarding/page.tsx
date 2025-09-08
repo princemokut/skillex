@@ -107,7 +107,7 @@ export default function OnboardingPage() {
             Welcome to Skillex!
           </h1>
           <p className="text-slate-600">
-            Let's set up your profile to get started with skill exchanges
+            Let&apos;s set up your profile to get started with skill exchanges
           </p>
         </div>
 

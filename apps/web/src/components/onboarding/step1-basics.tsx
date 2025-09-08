@@ -117,7 +117,7 @@ export function OnboardingStep1({ data, onUpdate, onNext }: OnboardingStep1Props
           </AvatarFallback>
         </Avatar>
         <p className="text-sm text-slate-600 text-center" role="note">
-          We'll generate an avatar for you. You can change this later in your profile settings.
+          We&apos;ll generate an avatar for you. You can change this later in your profile settings.
         </p>
       </fieldset>
 
@@ -212,7 +212,7 @@ export function OnboardingStep1({ data, onUpdate, onNext }: OnboardingStep1Props
           id="bio"
           value={data.bio}
           onChange={(e) => handleChange("bio", e.target.value)}
-          placeholder="Tell us a bit about yourself and what you're passionate about..."
+          placeholder="Tell us a bit about yourself and what you&apos;re passionate about..."
           rows={4}
           className={errors.bio ? "border-red-500" : ""}
           aria-describedby={errors.bio ? "bio-error" : "bio-help"}

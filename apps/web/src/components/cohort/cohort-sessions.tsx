@@ -95,7 +95,7 @@ export function CohortSessions({ cohortId, sessions, isOwner }: CohortSessionsPr
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-slate-900">Sessions</h2>
-              <p className="text-slate-600">Manage your cohort's learning sessions</p>
+              <p className="text-slate-600">Manage your cohort&apos;s learning sessions</p>
             </div>
             {isOwner && (
               <Button onClick={handleCreateSession} className="flex items-center gap-2">
