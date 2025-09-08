@@ -305,7 +305,7 @@ export default function AdPreferencesPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-slate-600 mb-6">
-                Select the types of ads you're interested in seeing
+                Select the types of ads you&apos;re interested in seeing
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {AD_CATEGORIES.map((category) => (

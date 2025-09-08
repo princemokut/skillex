@@ -12,7 +12,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, EyeOff } from 'lucide-react';
@@ -206,7 +206,7 @@ export function AdSlot({
    * Load ad content
    * Handles ad loading, error states, and ad blocker detection
    */
-  const loadAd = async () => {
+  const loadAd = useCallback(async () => {
     try {
       setIsError(false);
       setIsBlocked(false);
@@ -232,17 +232,17 @@ export function AdSlot({
       console.error('Error loading ad:', error);
       setIsError(true);
     }
-  };
+  }, [onAdInteraction]);
 
   /**
    * Refresh ad content
    * Reloads the ad with new content
    */
-  const refreshAd = () => {
+  const refreshAd = useCallback(() => {
     setIsLoaded(false);
     setAdContent(null);
     loadAd();
-  };
+  }, [loadAd]);
 
   /**
    * Set up intersection observer for lazy loading
@@ -274,7 +274,7 @@ export function AdSlot({
     if (isVisible && !isLoaded && !isError && !isBlocked) {
       loadAd();
     }
-  }, [isVisible, isLoaded, isError, isBlocked]);
+  }, [isVisible, isLoaded, isError, isBlocked, loadAd]);
 
   /**
    * Set up refresh interval
@@ -289,7 +289,7 @@ export function AdSlot({
         clearInterval(refreshTimerRef.current);
       }
     };
-  }, [refreshInterval, isLoaded]);
+  }, [refreshInterval, isLoaded, refreshAd]);
 
   /**
    * Render fallback content

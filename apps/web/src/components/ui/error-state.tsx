@@ -212,7 +212,7 @@ export function NetworkErrorState({
     <ErrorState
       icon={<WifiOff className="h-12 w-12" />}
       title="Connection Error"
-      description="We couldn't connect to the server. Please check your internet connection and try again."
+      description="We couldn&apos;t connect to the server. Please check your internet connection and try again."
       primaryAction={{
         label: "Try Again",
         onClick: onRetry
@@ -282,7 +282,7 @@ export function PermissionErrorState({
     <ErrorState
       icon={<Lock className="h-12 w-12" />}
       title="Access Denied"
-      description="You don't have permission to view this content. Please contact an administrator if you believe this is an error."
+      description="You don&apos;t have permission to view this content. Please contact an administrator if you believe this is an error."
       primaryAction={{
         label: "Go Back",
         onClick: onGoBack,

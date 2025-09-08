@@ -14,7 +14,10 @@
     "dev:all": "concurrently \"pnpm -C apps/api dev\" \"pnpm -C apps/web dev\"",
     "test": "pnpm -r test",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "type-check": "pnpm -r type-check",
+    "lint": "pnpm -r lint",
+    "prepare": "husky install"
   },
   "keywords": [
     "skill-exchange",
@@ -38,6 +41,22 @@
     "@faker-js/faker": "^10.0.0",
     "@types/node": "^18.19.123",
     "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
     "prisma": "^5.22.0"
+  },
+  "lint-staged": {
+    "apps/web/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "tsc --noEmit"
+    ],
+    "apps/api/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "tsc --noEmit"
+    ],
+    "packages/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "tsc --noEmit"
+    ]
   }
 }

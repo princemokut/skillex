@@ -153,9 +153,9 @@ export function RequestReferralModal({
     if (requestType === 'company_specific' && companyName) {
       return `Hi! I know you work at ${companyName} and I'm looking for new opportunities. Would you be able to refer me for any open positions? I've really enjoyed working with you in our ${cohortTitle} cohort and would love to continue learning in a professional setting.`;
     } else if (requestType === 'project_specific' && projectTitle) {
-      return `Hey! I'm interested in working on ${projectTitle} and would love to collaborate. Since you've seen my work in our ${cohortTitle} cohort, would you be able to refer me for any similar projects you know about?`;
+      return `Hey! I'm interested in working on ${projectTitle} and would love to collaborate. Since you&apos;ve seen my work in our ${cohortTitle} cohort, would you be able to refer me for any similar projects you know about?`;
     } else {
-      return `Hi! I'm exploring ${contextType} opportunities and would love to work on some projects. Since you've seen my work in our ${cohortTitle} cohort, would you be able to refer me for any opportunities you know about?`;
+      return `Hi! I'm exploring ${contextType} opportunities and would love to work on some projects. Since you&apos;ve seen my work in our ${cohortTitle} cohort, would you be able to refer me for any opportunities you know about?`;
     }
   };
 

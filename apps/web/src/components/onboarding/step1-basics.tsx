@@ -117,7 +117,7 @@ export function OnboardingStep1({ data, onUpdate, onNext }: OnboardingStep1Props
           </AvatarFallback>
         </Avatar>
         <p className="text-sm text-slate-600 text-center" role="note">
-          We'll generate an avatar for you. You can change this later in your profile settings.
+          We&apos;ll generate an avatar for you. You can change this later in your profile settings.
         </p>
       </fieldset>
 

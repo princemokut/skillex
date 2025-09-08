@@ -179,7 +179,7 @@ export default function ConnectionsPage() {
                   Error Loading Connections
                 </h3>
                 <p className="text-red-700 mb-4">
-                  We couldn't load your connections. Please try again.
+                  We couldn&apos;t load your connections. Please try again.
                 </p>
                 <Button 
                   onClick={() => refetch()} 

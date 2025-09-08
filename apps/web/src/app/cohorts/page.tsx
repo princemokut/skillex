@@ -107,7 +107,7 @@ export default function CohortsPage() {
                     </p>
                   </div>
                   <p className="text-sm text-slate-500">
-                    All cohorts you've joined or created
+                    All cohorts you&apos;ve joined or created
                   </p>
                 </div>
               </div>
