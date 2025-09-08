@@ -67,7 +67,7 @@ jobs:
             
 
           
-  # Deploy Web App to Firebase Hosting
+  # Deploy Web App to Cloud Run
   deploy-web:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -75,47 +75,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          node-version: '18'
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Get pnpm store directory
-        shell: bash
+      - name: Authenticate to Google Cloud
         run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+          echo '${{ secrets.GCP_SA_KEY }}' > /tmp/service-account.json
+          gcloud auth activate-service-account --key-file=/tmp/service-account.json
+          gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
 
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker $REGION-docker.pkg.dev
 
-      - name: Install dependencies
+      - name: Create Artifact Registry repository for web
         run: |
-          cd apps/web
-          pnpm install --frozen-lockfile
+          gcloud artifacts repositories create skillex-web \
+            --repository-format=docker \
+            --location=$REGION \
+            --description="Skillex Web Docker repository" || true
 
-      - name: Build Next.js app
+      - name: Build and push Docker image for web
         run: |
-          cd apps/web
-          pnpm build
-        env:
-          NEXT_PUBLIC_API_BASE: https://${{ env.API_SERVICE_NAME }}-${{ env.PROJECT_ID }}.a.run.app
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${{ secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN }}
+          docker build -f apps/web/Dockerfile -t $REGION-docker.pkg.dev/$PROJECT_ID/skillex-web/skillex-web:$GITHUB_SHA apps/web
+          docker push $REGION-docker.pkg.dev/$PROJECT_ID/skillex-web/skillex-web:$GITHUB_SHA
 
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: live
-          projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
-          target: apps/web
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy skillex-web \
+            --image $REGION-docker.pkg.dev/$PROJECT_ID/skillex-web/skillex-web:$GITHUB_SHA \
+            --platform managed \
+            --region $REGION \
+            --allow-unauthenticated \
+            --port 3000 \
+            --memory 1Gi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            --set-env-vars NEXT_PUBLIC_API_URL=https://skillex-api-$PROJECT_ID.a.run.app \
+            --set-env-vars NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
+            --set-env-vars NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
+            --set-env-vars NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{ secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN }}
