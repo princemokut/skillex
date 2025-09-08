@@ -54,7 +54,6 @@ jobs:
             --platform managed \
             --region $REGION \
             --allow-unauthenticated \
-            --port 3001 \
             --memory 512Mi \
             --cpu 1 \
             --max-instances 2 \
