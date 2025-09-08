@@ -65,6 +65,7 @@ jobs:
             --set-env-vars RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}"
             
 
+            
   # Deploy Web App to Firebase Hosting
   deploy-web:
     runs-on: ubuntu-latest
