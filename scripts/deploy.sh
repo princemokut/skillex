@@ -21,7 +21,7 @@ gcloud run deploy skillex-api \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --port 3001 \
+  --port 8080 \
   --memory 512Mi \
   --cpu 1 \
   --max-instances 10

@@ -11,7 +11,7 @@ import { z } from 'zod';
  */
 const envSchema = z.object({
   // API Configuration
-  NEXT_PUBLIC_API_BASE: z.string().url().default('http://localhost:3001'),
+  NEXT_PUBLIC_API_BASE: z.string().url().default('http://localhost:8080'),
   
   // Supabase Configuration
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().default('https://placeholder.supabase.co'),
