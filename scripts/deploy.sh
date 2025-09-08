@@ -13,9 +13,11 @@ fi
 
 # Deploy API to Cloud Run
 echo "📦 Deploying API to Cloud Run..."
-cd apps/api
+docker build -f apps/api/Dockerfile -t gcr.io/$PROJECT_ID/skillex-api:latest .
+docker push gcr.io/$PROJECT_ID/skillex-api:latest
+
 gcloud run deploy skillex-api \
-  --source . \
+  --image gcr.io/$PROJECT_ID/skillex-api:latest \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
