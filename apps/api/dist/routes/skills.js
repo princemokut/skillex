@@ -39,7 +39,7 @@ async function skillRoutes(fastify) {
                     orderBy: { createdAt: 'desc' },
                 });
                 // Validate response with schema
-                return { skills: skills.map(skill => types_1.skillResponseSchema.parse(skill)) };
+                return { skills: skills.map((skill) => types_1.skillResponseSchema.parse(skill)) };
             }
             catch (error) {
                 logger_1.logger.error({ error }, 'Error fetching user skills');

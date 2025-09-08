@@ -345,7 +345,7 @@ export default async function connectionRoutes(fastify: FastifyInstance): Promis
         });
 
         // Format the response
-        const formattedConnections = connections.map((connection) => {
+        const formattedConnections = connections.map((connection: any) => {
           const isRequester = connection.requesterId === userId;
           const otherUser = isRequester ? connection.addressee : connection.requester;
           

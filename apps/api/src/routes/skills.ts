@@ -46,7 +46,7 @@ export default async function skillRoutes(fastify: FastifyInstance): Promise<voi
         });
         
         // Validate response with schema
-        return { skills: skills.map(skill => skillResponseSchema.parse(skill)) };
+        return { skills: skills.map((skill: any) => skillResponseSchema.parse(skill)) };
         
       } catch (error) {
         logger.error({ error }, 'Error fetching user skills');
