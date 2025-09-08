@@ -46,6 +46,22 @@ jobs:
           docker build -f apps/api/Dockerfile -t $REGION-docker.pkg.dev/$PROJECT_ID/skillex/$API_SERVICE_NAME:$GITHUB_SHA .
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/skillex/$API_SERVICE_NAME:$GITHUB_SHA
 
+      - name: Create environment variables file
+        run: |
+          cat > /tmp/env-vars.yaml << EOF
+          env:
+          - name: NODE_ENV
+            value: production
+          - name: DATABASE_URL
+            value: "${{ secrets.DATABASE_URL }}"
+          - name: SUPABASE_JWKS_URL
+            value: "${{ secrets.SUPABASE_JWKS_URL }}"
+          - name: ALLOWED_ORIGINS
+            value: "${{ secrets.ALLOWED_ORIGINS }}"
+          - name: RESEND_API_KEY
+            value: "${{ secrets.RESEND_API_KEY }}"
+          EOF
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy $API_SERVICE_NAME \
@@ -57,7 +73,7 @@ jobs:
             --memory 512Mi \
             --cpu 1 \
             --max-instances 2 \
-            --set-env-vars NODE_ENV=production,DATABASE_URL="${{ secrets.DATABASE_URL }}",SUPABASE_JWKS_URL="${{ secrets.SUPABASE_JWKS_URL }}",ALLOWED_ORIGINS="${{ secrets.ALLOWED_ORIGINS }}",RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}"
+            --env-vars-file /tmp/env-vars.yaml
             
 
   # Deploy Web App to Firebase Hosting
