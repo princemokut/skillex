@@ -26,13 +26,13 @@ export async function generateStaticParams() {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     handle: string;
-  };
+  }>;
 }
 
-export default function PublicProfilePage({ params }: PageProps) {
-  const handle = params.handle;
+export default async function PublicProfilePage({ params }: PageProps) {
+  const { handle } = await params;
 
   // Mock user data
   const user = {

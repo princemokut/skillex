@@ -50,28 +50,14 @@ import { ReferralStatus } from "@skillex/types";
 import { useState } from "react";
 
 /**
- * Generate static params for dynamic routes
- * Required for static export with dynamic routes
- */
-export async function generateStaticParams() {
-  // Return empty array for now - in production, this would fetch from API
-  return [];
-}
-
-/**
  * Individual cohort page showing detailed cohort information
  * Displays sessions, chat, artifacts, and member management
  */
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function CohortPage({ params }: PageProps) {
+export default function CohortPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const cohortId = params.id;
+  const params = useParams();
+  const cohortId = params.id as string;
 
   const {
     cohort,
