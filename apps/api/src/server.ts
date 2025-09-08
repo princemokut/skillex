@@ -83,12 +83,12 @@ async function startServer(): Promise<void> {
     const server = await buildServer();
     
     // Start listening
+    const port = process.env.PORT ? Number(process.env.PORT) : env.PORT;
     await server.listen({
-      port: Number(process.env.PORT) || env.PORT,
+      port,
       host: env.HOST,
     });
     
-    const port = process.env.PORT || env.PORT;
     logger.info(`Server listening at ${env.HOST}:${port}`);
     
   } catch (err) {

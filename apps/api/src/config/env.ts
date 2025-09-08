@@ -26,7 +26,7 @@ const envSchema = z.object({
   APP_ENV: z.enum(['development', 'production']).default('development'),
   
   // Server
-  PORT: z.coerce.number().positive().default(3001),
+  PORT: z.coerce.number().positive().default(8080),
   HOST: z.string().default('0.0.0.0'),
   
   // Email (optional)
