@@ -17,6 +17,7 @@ FROM base AS build
 COPY . .
 # Make sure node_modules from deps are available during build
 COPY --from=deps /repo/node_modules /repo/node_modules
+COPY --from=deps /repo/apps/web/node_modules /repo/apps/web/node_modules
 RUN pnpm -C apps/web build
 
 # 3) Minimal runtime using Next standalone output
