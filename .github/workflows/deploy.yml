@@ -19,7 +19,6 @@ env:
   PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
   API_SERVICE_NAME: skillex-api
   REGION: us-central1
-  ALLOWED_ORIGINS: ${{ vars.WEB_ORIGIN }}\,${{ vars.LOCAL_ORIGIN }}
 
 jobs:
   # Deploy API to Cloud Run
@@ -70,7 +69,7 @@ jobs:
             --set-env-vars NODE_ENV=production \
             --set-env-vars DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --set-env-vars SUPABASE_JWKS_URL="${{ secrets.SUPABASE_JWKS_URL }}" \
-            --set-env-vars "ALLOWED_ORIGINS=${ALLOWED_ORIGINS}" \
+            --set-env-vars ALLOWED_ORIGINS="${{ vars.WEB_ORIGIN }}" \
             --set-env-vars RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}"
             
 
