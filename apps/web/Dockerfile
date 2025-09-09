@@ -32,8 +32,8 @@ RUN addgroup --system --gid 1001 nodejs \
 
 # Copy standalone server (includes pruned node_modules) + static + public
 COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/standalone ./
-COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/static ./.next/static
-COPY --from=build --chown=nextjs:nodejs /repo/apps/web/public ./public
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/static ./apps/web/.next/static
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/public ./apps/web/public
 
 USER nextjs
 
