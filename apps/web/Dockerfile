@@ -7,8 +7,9 @@ RUN corepack enable
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json apps/web/
-# If you have shared packages, include their package.json files too:
-# COPY packages/ui/package.json packages/ui/
+# Include workspace package manifests so pnpm can resolve workspace:* deps
+COPY packages/types/package.json packages/types/
+COPY packages/config/package.json packages/config/
 RUN pnpm install --frozen-lockfile
 
 # 2) Build Next.js (standalone)
@@ -16,9 +17,7 @@ FROM base AS build
 COPY . .
 # Make sure node_modules from deps are available during build
 COPY --from=deps /repo/node_modules /repo/node_modules
-# Ensure app dependencies are present so `next` is available
-RUN pnpm -C apps/web install --frozen-lockfile \
- && pnpm -C apps/web build
+RUN pnpm -C apps/web build
 
 # 3) Minimal runtime using Next standalone output
 FROM node:20-bookworm-slim AS run
@@ -40,7 +39,7 @@ USER nextjs
 
 # Cloud Run default PORT is 8080 — let the platform set it
 EXPOSE 8080
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]
 
 # Why this fixes it
 # Uses Next “standalone” output, so the runtime image includes only what’s needed (no bulky node_modules copy).

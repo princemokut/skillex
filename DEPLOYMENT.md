@@ -1,38 +1,15 @@
-# Firebase Deployment Guide
+# Cloud Run Deployment Guide (API + Web SSR)
 
-This guide will help you deploy your Skillex app to Firebase with the API on Cloud Run and the web app on Firebase Hosting.
+This guide shows how to deploy both the API and the Next.js web app (SSR, standalone) to Google Cloud Run.
 
 ## Prerequisites
 
-1. **Firebase CLI**: `sudo npm install -g firebase-tools` (global tool)
-2. **Google Cloud CLI**: `gcloud` installed and authenticated
-3. **Docker**: For containerizing the API
-4. **GitHub repository** with your code
-5. **pnpm**: For project dependencies (already installed in your monorepo)
+1. **Google Cloud CLI**: `gcloud` installed and authenticated
+2. **Docker**: For building container images
+3. **GitHub repository** with your code
+4. **pnpm**: For monorepo dependencies
 
-## Setup Steps
-
-### 1. Firebase Project Setup
-
-```bash
-# Make sure you're in the project root
-pwd  # Should show: /path/to/your/skillex
-
-# Login to Firebase
-firebase login
-
-# Initialize Firebase in your project
-firebase init
-
-# Select:
-# - Hosting: Configure files for Firebase Hosting
-# - Project: Create a new project or select existing
-# - Public directory: apps/web/out
-# - Single-page app: Yes
-# - GitHub integration: Yes (optional)
-```
-
-### 2. Google Cloud Setup
+## Google Cloud Setup
 
 ```bash
 # Login to Google Cloud
@@ -44,22 +21,24 @@ gcloud config set project YOUR_PROJECT_ID
 # Enable required APIs
 gcloud services enable run.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
-gcloud services enable containerregistry.googleapis.com
+gcloud services enable artifactregistry.googleapis.com
 ```
 
-### 3. Environment Variables
+Optionally create an Artifact Registry repository (recommended):
+```bash
+gcloud artifacts repositories create skillex-repo \
+  --repository-format=docker \
+  --location=us-central1 \
+  --description="Skillex containers"
+```
+
+## Environment Variables
 
 Create the following files with your actual values:
 
 #### `apps/web/.env.local`:
 ```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-NEXT_PUBLIC_API_URL=https://your-api-url.run.app
+NEXT_PUBLIC_API_BASE=https://your-api-url.run.app
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 NEXT_PUBLIC_PLAUSIBLE_DOMAIN=your_domain.com
@@ -68,61 +47,71 @@ NEXT_PUBLIC_PLAUSIBLE_DOMAIN=your_domain.com
 #### `apps/api/.env`:
 ```env
 DATABASE_URL=postgresql://username:password@host:port/database
-JWT_SECRET=your_jwt_secret
-CORS_ORIGINS=https://your-domain.web.app,https://your-domain.firebaseapp.com
+SUPABASE_JWKS_URL=https://<project>.supabase.co/auth/v1/keys
+ALLOWED_ORIGINS=https://app.your-domain.com
+RESEND_API_KEY=optional_re_...
 PORT=8080
 NODE_ENV=production
 ```
 
-### 4. GitHub Secrets Setup
+## GitHub Secrets (CI/CD)
 
 Add these secrets to your GitHub repository (Settings > Secrets and variables > Actions):
 
-### **Required Secrets:**
-- `FIREBASE_PROJECT_ID`: Your Firebase project ID
-- `FIREBASE_SERVICE_ACCOUNT`: Firebase service account JSON (download from Firebase Console)
-- `GCP_SA_KEY`: Google Cloud service account key JSON
+- `GCP_PROJECT_ID`: Your Google Cloud project ID
+- `GCP_SA_KEY`: Service account key JSON with Cloud Run + Artifact Registry permissions
+- `GAR_LOCATION`: Artifact Registry location (e.g., `us-central1`)
+- `GAR_REPOSITORY`: Artifact Registry repo name (e.g., `skillex-repo`)
+- App envs as needed (e.g., `DATABASE_URL`, `SUPABASE_JWKS_URL`, `ALLOWED_ORIGINS`, `NEXT_PUBLIC_*`)
 
-### **API Environment Variables:**
-- `DATABASE_URL`: Your PostgreSQL connection string
-- `SUPABASE_JWKS_URL`: Your Supabase JWKS URL (for JWT verification)
-- `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins
-- `RESEND_API_KEY`: (Optional) For email functionality
+## Database Setup
 
-### **Frontend Environment Variables:**
-- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
-- `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`: (Optional) Your domain for analytics
-
-### 5. Database Setup
-
-Set up your PostgreSQL database (recommended: Supabase, Neon, or Google Cloud SQL):
-
-1. Create a new PostgreSQL database
-2. Update your `DATABASE_URL` in environment variables
+Use Supabase, Neon, or Cloud SQL:
+1. Create a PostgreSQL database
+2. Update `DATABASE_URL`
 3. Run migrations: `cd apps/api && pnpm prisma migrate deploy`
 
-### 6. Deploy
+## Build & Deploy
 
-#### Option A: Manual Deployment
+### API (Cloud Run)
+
 ```bash
-# Run the deployment script
-./scripts/deploy.sh
+# From repo root
+docker build -f apps/api/Dockerfile -t us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-api:latest .
+docker push us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-api:latest
+
+gcloud run deploy skillex-api \
+  --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-api:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8080
 ```
 
-#### Option B: GitHub Actions (Recommended)
-1. Push your code to the main branch
-2. GitHub Actions will automatically:
-   - Build and deploy the API to Cloud Run
-   - Build and deploy the web app to Firebase Hosting
+### Web (Next.js SSR, Cloud Run)
 
-### 7. Post-Deployment
+Ensure `apps/web/next.config.ts` uses `output: 'standalone'` and dynamic pages are SSR.
 
-1. **Update CORS origins** in your API to include your Firebase hosting URL
-2. **Test the deployment**:
-   - Visit your Firebase hosting URL
-   - Check API health: `https://your-api-url.run.app/health`
-3. **Set up custom domain** (optional) in Firebase Console
+```bash
+# From repo root
+docker build -f apps/web/Dockerfile -t us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-web:latest .
+docker push us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-web:latest
+
+gcloud run deploy skillex-web \
+  --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-web:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8080 \
+  --min-instances=1
+```
+
+## Post-Deployment
+
+1. **CORS**: Update API `ALLOWED_ORIGINS` to include your web service URL
+2. **Health checks**: `https://<api-service>.<region>.run.app/v1/health`
+3. **Custom domains**: Map `app.your-domain.com` to the `skillex-web` Cloud Run service
+4. **Secrets**: Prefer Cloud Run service-level env vars or Secret Manager
 
 ## File Structure
 
@@ -133,44 +122,41 @@ Set up your PostgreSQL database (recommended: Supabase, Neon, or Google Cloud SQ
 │   │   ├── Dockerfile              # API containerization
 │   │   └── .dockerignore
 │   └── web/
-│       ├── firebase.json           # Firebase hosting config
-│       ├── .firebaserc            # Firebase project config
-│       └── next.config.ts         # Next.js export config
-├── scripts/deploy.sh              # Manual deployment script
-└── DEPLOYMENT.md                  # This guide
+│       ├── Dockerfile              # Web (Next.js SSR) containerization
+│       └── next.config.ts          # Next.js SSR standalone config
+├── scripts/deploy.sh               # Optional manual deployment script
+└── DEPLOYMENT.md                   # This guide
 ```
 
 ## Troubleshooting
 
-### Common Issues:
+### Common Issues
 
-1. **Build fails**: Check environment variables and dependencies
-2. **API not accessible**: Verify CORS settings and Cloud Run permissions
-3. **Web app not loading**: Check Firebase hosting configuration
-4. **Database connection**: Verify DATABASE_URL and network access
+1. **Build fails**: Verify env vars and lockfile; ensure `output: 'standalone'` for web
+2. **API not accessible**: Check Cloud Run IAM, VPC egress, and CORS settings
+3. **Web routing issues**: Confirm port `8080`, SSR route configs, and base URLs
+4. **Database**: Verify `DATABASE_URL` networking and migrations
 
-### Useful Commands:
+### Useful Commands
 
 ```bash
-# Check Cloud Run logs
+# Logs (replace service/region)
+gcloud run services describe skillex-api --region=us-central1 | cat
+gcloud run services describe skillex-web --region=us-central1 | cat
 gcloud run logs read skillex-api --region=us-central1
+gcloud run logs read skillex-web --region=us-central1
 
-# Check Firebase hosting logs
-firebase hosting:channel:open live
-
-# Test API locally
+# Local dev
 cd apps/api && pnpm dev
-
-# Test web app locally
 cd apps/web && pnpm dev
 ```
 
 ## Monitoring
 
-- **API**: Google Cloud Console > Cloud Run
-- **Web App**: Firebase Console > Hosting
-- **Database**: Your database provider's dashboard
-- **Logs**: Google Cloud Console > Logging
+- **API**: Cloud Run service `skillex-api`
+- **Web App**: Cloud Run service `skillex-web`
+- **Database**: Provider dashboard (Supabase/Neon/Cloud SQL)
+- **Logs & Metrics**: Google Cloud Console > Logging / Monitoring
 
 ## Security Notes
 
