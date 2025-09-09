@@ -16,7 +16,9 @@ FROM base AS build
 COPY . .
 # Make sure node_modules from deps are available during build
 COPY --from=deps /repo/node_modules /repo/node_modules
-RUN pnpm -C apps/web build
+# Ensure app dependencies are present so `next` is available
+RUN pnpm -C apps/web install --frozen-lockfile \
+ && pnpm -C apps/web build
 
 # 3) Minimal runtime using Next standalone output
 FROM node:20-bookworm-slim AS run
