@@ -29,8 +29,24 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deploy on Cloud Run (SSR standalone)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This app runs as a Next.js SSR server with `output: 'standalone'` and is deployed on Google Cloud Run.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Basic steps:
+
+```bash
+# From repo root
+docker build -f apps/web/Dockerfile -t us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-web:latest .
+docker push us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-web:latest
+
+gcloud run deploy skillex-web \
+  --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/skillex-repo/skillex-web:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8080 \
+  --min-instances=1
+```
+
+Ensure environment variables are set (see `DEPLOYMENT.md`).

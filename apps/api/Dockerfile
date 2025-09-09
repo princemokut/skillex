@@ -1,5 +1,5 @@
 # Use Node.js 18 Alpine as base image
-FROM node:18-alpine
+FROM node:18
 
 # Install pnpm globally
 RUN npm install -g pnpm
@@ -22,8 +22,14 @@ COPY tsconfig.base.json ./
 # Install dependencies for the entire monorepo
 RUN pnpm install --frozen-lockfile
 
+# Copy Prisma schema
+COPY prisma/ ./prisma/
+
 # Copy API source code
 COPY apps/api/ ./apps/api/
+
+# Generate Prisma client (from root directory where prisma/ is located)
+RUN pnpm prisma generate
 
 # Set working directory to API
 WORKDIR /app/apps/api
@@ -31,12 +37,12 @@ WORKDIR /app/apps/api
 # Build the application
 RUN pnpm build
 
-# Expose port
-EXPOSE 3001
+# Expose port (Cloud Run will set PORT env var)
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
+  CMD curl -f http://localhost:${PORT:-8080}/health || exit 1
 
 # Start the application
 CMD ["pnpm", "start"]

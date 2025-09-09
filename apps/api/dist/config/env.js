@@ -55,7 +55,7 @@ const envSchema = zod_1.z.object({
     // App environment
     APP_ENV: zod_1.z.enum(['development', 'production']).default('development'),
     // Server
-    PORT: zod_1.z.coerce.number().positive().default(3001),
+    PORT: zod_1.z.coerce.number().positive().default(8080),
     HOST: zod_1.z.string().default('0.0.0.0'),
     // Email (optional)
     RESEND_API_KEY: zod_1.z.string().optional(),

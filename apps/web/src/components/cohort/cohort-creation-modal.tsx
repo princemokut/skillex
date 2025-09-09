@@ -70,6 +70,7 @@ export function CohortCreationModal({ open, onOpenChange }: CohortCreationModalP
     try {
       const cohortData: CohortCreate = {
         title: formData.title,
+        ownerId: "user-1", // TODO: Get from auth context
         size: formData.size,
         weeks: formData.weeks,
         visibility: formData.visibility,

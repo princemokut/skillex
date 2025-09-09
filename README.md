@@ -21,7 +21,7 @@ Scheduling: daily matching suggestions + weekly reminders (CLI entrypoints; can 
 
 Open Source: Apache-2.0. Keep business logic server-side.
 
-Keep the frontend decoupled. The API must be usable by any UI (Next.js on Vercel, a React SPA, mobile clients).
+Keep the frontend decoupled. The API must be usable by any UI (Next.js on Cloud Run, a React SPA, mobile clients).
 
 🗂️ Monorepo layout to create / enforce
 /

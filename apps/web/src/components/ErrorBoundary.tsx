@@ -106,7 +106,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-slate-600 text-center">
-                We're sorry, but something unexpected happened. Please try again or refresh the page.
+                We&apos;re sorry, but something unexpected happened. Please try again or refresh the page.
               </p>
               
               {process.env.NODE_ENV === 'development' && this.state.error && (
@@ -156,7 +156,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
 /**
  * Hook for programmatically triggering error boundary
- * Useful for handling async errors that don't get caught by the boundary
+ * Useful for handling async errors that don&apos;t get caught by the boundary
  */
 export function useErrorHandler() {
   return (error: Error, errorInfo?: ErrorInfo) => {

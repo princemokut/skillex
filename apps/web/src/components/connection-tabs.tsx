@@ -153,7 +153,7 @@ export function ConnectionTabs({
                     </svg>
                   </div>
                   <h3 className="text-lg font-medium text-slate-900 mb-1">No accepted connections</h3>
-                  <p className="text-slate-500">You don't have any connections yet.</p>
+                  <p className="text-slate-500">You don&apos;t have any connections yet.</p>
                 </div>
               )}
             </div>
@@ -175,7 +175,7 @@ export function ConnectionTabs({
                     </svg>
                   </div>
                   <h3 className="text-lg font-medium text-slate-900 mb-1">No sent requests</h3>
-                  <p className="text-slate-500">You haven't sent any connection requests yet.</p>
+                  <p className="text-slate-500">You haven&apos;t sent any connection requests yet.</p>
                 </div>
               )}
             </div>
@@ -197,7 +197,7 @@ export function ConnectionTabs({
                     </svg>
                   </div>
                   <h3 className="text-lg font-medium text-slate-900 mb-1">No received requests</h3>
-                  <p className="text-slate-500">You don't have any pending connection requests.</p>
+                  <p className="text-slate-500">You don&apos;t have any pending connection requests.</p>
                 </div>
               )}
             </div>
