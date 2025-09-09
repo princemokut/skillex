@@ -99,7 +99,7 @@ jobs:
 
       - name: Build and push Docker image for web
         run: |
-          docker build -f apps/web/Dockerfile -t $REGION-docker.pkg.dev/$PROJECT_ID/skillex-web/skillex-web:$GITHUB_SHA apps/web
+          docker build -f apps/web/Dockerfile -t $REGION-docker.pkg.dev/$PROJECT_ID/skillex-web/skillex-web:$GITHUB_SHA .
           docker push $REGION-docker.pkg.dev/$PROJECT_ID/skillex-web/skillex-web:$GITHUB_SHA
 
       - name: Deploy to Cloud Run
