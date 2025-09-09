@@ -1,61 +1,46 @@
-# Use Node.js 18 Alpine as base image
-FROM node:18-alpine AS base
+# syntax=docker/dockerfile:1
+FROM node:20-bookworm-slim AS base
+WORKDIR /repo
+RUN corepack enable
 
-# Install dependencies only when needed
+# 1) Install workspace deps at repo root (pnpm workspaces)
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-# Copy monorepo files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/web/package.json ./apps/web/
-COPY packages/ ./packages/
+COPY apps/web/package.json apps/web/
+# If you have shared packages, include their package.json files too:
+# COPY packages/ui/package.json packages/ui/
+RUN pnpm install --frozen-lockfile
 
-# Install dependencies based on the preferred package manager
-RUN corepack enable pnpm && pnpm install --frozen-lockfile
+# 2) Build Next.js (standalone)
+FROM base AS build
+COPY . .
+# Make sure node_modules from deps are available during build
+COPY --from=deps /repo/node_modules /repo/node_modules
+RUN pnpm -C apps/web build
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages ./packages
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/web/ ./apps/web/
-
-# Install web app dependencies and build
-RUN corepack enable pnpm && cd apps/web && pnpm install --frozen-lockfile && pnpm build
-
-# Production image, copy all the files and run next
-FROM base AS runner
+# 3) Minimal runtime using Next standalone output
+FROM node:20-bookworm-slim AS run
+ENV NODE_ENV=production \
+    HOSTNAME=0.0.0.0 \
+    NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
-ENV NODE_ENV=production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED=1
+# (Optional hardening) run as non-root
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser --system --uid 1001 nextjs
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy the built application
-COPY --from=builder /app/apps/web/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+# Copy standalone server (includes pruned node_modules) + static + public
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/standalone ./
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/.next/static ./.next/static
+COPY --from=build --chown=nextjs:nodejs /repo/apps/web/public ./public
 
 USER nextjs
 
-EXPOSE 8081
-
-ENV PORT=8081
-ENV HOSTNAME="0.0.0.0"
-
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+# Cloud Run default PORT is 8080 — let the platform set it
+EXPOSE 8080
 CMD ["node", "server.js"]
+
+# Why this fixes it
+# Uses Next “standalone” output, so the runtime image includes only what’s needed (no bulky node_modules copy).
+# No hard-coded PORT; Cloud Run injects PORT (defaults to 8080). Your previous 8081 caused the crash.
+# Debian base avoids Alpine’s common native-lib pitfalls.

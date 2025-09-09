@@ -115,11 +115,10 @@ jobs:
             --platform managed \
             --region $REGION \
             --allow-unauthenticated \
-            --port 8081 \
             --memory 1Gi \
             --cpu 1 \
             --min-instances 0 \
-            --max-instances 10 \
+            --max-instances 2 \
             --set-env-vars NEXT_PUBLIC_API_URL=https://skillex-api-$PROJECT_ID.a.run.app \
             --set-env-vars NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
             --set-env-vars NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
