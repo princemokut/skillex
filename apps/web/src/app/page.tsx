@@ -3,6 +3,8 @@
  * Displays the main landing page with hero section and call-to-action
  */
 
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
@@ -20,12 +22,12 @@ export default function Home() {
               Learn new skills while teaching others in a supportive community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
+              <Link href="/onboarding" className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors text-center">
                 Start a Skill Swap
-              </button>
-              <button className="border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold py-3 px-8 rounded-lg transition-colors">
+              </Link>
+              <Link href="/matches" className="border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold py-3 px-8 rounded-lg transition-colors text-center">
                 Browse Matches
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -95,9 +97,9 @@ export default function Home() {
           <p className="text-xl text-slate-300 mb-8">
             Join thousands of professionals who are already exchanging skills and advancing their careers.
           </p>
-          <button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
+          <Link href="/onboarding" className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors inline-block">
             Get Started Today
-          </button>
+          </Link>
         </div>
       </section>
     </div>

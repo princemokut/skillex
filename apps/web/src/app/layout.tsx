@@ -5,6 +5,7 @@ import { Navigation } from "@/components/navigation";
 import { BottomNavigation } from "@/components/ui/bottom-navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
+import { RouteGuard } from "@/components/RouteGuard";
 import { QueryProvider } from "@/components/query-provider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -77,13 +78,15 @@ export default function RootLayout({
         <ErrorBoundary>
           <QueryProvider>
             <AuthProvider>
-              <div className="min-h-screen flex flex-col">
-                <Navigation />
-                <main className="flex-1 pt-16">
-                  {children}
-                </main>
-                <BottomNavigation />
-              </div>
+              <RouteGuard>
+                <div className="min-h-screen flex flex-col">
+                  <Navigation />
+                  <main className="flex-1 pt-16">
+                    {children}
+                  </main>
+                  <BottomNavigation />
+                </div>
+              </RouteGuard>
               <Toaster />
             </AuthProvider>
           </QueryProvider>

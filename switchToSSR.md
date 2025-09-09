@@ -160,17 +160,15 @@ WebSockets/SSE and custom middlewares
 
 Where to run: Cloud Run (recommended) with min instances ≥ 1–2 to avoid cold starts.
 
-Static/marketing root page: you can still serve it from the same Next app. If you want a tiny, cache-heavy marketing site, keep it on Firebase Hosting or Cloudflare Pages and link to the app domain.
+Static/marketing root page: serve it from the same Next.js app on Cloud Run to keep a single runtime and simplify ops.
 
-Why not Firebase Hosting (Frameworks) for the app? It’s fine for SSR, but once you add long-lived connections (WS/WebRTC signaling), custom runtime knobs, and heavier server logic, the standalone server on Cloud Run gives you headroom and simpler ops.
+We are not using Firebase Hosting for the app. Cloud Run is selected to support long‑lived connections (WS/WebRTC signaling), custom runtime controls, and future realtime/video features.
 
 Checklist
 
 next.config.{js,ts}: remove output: 'export'; add output: 'standalone'.
 
 Dockerize /apps/web (Next standalone output) → deploy to Cloud Run.
-
-Optional: keep Firebase Hosting as a CDN/proxy with a rewrite to your Cloud Run service for dynamic routes (zero SEO change), while _next/static/** is cached aggressively.
 
 2) Core API (Fastify + Prisma + Postgres/Supabase)
 
@@ -265,7 +263,7 @@ Phase A — switch web to standalone (1–2 days)
 
 Next.js standalone build → Dockerfile → Cloud Run.
 
-Point app.yourdomain.com to Cloud Run (or keep Firebase Hosting as proxy).
+Point app.yourdomain.com to Cloud Run.
 
 Verify SSR, cookies, dynamic = 'force-dynamic' where needed; remove static export.
 

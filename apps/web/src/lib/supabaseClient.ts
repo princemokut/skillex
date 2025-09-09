@@ -1,9 +1,11 @@
+"use client";
 /**
  * Supabase client configuration for the skillex application
  * Provides authentication and database access through Supabase
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { supabaseConfig } from './env';
 
 /**
@@ -15,20 +17,8 @@ import { supabaseConfig } from './env';
  * - Session management
  * - JWT token handling
  */
-export const supabase = createClient(
-  supabaseConfig.url,
-  supabaseConfig.anonKey,
-  {
-    auth: {
-      // Automatically refresh the session before it expires
-      autoRefreshToken: true,
-      // Persist the session in localStorage
-      persistSession: true,
-      // Detect session from URL (for OAuth callbacks)
-      detectSessionInUrl: true,
-    },
-  }
-);
+// Client component Supabase instance (uses cookies via auth-helpers)
+export const supabase = createClientComponentClient();
 
 /**
  * Get the current user session
