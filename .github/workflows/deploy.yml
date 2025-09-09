@@ -24,10 +24,7 @@ jobs:
   # Deploy API to Cloud Run
   deploy-api:
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'workflow_dispatch' || 
-      (github.event_name == 'push' && contains(github.event.head_commit.modified, 'apps/api/')) ||
-      (github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'apps/api/'))
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'apps/api/') || contains(github.event.head_commit.added, 'apps/api/') || contains(github.event.pull_request.changed_files, 'apps/api/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -81,10 +78,7 @@ jobs:
   # Deploy Web App to Cloud Run
   deploy-web:
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'workflow_dispatch' || 
-      (github.event_name == 'push' && contains(github.event.head_commit.modified, 'apps/web/')) ||
-      (github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'apps/web/'))
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'apps/web/') || contains(github.event.head_commit.added, 'apps/web/') || contains(github.event.pull_request.changed_files, 'apps/web/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
