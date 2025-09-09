@@ -23,8 +23,8 @@ COPY --from=deps /app/packages ./packages
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/ ./apps/web/
 
-# Build the application
-RUN corepack enable pnpm && cd apps/web && pnpm build
+# Install web app dependencies and build
+RUN corepack enable pnpm && cd apps/web && pnpm install && pnpm build
 
 # Production image, copy all the files and run next
 FROM base AS runner
