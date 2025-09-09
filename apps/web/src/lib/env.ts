@@ -6,34 +6,62 @@
 import { z } from 'zod';
 
 /**
- * Environment variables schema
- * Validates that all required environment variables are present
+ * Parse raw env vars first; we'll enforce requirements based on NODE_ENV.
  */
-const envSchema = z.object({
+const baseSchema = z.object({
   // API Configuration
-  NEXT_PUBLIC_API_BASE: z.string().url().default('http://localhost:8080'),
-  
+  NEXT_PUBLIC_API_BASE: z.string().url().optional(),
+
   // Supabase Configuration
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url().default('https://placeholder.supabase.co'),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).default('placeholder_key'),
-  
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
+
   // Analytics (optional)
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: z.string().optional(),
 });
 
-/**
- * Validated environment variables
- * Throws an error if required variables are missing
- * 
- * Note: Next.js automatically loads .env.local, .env.development, .env, etc.
- * The dotenv.config() approach doesn't work in the browser.
- */
-export const env = envSchema.parse({
+const raw = baseSchema.parse({
   NEXT_PUBLIC_API_BASE: process.env.NEXT_PUBLIC_API_BASE,
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
 });
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+function requireInProduction(name: string, value: string | undefined, fallback?: string): string {
+  if (isProduction) {
+    if (!value || value.includes('placeholder')) {
+      throw new Error(`Missing required environment variable ${name} in production.`);
+    }
+    return value;
+  }
+  return value ?? fallback ?? '';
+}
+
+/**
+ * Validated environment variables
+ * In production, placeholders are NOT allowed.
+ * In development, sensible fallbacks are provided for convenience.
+ */
+export const env = {
+  NEXT_PUBLIC_API_BASE: requireInProduction(
+    'NEXT_PUBLIC_API_BASE',
+    raw.NEXT_PUBLIC_API_BASE,
+    'http://localhost:8080',
+  ),
+  NEXT_PUBLIC_SUPABASE_URL: requireInProduction(
+    'NEXT_PUBLIC_SUPABASE_URL',
+    raw.NEXT_PUBLIC_SUPABASE_URL,
+    'https://placeholder.supabase.co',
+  ),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: requireInProduction(
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    raw.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    'placeholder_key',
+  ),
+  NEXT_PUBLIC_PLAUSIBLE_DOMAIN: raw.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
+} as const;
 
 /**
  * API configuration

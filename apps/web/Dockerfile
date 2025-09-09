@@ -14,6 +14,16 @@ RUN pnpm install --frozen-lockfile
 
 # 2) Build Next.js (standalone)
 FROM base AS build
+# Accept public envs as build args for inlining into the Next.js build
+ARG NEXT_PUBLIC_API_BASE
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+# Also propagate NODE_ENV to ensure prod builds in CI
+ARG NODE_ENV=production
+ENV NEXT_PUBLIC_API_BASE=$NEXT_PUBLIC_API_BASE \
+    NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY \
+    NODE_ENV=$NODE_ENV
 COPY . .
 # Make sure node_modules from deps are available during build
 COPY --from=deps /repo/node_modules /repo/node_modules
