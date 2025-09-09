@@ -70,7 +70,7 @@ NEXT_PUBLIC_PLAUSIBLE_DOMAIN=your_domain.com
 DATABASE_URL=postgresql://username:password@host:port/database
 JWT_SECRET=your_jwt_secret
 CORS_ORIGINS=https://your-domain.web.app,https://your-domain.firebaseapp.com
-PORT=3001
+PORT=8080
 NODE_ENV=production
 ```
 

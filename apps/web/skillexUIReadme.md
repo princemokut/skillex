@@ -139,7 +139,7 @@ shadcn components to generate: Button, Input, Dialog, Tabs, Card, Badge, Avatar,
 
 Environment variables (frontend)
 
-NEXT_PUBLIC_API_BASE — base URL of the API (e.g., http://localhost:3001 or prod domain)
+NEXT_PUBLIC_API_BASE — base URL of the API (e.g., http://localhost:8080 or prod domain)
 
 NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY — for Supabase Auth (publishable)
 
