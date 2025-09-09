@@ -3,8 +3,16 @@ name: Deploy to Firebase
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'apps/api/**'
+      - 'apps/web/**'
+      - '.github/workflows/deploy.yml'
   pull_request:
     branches: [ main, master ]
+    paths:
+      - 'apps/api/**'
+      - 'apps/web/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 env:
@@ -16,7 +24,7 @@ jobs:
   # Deploy API to Cloud Run
   deploy-api:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'apps/api/') || contains(github.event.pull_request.changed_files, 'apps/api/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -70,7 +78,7 @@ jobs:
   # Deploy Web App to Cloud Run
   deploy-web:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.modified, 'apps/web/') || contains(github.event.pull_request.changed_files, 'apps/web/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
