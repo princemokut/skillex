@@ -50,9 +50,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone/apps/we
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
 
-# Install pnpm in the runner to resolve symlinks
-RUN corepack enable pnpm
-
 USER nextjs
 
 EXPOSE 8081

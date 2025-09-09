@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  outputFileTracingRoot: '../..', // Set root for pnpm monorepo
   trailingSlash: true,
   images: {
     unoptimized: true
