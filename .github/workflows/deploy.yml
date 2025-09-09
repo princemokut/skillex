@@ -24,6 +24,7 @@ jobs:
   # Deploy API to Cloud Run
   deploy-api:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name != 'pull_request' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -77,6 +78,7 @@ jobs:
   # Deploy Web App to Cloud Run
   deploy-web:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -115,6 +117,7 @@ jobs:
             --platform managed \
             --region $REGION \
             --allow-unauthenticated \
+            --port 8080 \
             --memory 1Gi \
             --cpu 1 \
             --min-instances 0 \
