@@ -8,6 +8,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 import { 
   Settings, 
   Users, 
@@ -23,7 +24,13 @@ import {
  * @returns BottomNavigation JSX element
  */
 export function BottomNavigation() {
+  const { user, loading } = useAuth();
   const pathname = usePathname();
+
+  // Hide bottom navigation for unauthenticated users
+  if (loading || !user) {
+    return null;
+  }
 
   /**
    * Navigation items for bottom navigation
